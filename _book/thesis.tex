@@ -1,0 +1,135 @@
+% This is a LaTeX thesis template for Monash University.
+% to be used with Rmarkdown
+% This template was produced by Rob Hyndman
+% Version: 6 September 2016
+
+\documentclass{aucklandthesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add any LaTeX packages and other preamble here if required
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Marie Curie}
+\title{Thesis title}
+\degrees{B.Sc. (Hons), The University of Auckland}
+\def\degreetitle{Doctor of Philosophy}
+% Add subject and keywords below
+\hypersetup{
+     %pdfsubject={The Subject},
+     %pdfkeywords={Some Keywords},
+     pdfauthor={Marie Curie},
+     pdftitle={Thesis title},
+     pdfproducer={Bookdown with LaTeX}
+}
+
+
+\bibliography{thesisrefs}
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\titlepage
+
+{\setstretch{1.2}\sf\tighttoc\doublespacing}
+
+\hypertarget{copyright-notice}{%
+\chapter*{Copyright notice}\label{copyright-notice}}
+\addcontentsline{toc}{chapter}{Copyright notice}
+
+\emph{(Choose one of the following notices.)}
+
+\emph{(Notice 1)}
+
+\textcopyright { } \authorname~(\number\the\year).
+
+\emph{The second notice certifies the appropriate use of any third-party material in the thesis. Students choosing to deposit their thesis into the restricted access section of the repository are not required to complete Notice 2.}
+
+\emph{(Notice 2)}
+
+\textcopyright { } \authorname~(\number\the\year).
+
+I certify that I have made all reasonable efforts to secure copyright permissions for third-party content included in this thesis and have not knowingly added copyright content to my work without the owner's permission.
+
+\newpage
+
+\hypertarget{abstract}{%
+\chapter*{Abstract}\label{abstract}}
+\addcontentsline{toc}{chapter}{Abstract}
+
+The abstract should outline the main approach and findings of the thesis and must not be more than 500 words.
+
+\newpage
+
+\hypertarget{acknowledgements}{%
+\chapter*{Acknowledgements}\label{acknowledgements}}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+I would like to thank my pet goldfish for \dots
+
+\hypertarget{preface}{%
+\chapter*{Preface}\label{preface}}
+\addcontentsline{toc}{chapter}{Preface}
+
+The material in Chapter \ref{ch:intro} has been submitted to the journal \emph{Journal of Impossible Results} for possible publication.
+
+The contribution in Chapter \ref{ch:litreview} of this thesis was presented in the International Symposium on Nonsense held in Dublin, Ireland, in July 2015.
+
+\clearpage\pagenumbering{arabic}\setcounter{page}{0}
+
+\hypertarget{ch:intro}{%
+\chapter{Introduction}\label{ch:intro}}
+
+Placeholder
+
+\hypertarget{rmarkdown}{%
+\section{Rmarkdown}\label{rmarkdown}}
+
+\hypertarget{data}{%
+\section{Data}\label{data}}
+
+\hypertarget{figures}{%
+\section{Figures}\label{figures}}
+
+\hypertarget{results-from-analyses}{%
+\section{Results from analyses}\label{results-from-analyses}}
+
+\hypertarget{tables}{%
+\section{Tables}\label{tables}}
+
+\hypertarget{ch:litreview}{%
+\chapter{Literature Review}\label{ch:litreview}}
+
+This chapter contains a summary of the context in which your research is set.
+
+Imagine you are writing for your fellow PhD students. Topics that are well-known to them do not have to be included here. But things that they may not know about should be included.
+
+Resist the temptation to discuss everything you've read in the last few years. And you are not writing a textbook either. This chapter is meant to provide the background necessary to understand the material in subsequent chapters. Stick to that.
+
+You will need to organize the literature review around themes, and within each theme provide a story explaining the development of ideas to date. In each theme, you should get to the point where your ideas will fit in. But leave your ideas to later chapters. This way it is clear what has been done beforehand, and what new contributions you are making to the research field.
+
+All citations should be done using markdown notation as shown below. This way, your bibliography will be compiled automatically and correctly.
+
+\hypertarget{sec:expsmooth}{%
+\section{Exponential smoothing}\label{sec:expsmooth}}
+
+Exponential smoothing was originally developed in the late 1950s \autocite{Brown59,Brown63,Holt57,Winters60}. Because of their computational simplicity and interpretability, they became widely used in practice.
+
+Empirical studies by \textcite{MH79} and \textcite{Metal82} found little difference in forecast accuracy between exponential smoothing and ARIMA models. This made the family of exponential smoothing procedures an attractive proposition \autocite[see][]{CKOS01}.
+
+The methods were less popular in academic circles until \textcite{OKS97} introduced a state space formulation of some of the methods, which was extended in \textcite{HKSG02} to cover the full range of exponential smoothing methods.
+
+\appendix
+
+\hypertarget{additional-stuff}{%
+\chapter{Additional stuff}\label{additional-stuff}}
+
+You might put some computer output here, or maybe additional tables.
+
+Note that line 5 must appear before your first appendix. But other appendices can just start like any other chapter.
+
+\printbibliography[heading=bibintoc]
+
+
+
+\end{document}
