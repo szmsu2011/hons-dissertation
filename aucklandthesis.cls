@@ -52,9 +52,9 @@
 %% HEADERS AND FOOTERS
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
-\rfoot{\Large\sf\raisebox{-0.1cm}{\textbf{\thepage}}}
-%\lhead{\textsf{\expandafter{\@title}}}
-\lhead{\textsf{\leftmark}}
+\rfoot{\Large\rm\raisebox{-0.1cm}{\textbf{\thepage}}}
+%\lhead{\textrm{\expandafter{\@title}}}
+\lhead{\textrm{\leftmark}}
 \rhead{}
 \cfoot{}
 \setlength{\headheight}{15pt}
@@ -62,7 +62,7 @@
 \renewcommand{\footrulewidth}{0.4pt}
 \fancypagestyle{plain}{%
 \fancyhf{} % clear all header and footer fields
-\fancyfoot[C]{\sf\thepage} % except the center
+\fancyfoot[C]{\rm\thepage} % except the center
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}}
 
@@ -83,13 +83,13 @@
 \RequirePackage[section]{placeins}
 
 %% SECTION TITLES
-\RequirePackage[compact,sf,bf]{titlesec}
+\RequirePackage[compact,rm,bf]{titlesec}
 \titleformat{\section}[block]
-  {\fontsize{15}{17}\bfseries\sffamily}
+  {\fontsize{15}{17}\bfseries\rmfamily}
   {\thesection}
   {0.4em}{}
 \titleformat{\subsection}[block]
-  {\fontsize{12}{14}\bfseries\sffamily}
+  {\fontsize{12}{14}\bfseries\rmfamily}
   {\thesubsection}
   {0.4em}{}
 \titlespacing{\section}{0pt}{*2}{*0.2}
@@ -180,19 +180,27 @@
 \def\@degrees{}
 \def\@submitdate{\number\the\year}
 
-\def\titlepage{{\sf
+\def\titlepage{{\rm
+    \noindent\hrulefill
     \thispagestyle{empty}%
     \null\vskip1cm%
-    \includegraphics[width=15cm]{figures/uni-of-auckland}
-    \vfill
     \begin{center}
-        \Large\textbf{\expandafter{\@title}}\\
-        \@author\\
-        \@degrees
+    \huge\textbf{\expandafter{\@title}}
+    \vfill
+        \includegraphics[width=30mm]{figures/uoa-logo.png}
+    \vfill
+        \textit{\LARGE{\@author}}\\
+    \vfill
+        \textsc{\LARGE{Department of Statistics}}\\
+        \textsc{\LARGE{The University of Auckland}}
+    \vfill
+        \large{supervised by}\\
+        \vspace{3.5mm}
+        \textsc{\large{Dr. Earo Wang}}\\
+        \textsc{\large{Prof. Chris Wild}}
     \vfill
         A dissertation submitted in partial fulfilment of the requirements for the degree of\\
-        \degreetitle,\\
-        The University of Auckland, \@submitdate.
+        \@degrees, The University of Auckland, \@submitdate.
     \end{center}
     %\hrulefill
     \newpage\mbox{}\thispagestyle{empty}\newpage}}
@@ -226,13 +234,13 @@
 % to display the bibliography in table of contents
 \usepackage[nottoc,notlot,notlof]{tocbibind}
 \usepackage{tocloft}
-\renewcommand{\cftchappagefont}{\sffamily\bfseries}
-\renewcommand{\cftchapfont}{\sffamily\bfseries}
-\renewcommand{\cftsecpagefont}{\sffamily}
-\renewcommand{\cftsubsecpagefont}{\sffamily}
-\renewcommand{\cftsecfont}{\sffamily}
-\renewcommand{\cftsubsecfont}{\sffamily}
-\renewcommand{\cfttoctitlefont}{\fontsize{24}{28}\sffamily\bfseries}
+\renewcommand{\cftchappagefont}{\rmfamily\bfseries}
+\renewcommand{\cftchapfont}{\rmfamily\bfseries}
+\renewcommand{\cftsecpagefont}{\rmfamily}
+\renewcommand{\cftsubsecpagefont}{\rmfamily}
+\renewcommand{\cftsecfont}{\rmfamily}
+\renewcommand{\cftsubsecfont}{\rmfamily}
+\renewcommand{\cfttoctitlefont}{\fontsize{24}{28}\rmfamily\bfseries}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Extra stuff for Rmarkdown to work

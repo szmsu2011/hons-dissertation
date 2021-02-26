@@ -1,8 +1,9 @@
 ---
-title: 'Automating Visual Analysis for Time Series Data'
-degreetype: 'Bachelor of Science (Honours)'
-author: 'Zhaoming Su'
-degrees: 'Bachelor of Science (Honours)'
+title: 'The Automation of Visual Analysis for Time Series Data with R Shiny'
+author: 'ZHAOMING SU'
+degrees: 'Bachelor of Science (Honours) in Statistics'
+supervisor: 'Dr. Earo Wang'
+cosupervisor: 'Prof. Chris Wild'
 output: bookdown::pdf_book
 site: bookdown::bookdown_site
 link-citations: yes
