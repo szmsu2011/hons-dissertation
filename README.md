@@ -1,8 +1,4 @@
-# University of Auckland PhD Thesis Rmarkdown Template
-
-This repository provides a template for a University of Auckland PhD thesis using Rmarkdown with the {bookdown} package, modified based on [robjhyndman/MonashThesis](https://github.com/robjhyndman/MonashThesis).
-
-## Requirements
+## Knit Requirements
 
 To set up the software, you will need to install the {bookdown} package and its dependencies as follows:
 
