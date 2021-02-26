@@ -1,8 +1,8 @@
 ---
-title: 'Thesis title'
-degreetype: 'Doctor of Philosophy'
-author: 'Marie Curie'
-degrees: 'B.Sc. (Hons), The University of Auckland'
+title: 'Automating Visual Analysis for Time Series Data'
+degreetype: 'Bachelor of Science (Honours)'
+author: 'Zhaoming Su'
+degrees: 'Bachelor of Science (Honours)'
 output: bookdown::pdf_book
 site: bookdown::bookdown_site
 link-citations: yes

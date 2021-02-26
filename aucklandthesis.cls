@@ -190,9 +190,9 @@
         \@author\\
         \@degrees
     \vfill
-        A thesis submitted for the degree of \degreetitle { } at\\
-        the University of Auckland in \@submitdate\\
-        Department of Statistics
+        A dissertation submitted in partial fulfilment of the requirements for the degree of\\
+        \degreetitle,\\
+        The University of Auckland, \@submitdate.
     \end{center}
     %\hrulefill
     \newpage\mbox{}\thispagestyle{empty}\newpage}}
