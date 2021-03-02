@@ -1,3 +1,6 @@
+rstudioapi::getActiveDocumentContext()$path %>%
+  dirname %>%
+  setwd
 source("packages.R")
 
 as_datetime = function(x) {
@@ -19,7 +22,8 @@ read_data = function(x, value_name = "value") {
   data %<>% tidyr::gather(location, value, names(data)[-1])
   data$value %<>% as.numeric
   names(data)[3] = value_name
-  data %>% na.omit %>%
+  data %>%
+    na.omit %>%
     as_tsibble(location, datetime)
 }
 
