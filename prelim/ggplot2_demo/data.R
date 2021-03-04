@@ -1,30 +1,35 @@
-rstudioapi::getActiveDocumentContext()$path %>%
-  dirname %>%
-  setwd
-source("packages.R")
+# Data Tidying
+source("prelim/ggplot2_demo/packages.R")
 
-as_datetime = function(x) {
-  dnt = double(length(x))
-  dnt[grep("-", x)] = x[grep("-", x)] %>%
+as_datetime <- function(x) {
+  dnt <- double(length(x))
+  dnt[grep("-", x)] <- x[grep("-", x)] %>%
     strptime("%Y-%m-%d %H:%M:%S") %>%
     format("%Y-%m-%d %H:%M:%S")
-  dnt[grep("/", x)] = x[grep("/", x)] %>%
+  dnt[grep("/", x)] <- x[grep("/", x)] %>%
     strptime("%d/%m/%Y %H:%M") %>%
     format("%Y-%m-%d %H:%M:%S")
-  dnt %>% as.POSIXct
+  dnt %>% as.POSIXct()
 }
 
-read_data = function(x, value_name = "value") {
-  data = read.csv(x)
-  names(data) = c("datetime", gsub(".*@ (\\w)|[.]", "\\1", data[3, -1]))
-  data = data[-(1:5), ]
-  data$datetime %<>% as_datetime
-  data %<>% tidyr::gather(location, value, names(data)[-1])
-  data$value %<>% as.numeric
-  names(data)[3] = value_name
+get_varname <- function(x, line = 3) {
+  varname <- readr::read_csv(x)[line, -1]
+  c("datetime", gsub(".*@ (\\w)|[.]", "\\1", varname)) %>%
+    janitor::make_clean_names()
+}
+
+clean_data <- function(x, value_name = "value") {
+  data <- readr::read_csv(x,
+    skip = 6, col_types = "cdddd",
+    col_names = get_varname(x)
+  )
+  data$datetime <- as_datetime(data$datetime)
   data %>%
-    na.omit %>%
-    as_tsibble(location, datetime)
+    tidyr::pivot_longer(!datetime,
+      "location",
+      values_to = value_name
+    ) %>%
+    tidyr::drop_na()
 }
 
-data = read_data("data/akl_rainfall.csv", "rainfall")
+data <- clean_data("data-raw/akl_rainfall.csv", "rainfall")
