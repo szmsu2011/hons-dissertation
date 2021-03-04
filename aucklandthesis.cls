@@ -174,8 +174,12 @@
 \def\degreetitle{Degree not specified}
 \def\submitdate#1{\gdef\@submitdate{#1}}
 \def\degrees#1{\gdef\@degrees{#1}}
+\def\supervisor#1{\gdef\@supervisor{#1}}
+\def\cosupervisor#1{\gdef\@cosupervisor{#1}}
 \def\studentid#1{\gdef\@degrees{#1}}
 \def\@title{}\def\@author{}
+\def\@supervisor{}
+\def\@cosupervisor{}
 \def\authorname{\@author}
 \def\@degrees{}
 \def\@submitdate{\number\the\year}
@@ -196,8 +200,8 @@
     \vfill
         \large{supervised by}\\
         \vspace{3.5mm}
-        \textsc{\large{Dr. Earo Wang}}\\
-        \textsc{\large{Prof. Chris Wild}}
+        \textsc{\large{\@supervisor}}\\
+        \textsc{\large{\@cosupervisor}}
     \vfill
         A dissertation submitted in partial fulfilment of the requirements for the degree of\\
         \@degrees, The University of Auckland, \@submitdate.
