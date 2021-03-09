@@ -1,6 +1,3 @@
-# Data Tidying
-source("prelim/ggplot2_demo/packages.R")
-
 as_datetime <- function(x) {
   dnt <- double(length(x))
   dnt[grep("-", x)] <- x[grep("-", x)] %>%
@@ -26,10 +23,7 @@ clean_data <- function(x, value_name = "value") {
   data$datetime <- as_datetime(data$datetime)
   data %>%
     tidyr::pivot_longer(!datetime,
-      "location",
+      names_to = "location",
       values_to = value_name
-    ) %>%
-    tidyr::drop_na()
+    )
 }
-
-data <- clean_data("data-raw/akl_rainfall.csv", "rainfall")
