@@ -1,7 +1,7 @@
 invisible(sapply(
   paste0(
     "prelim/ggplot2_demo/",
-    c("packages", "data_clean", "plot"),
+    c("packages", "data_clean"),
     ".R"
   ),
   source
