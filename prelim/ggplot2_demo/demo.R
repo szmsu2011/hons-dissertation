@@ -12,7 +12,7 @@ invisible(sapply(
 ## Tidy Data
 at_data <- "data-raw/akl-airtemp.csv" %>%
   clean_data("airtemp", n_loc = 5) %>%
-  filter(between(year(datetime), 2019, 2020)) %>%
+  dplyr::filter(between(year(datetime), 2019, 2020)) %>%
   as_tsibble(index = datetime, key = location) %>%
   fill_gaps()
 
@@ -68,7 +68,7 @@ at_data %>%
 ## Tidy Data
 aqi_data <- "data-raw/akl-aqi.csv" %>%
   clean_data("aqi", n_loc = 5) %>%
-  filter(between(year(datetime), 2019, 2020)) %>%
+  dplyr::filter(between(year(datetime), 2019, 2020)) %>%
   as_tsibble(index = datetime, key = location) %>%
   fill_gaps()
 
