@@ -7,44 +7,113 @@ invisible(sapply(
   source
 ))
 
-#################### Rainfall Time Series ####################
+#################### Air Temp Time Series ####################
 
 ## Tidy Data
-rf_data <- "data-raw/akl-rainfall.csv" %>%
-  clean_data("rainfall") %>%
-  tidyr::drop_na() %>%
-  dplyr::filter(between(year(datetime), 1980, 1990)) %>%
-  as_tsibble(index = datetime, key = location)
-
-## Time Plot
-rf_data %>%
-  fabletools::autoplot(rainfall) +
-  labs(x = "date")
-
-## Choose Albert Park
-abrf_data <- rf_data %>%
-  dplyr::filter(location == "albert_park") %>%
-  mutate(date = lubridate::as_date(datetime)) %>%
-  tsibble(index = date, key = location) %>%
+at_data <- "data-raw/akl-airtemp.csv" %>%
+  clean_data("airtemp", n_loc = 5) %>%
+  filter(between(year(datetime), 2019, 2020)) %>%
+  as_tsibble(index = datetime, key = location) %>%
   fill_gaps()
 
-## Seasonal Plot
-abrf_data %>%
-  gg_season(rainfall, period = "year")
+## Time Plot
+at_data %>%
+  fabletools::autoplot(airtemp) +
+  labs(x = "date")
 
-#FIXME
+## Seasonal Plot
+at_data %>% # Very slow
+  gg_season(airtemp, period = "day") +
+  theme(legend.position = "none") +
+  labs(x = "hour of day")
+
+at_data %>% # Very slow # Need more work to see pattern
+  dplyr::filter(location == "takapuna") %>%
+  gg_season(airtemp, period = "day") +
+  # geom_smooth() + # Unable to ignore group
+  theme(legend.position = "none") +
+  labs(x = "hour of day")
+
+at_data %>%
+  gg_season(airtemp, period = "week") +
+  theme(legend.position = "none") +
+  labs(x = "day of week")
+
+at_data %>% # Bad automatic colour scheme
+  gg_season(airtemp, period = "year") +
+  geom_smooth(method = "gam") +
+  labs(x = "month")
+
+# FIXME # Very slow, freezes
 ## Seasonal Subseries Plot
-# abrf_data %>%
-#   gg_subseries(rainfall)
+# at_data %>%
+#   gg_subseries(airtemp)
 
 ## Lag Plot
-abrf_data %>%
-  gg_lag(rainfall, geom = "point")
+at_data %>% # Very slow # Not sure how to specify season
+  dplyr::filter(location == "takapuna") %>%
+  gg_lag(airtemp, geom = "point")
 
 ## (/P)ACF Plot
-abrf_data %>%
-  feasts::ACF(rainfall) %>%
+at_data %>%
+  feasts::ACF(airtemp) %>%
   autoplot()
-abrf_data %>%
-  feasts::PACF(rainfall) %>%
+
+at_data %>%
+  feasts::PACF(airtemp) %>%
   autoplot()
+
+#################### AQI Time Series ####################
+
+## Tidy Data
+aqi_data <- "data-raw/akl-aqi.csv" %>%
+  clean_data("aqi", n_loc = 5) %>%
+  filter(between(year(datetime), 2019, 2020)) %>%
+  as_tsibble(index = datetime, key = location) %>%
+  fill_gaps()
+
+## Time Plot
+aqi_data %>%
+  fabletools::autoplot(aqi) +
+  labs(x = "date")
+
+## Seasonal Plot
+aqi_data %>% # Very slow
+  gg_season(aqi, period = "day") +
+  theme(legend.position = "none") +
+  labs(x = "hour of day") +
+  coord_cartesian(ylim = c(0, 100))
+
+aqi_data %>%
+  gg_season(aqi, period = "week") +
+  theme(legend.position = "none") +
+  labs(x = "day of week") +
+  coord_cartesian(ylim = c(0, 100))
+
+aqi_data %>% # Bad automatic colour scheme
+  gg_season(aqi, period = "year") +
+  labs(x = "month") +
+  coord_cartesian(ylim = c(0, 100))
+
+# FIXME # Very slow, freezes
+## Seasonal Subseries Plot
+# aqi_data %>%
+#   gg_subseries(aqi)
+
+
+## Lag Plot
+aqi_data %>% # Very slow # Not sure how to specify season
+  dplyr::filter(location == "takapuna") %>%
+  gg_lag(aqi, geom = "point")
+
+
+## (/P)ACF Plot
+aqi_data %>%
+  feasts::ACF(aqi) %>%
+  autoplot()
+
+aqi_data %>%
+  feasts::PACF(aqi) %>%
+  autoplot()
+
+

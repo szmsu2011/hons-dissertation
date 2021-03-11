@@ -6,7 +6,7 @@ as_datetime <- function(x) {
   dnt[grep("/", x)] <- x[grep("/", x)] %>%
     strptime("%d/%m/%Y %H:%M") %>%
     format("%Y-%m-%d %H:%M:%S")
-  dnt %>% as.POSIXct()
+  dnt %>% lubridate::as_datetime(tz = "Pacific/Auckland")
 }
 
 get_varname <- function(x, line = 3) {
@@ -15,10 +15,10 @@ get_varname <- function(x, line = 3) {
     janitor::make_clean_names()
 }
 
-clean_data <- function(x, value_name = "value") {
+clean_data <- function(x, value_name = "value", n_loc = 1) {
   data <- readr::read_csv(x,
-    skip = 6, col_types = "cdddd",
-    col_names = get_varname(x)
+    col_types = paste0(c("c", rep("d", n_loc)), collapse = ""),
+    skip = 6, col_names = get_varname(x)
   )
   data$datetime <- as_datetime(data$datetime)
   data %>%
