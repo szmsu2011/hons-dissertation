@@ -18,7 +18,7 @@ taka_at_data <- "data-raw/akl-airtemp.csv" %>%
   fill_gaps() %>%
   tidyr::fill(airtemp)
 
-taka_at_data %>% # FIXME # What window?
+taka_at_data %>% # What window?
   fabletools::model(
     feasts::STL(airtemp ~ trend(window = 365) +
       season(window = "periodic"),
