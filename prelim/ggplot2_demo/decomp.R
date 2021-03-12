@@ -1,4 +1,4 @@
-invisible(sapply(
+invisible(purrr::map(
   paste0(
     "prelim/ggplot2_demo/",
     c("packages", "data_clean"),

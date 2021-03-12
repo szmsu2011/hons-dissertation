@@ -10,7 +10,7 @@ as_datetime <- function(x) {
 }
 
 get_varname <- function(x, line = 3) {
-  varname <- readr::read_csv(x)[line, -1]
+  varname <- readr::read_csv(x, n_max = 3)[line, -1]
   c("datetime", gsub(".*@ (\\w)|[.]", "\\1", varname)) %>%
     janitor::make_clean_names()
 }
