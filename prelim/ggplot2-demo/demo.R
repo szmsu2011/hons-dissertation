@@ -1,7 +1,10 @@
 invisible(purrr::map(
   paste0(
     "prelim/ggplot2-demo/",
-    c("packages", "data_clean"),
+    c(
+      "packages", "data_clean",
+      "function", "plot", "feasts-src"
+    ),
     ".R"
   ),
   source
@@ -115,5 +118,3 @@ aqi_data %>%
 aqi_data %>%
   feasts::PACF(aqi) %>%
   autoplot()
-
-
