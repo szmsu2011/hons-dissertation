@@ -1,16 +1,28 @@
 gg_plots <- function(data, y, group_by, ...) {
   data <- tsibble::fill_gaps(data)
   idx <- tsibble::index_var(data)
+  n_key <- tsibble::n_keys(data)
+  keys <- tsibble::key(data)
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
     y = !!substitute(y),
-    colour = !!substitute(group_by)
+    colour = (
+      if (n_key > 1) interaction(!!!keys) else NULL
+    )
   )
 
-  data %>%
-    ggplot(mapping) +
+  p <- ggplot(data, mapping) +
     geom_line(...)
+
+  if (n_key > 1) {
+    p <- p +
+      ggplot2::scale_colour_discrete(
+        name = paste0(keys, collapse = ".")
+      )
+  }
+
+  p
 }
 
 
@@ -48,7 +60,7 @@ gg_botsplot <- function(data, y, period = NULL, ...) {
   )
 
   p <- ggplot(data, mapping) +
-    geom_boxplot() +
+    geom_boxplot(...) +
     ggplot2::xlab("") +
     ggplot2::scale_x_discrete(breaks = guide_breaks)
 
