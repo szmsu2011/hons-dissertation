@@ -1,3 +1,47 @@
+get_STL_remainder <- function(data, y = NULL) {
+  data <- tsibble::fill_gaps(data)
+  y <- guess_plot_var(data, !!enquo(y))
+
+  data %>%
+    tidyr::fill(!!y) %>%
+    fabletools::model(
+      feasts::STL(
+        !!y ~ trend() + season(window = "period")
+      )
+    ) %>%
+    fabletools::components() %>%
+    dplyr::select(remainder)
+}
+
+
+get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
+  data <- tsibble::fill_gaps(data)
+  y <- data[[deparse(guess_plot_var(data, !!enquo(y)))]]
+
+  p_adf <- suppressWarnings(
+    tseries::adf.test(y, alternative = "explosive")[["p.value"]]
+  )
+
+  if (p_adf <= .05) {
+    order[2] <- ifelse(order[2] == 0, 1, order[2])
+  }
+  resid <- arima(y, order)[["residuals"]]
+
+  data %>%
+    dplyr::select(!!index(data)) %>%
+    dplyr::mutate(resid = as.numeric(resid))
+}
+
+
+get_remainder <- function(data, y = NULL, arima = TRUE, ...) {
+  r_tsbl <- get_STL_remainder(data, !!enquo(y))
+
+  if (arima) r_tsbl <- get_ARIMA_resid(r_tsbl, remainder, ...)
+
+  r_tsbl
+}
+
+
 extract_period <- function(idx, period) {
   if (period == "day") {
     paste0(
@@ -15,41 +59,6 @@ extract_period <- function(idx, period) {
     lubridate::month(idx, label = TRUE)
   } else {
     stop("Invalid period")
-  }
-}
-
-
-get_STL_remainder <- function(data, y = NULL,
-                              trend_window = nrow(data)) {
-  data <- tsibble::fill_gaps(data)
-  y <- guess_plot_var(data, !!enquo(y))
-
-  data %>%
-    tidyr::fill(!!y) %>%
-    fabletools::model(
-      feasts::STL(
-        (!!y) ~ trend(window = trend_window) +
-          season(window = "period")
-      )
-    ) %>%
-    fabletools::components() %>%
-    dplyr::select(remainder)
-}
-
-
-get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
-  data <- tsibble::fill_gaps(data)
-  y <- data[[deparse(guess_plot_var(data, !!enquo(y)))]]
-
-  p_adf <- suppressWarnings(
-    tseries::adf.test(y, alternative = "explosive")[["p.value"]]
-  )
-
-  if (p_adf > .05) {
-    arima(y, order)[["residuals"]]
-  } else {
-    order[2] <- ifelse(order[2] == 0, 1, order[2])
-    arima(y, order)[["residuals"]]
   }
 }
 
