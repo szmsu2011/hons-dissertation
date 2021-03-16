@@ -25,11 +25,11 @@ get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
   if (p_adf <= .05) {
     order[2] <- ifelse(order[2] == 0, 1, order[2])
   }
-  remainder <- arima(y, order)[["residuals"]]
+  resid <- arima(y, order)[["residuals"]]
 
   data %>%
     dplyr::select(!!index(data)) %>%
-    dplyr::mutate(remainder = as.numeric(remainder))
+    dplyr::mutate(remainder = as.numeric(resid))
 }
 
 
