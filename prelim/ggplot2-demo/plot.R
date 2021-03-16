@@ -1,12 +1,13 @@
-gg_plots <- function(data, y, group_by, ...) {
+gg_plots <- function(data, y = NULL, ...) {
   data <- tsibble::fill_gaps(data)
+  y <- guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
-    y = !!substitute(y),
+    y = !!enquo(y),
     colour = (
       if (n_key > 1) interaction(!!!keys) else NULL
     )
@@ -26,8 +27,9 @@ gg_plots <- function(data, y, group_by, ...) {
 }
 
 
-gg_botsplot <- function(data, y, period = NULL, ...) {
+gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
   data <- tsibble::fill_gaps(data)
+  y <- guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
@@ -56,7 +58,7 @@ gg_botsplot <- function(data, y, period = NULL, ...) {
 
   mapping <- aes(
     x = period_chr,
-    y = !!substitute(y)
+    y = !!enquo(y)
   )
 
   p <- ggplot(data, mapping) +
@@ -83,8 +85,8 @@ gg_botsplot <- function(data, y, period = NULL, ...) {
 
 #################### Experimental, Incomplete ####################
 
-gg_botseason <- function(data, y, period = NULL, facet_period = NULL, max_col = 15,
-                         labels = c("none", "left", "right", "both"), ...) {
+gg_f <- function(data, y, period = NULL, facet_period = NULL, max_col = 15,
+                 labels = c("none", "left", "right", "both"), ...) {
   data <- tsibble::fill_gaps(data)
 
   #################### feasts::gg_season ####################
@@ -132,27 +134,28 @@ gg_botseason <- function(data, y, period = NULL, facet_period = NULL, max_col = 
 
   #################### feasts::gg_season ####################
 
-  data <- data %>%
-    dplyr::mutate(
-      period_chr = extract_period(!!sym(idx), period),
-      period_id = period_identifier(!!sym(idx), period),
-      period_num = period_as_num(
-        !!sym(idx), period_chr, period, ts_interval
-      )
-    )
-
-  mapping <- aes(
-    x = period_chr,
-    y = !!substitute(y)
-  )
-
-  data %>%
-    ggplot(mapping) +
-    geom_line(aes(
-      x = period_num,
-      y = !!substitute(y),
-      group = period_id
-    )) +
-    geom_boxplot() +
-    xlab("")
+  ## Failed Code
+  # data <- data %>%
+  #   dplyr::mutate(
+  #     period_chr = extract_period(!!sym(idx), period),
+  #     period_id = period_identifier(!!sym(idx), period),
+  #     period_num = period_as_num(
+  #       !!sym(idx), period_chr, period, ts_interval
+  #     )
+  #   )
+  #
+  # mapping <- aes(
+  #   x = period_chr,
+  #   y = !!enquo(y)
+  # )
+  #
+  # data %>%
+  #   ggplot(mapping) +
+  #   geom_line(aes(
+  #     x = period_num,
+  #     y = !!enquo(y),
+  #     group = period_id
+  #   )) +
+  #   geom_boxplot() +
+  #   xlab("")
 }

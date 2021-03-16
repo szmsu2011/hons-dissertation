@@ -19,6 +19,39 @@ extract_period <- function(idx, period) {
 }
 
 
+get_STL_remainder <- function(data, y = NULL,
+                              trend_window = nrow(data)) {
+  data <- tsibble::fill_gaps(data)
+  y <- guess_plot_var(data, !!enquo(y))
+
+  data %>%
+    tidyr::fill(!!y) %>%
+    fabletools::model(
+      feasts::STL(
+        (!!y) ~ trend(window = trend_window) +
+          season(window = "period")
+      )
+    ) %>%
+    fabletools::components() %>%
+    dplyr::select(remainder)
+}
+
+
+get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
+  data <- tsibble::fill_gaps(data)
+  y <- data[[deparse(guess_plot_var(data, !!enquo(y)))]]
+
+  p_adf <- suppressWarnings(
+    tseries::adf.test(y, alternative = "explosive")[["p.value"]]
+  )
+
+  if (p_adf > .05) {
+    arima(y, order)[["residuals"]]
+  } else {
+    order[2] <- ifelse(order[2] == 0, 1, order[2])
+    arima(y, order)[["residuals"]]
+  }
+}
 
 
 #################### Failed Functions ####################

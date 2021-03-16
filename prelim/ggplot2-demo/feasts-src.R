@@ -2,6 +2,24 @@
 # FIXME Error: Failed to install 'feasts' from GitHub: non-zero exit status
 
 
+guess_plot_var <- function(x, y) {  # {tsibblestats}
+  if (quo_is_null(enquo(y))) {
+    mv <- measured_vars(x)
+    pos <- which(vapply(x[mv], is.numeric, logical(1L)))
+    if (is_empty(pos)) {
+      abort("Could not automatically identify an appropriate plot variable, please specify the variable to plot.")
+    }
+    inform(sprintf(
+      "Plot variable not specified, automatically selected `y = %s`",
+      mv[pos[1]]
+    ))
+    sym(mv[pos[1]])
+  }
+  else {
+    get_expr(enexpr(y))
+  }
+}
+
 format_time <- function(x, format, ...) {
   if (format == "%Y W%V") {
     return(format(yearweek(x)))
