@@ -22,7 +22,7 @@ at_data <- "data-raw/akl-airtemp.csv" %>%
 gg_plots(at_data, check_anon = "anomalize")
 
 ## Seasonal Boxplot
-gg_botsplot(at_data)
+gg_botsplot(at_data, outlier.shape = 1)
 
 #################### AQI Time Series ####################
 
@@ -44,7 +44,7 @@ aqi_data %>%
   gg_plots(check_anon = "anomalize")
 
 ## Seasonal Boxplot
-gg_botsplot(aqi_data)
+gg_botsplot(aqi_data, outlier.shape = 1)
 
 #################### {feasts} ####################
 

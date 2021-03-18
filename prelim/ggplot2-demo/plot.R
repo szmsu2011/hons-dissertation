@@ -77,7 +77,7 @@ gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
   )
 
   p <- ggplot(data, mapping) +
-    geom_boxplot(outlier.shape = 1, ...) +
+    geom_boxplot(...) +
     ggplot2::xlab("") +
     ggplot2::scale_x_discrete(breaks = guide_breaks)
 
