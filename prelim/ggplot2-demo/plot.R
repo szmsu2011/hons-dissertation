@@ -1,9 +1,17 @@
-gg_plots <- function(data, y = NULL, ...) {
+gg_plots <- function(data, y = NULL, ...,
+                     check_anon = c("none", "anomalize")) {
   data <- tsibble::fill_gaps(data)
   y <- guess_plot_var(data, !!enquo(y))
+  check_anon <- match.arg(check_anon)
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
+
+  if (check_anon == "anomalize") {
+    data <- data %>% dplyr::mutate(
+      anomaly = anon_anomalize(get_remainder(data, !!y))
+    )
+  }
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
@@ -20,6 +28,13 @@ gg_plots <- function(data, y = NULL, ...) {
     p <- p +
       ggplot2::scale_colour_discrete(
         name = paste0(keys, collapse = ".")
+      )
+  }
+  if (check_anon != "none") {
+    p <- p +
+      geom_point(
+        data = dplyr::filter(data, anomaly == "Yes", !is.na(!!y)),
+        aes(colour = NULL), colour = "red"
       )
   }
 

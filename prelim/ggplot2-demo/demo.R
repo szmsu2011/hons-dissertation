@@ -19,7 +19,7 @@ at_data <- "data-raw/akl-airtemp.csv" %>%
   tsibble::fill_gaps()
 
 ## Time Plot
-gg_plots(at_data)
+gg_plots(at_data, check_anon = "anomalize")
 
 ## Seasonal Boxplot
 gg_botsplot(at_data)
@@ -37,7 +37,11 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
   tsibble::fill_gaps()
 
 ## Time Plot
-gg_plots(aqi_data)
+gg_plots(aqi_data, check_anon = "anomalize")
+
+aqi_data %>%
+  dplyr::filter(location == "queen_street") %>%
+  gg_plots(check_anon = "anomalize")
 
 ## Seasonal Boxplot
 gg_botsplot(aqi_data)

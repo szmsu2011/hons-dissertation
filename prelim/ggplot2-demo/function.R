@@ -1,21 +1,21 @@
 get_STL_remainder <- function(data, y = NULL) {
-  data <- tsibble::fill_gaps(data)
   y <- guess_plot_var(data, !!enquo(y))
+  data <- tsibble::fill_gaps(data) %>%
+    tidyr::fill(!!y)
 
   data %>%
-    tidyr::fill(!!y) %>%
     fabletools::model(
       feasts::STL(
         !!y ~ trend() + season(window = "period")
       )
     ) %>%
     fabletools::components() %>%
-    dplyr::select(remainder)
+    update_tsibble(key = tsibble::key_vars(data)) %>%
+    dplyr::select(remainder, -.model)
 }
 
 
 get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
-  data <- tsibble::fill_gaps(data)
   y <- data[[deparse(guess_plot_var(data, !!enquo(y)))]]
 
   p_adf <- suppressWarnings(
@@ -39,6 +39,39 @@ get_remainder <- function(data, y = NULL, arima = TRUE, ...) {
   if (arima) r_tsbl <- get_ARIMA_resid(r_tsbl, remainder, ...)
 
   r_tsbl
+}
+
+
+anon_anomalize <- function(data) {
+  if (length(tsibble::key_vars(data)) > 1L) {
+    data <- data %>%
+      dplyr::mutate(
+        .key = as.character(rlang::exec(
+          interaction,
+          data %>%
+            as_tibble() %>%
+            dplyr::select(!!!tsibble::key(data))
+        ))
+      ) %>%
+      update_tsibble(key = .key)
+  }
+  if (length(tsibble::key_vars(data)) == 1L) {
+    data <- data %>%
+      dplyr::rename(.key = tsibble::key_vars(data))
+  } else {
+    data <- data %>%
+      dplyr::mutate(.key = rep(0, nrow(data))) %>%
+      update_tsibble(key = .key)
+  }
+
+  purrr::map(
+    unique(data[[tsibble::key_vars(data)]]),
+    function(key_lvls) {
+      (data %>%
+        dplyr::filter(.key == key_lvls) %>%
+        anomalize(remainder, alpha = .02))[["anomaly"]]
+    }
+  ) %>% purrr::flatten_chr()
 }
 
 
