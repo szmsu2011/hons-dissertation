@@ -23,6 +23,7 @@ gg_plots(at_data, check_anon = "anomalize")
 
 ## Seasonal Boxplot
 gg_botsplot(at_data, outlier.shape = 1)
+gg_botsplot(at_data, period = "day", outlier.shape = 1)
 
 #################### AQI Time Series ####################
 
@@ -30,8 +31,7 @@ gg_botsplot(at_data, outlier.shape = 1)
 aqi_data <- "data-raw/akl-aqi.csv" %>%
   clean_data("aqi", n_loc = 5) %>%
   dplyr::filter(
-    between(year(datetime), 2019, 2020),
-    aqi > 0
+    between(year(datetime), 2019, 2020), aqi > 0
   ) %>%
   as_tsibble(index = datetime, key = location) %>%
   tsibble::fill_gaps()
