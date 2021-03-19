@@ -15,26 +15,27 @@ gg_plots <- function(data, y = NULL, ...,
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
-    y = !!enquo(y),
-    colour = (
-      if (n_key > 1) interaction(!!!keys) else NULL
-    )
+    y = !!enquo(y)
   )
 
   p <- ggplot(data, mapping) +
-    geom_line(...)
+    geom_line(colour = "steelblue", ...)
 
-  if (n_key > 1) {
-    p <- p +
-      ggplot2::scale_colour_discrete(
-        name = paste0(keys, collapse = ".")
-      )
-  }
   if (check_anon != "none") {
     p <- p +
       geom_point(
         data = dplyr::filter(data, anomaly == "Yes", !is.na(!!y)),
         aes(colour = NULL), colour = "red"
+      )
+  }
+  if (n_key > 1) {
+    p <- p +
+      ggplot2::facet_grid(
+        rows = vars(!!!purrr::map(
+          keys,
+          function(x) expr(format(!!x))
+        )),
+        scale = "free_y"
       )
   }
 
