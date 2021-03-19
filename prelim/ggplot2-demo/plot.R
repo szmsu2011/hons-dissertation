@@ -34,8 +34,7 @@ gg_plots <- function(data, y = NULL, ...,
         rows = vars(!!!purrr::map(
           keys,
           function(x) expr(format(!!x))
-        )),
-        scale = "free_y"
+        ))
       )
   }
 

@@ -33,7 +33,7 @@ get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
 }
 
 
-get_remainder <- function(data, y = NULL, arima = TRUE, ...) {
+get_remainder <- function(data, y = NULL, arima = FALSE, ...) {
   r_tsbl <- get_STL_remainder(data, !!enquo(y))
 
   if (arima) r_tsbl <- get_ARIMA_resid(r_tsbl, remainder, ...)
