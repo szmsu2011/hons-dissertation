@@ -1,7 +1,7 @@
 gg_plots <- function(data, y = NULL, ...,
                      check_anon = c("none", "anomalize")) {
   data <- tsibble::fill_gaps(data)
-  y <- guess_plot_var(data, !!enquo(y))
+  y <- feasts:::guess_plot_var(data, !!enquo(y))
   check_anon <- match.arg(check_anon)
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
@@ -44,11 +44,11 @@ gg_plots <- function(data, y = NULL, ...,
 
 gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
   data <- tsibble::fill_gaps(data)
-  y <- guess_plot_var(data, !!enquo(y))
+  y <- feasts:::guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
-  ts_interval <- interval_to_period(interval(data))
+  ts_interval <- feasts:::interval_to_period(tsibble::interval(data))
 
   if (is.null(period)) {
     period <- names(
@@ -110,7 +110,7 @@ gg_f <- function(data, y, period = NULL, facet_period = NULL, max_col = 15,
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- key(data)
-  ts_interval <- interval_to_period(tsibble::interval(data))
+  ts_interval <- feasts:::interval_to_period(interval(data))
 
   if (is.null(period)) {
     period <- names(fabletools::get_frequencies(period, data, .auto = "largest"))

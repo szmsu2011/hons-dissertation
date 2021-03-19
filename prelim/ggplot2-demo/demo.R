@@ -3,7 +3,7 @@ invisible(purrr::map(
     "prelim/ggplot2-demo/",
     c(
       "packages", "data_clean",
-      "function", "plot", "feasts-src"
+      "function", "plot"
     ),
     ".R"
   ), source

@@ -1,5 +1,5 @@
 get_STL_remainder <- function(data, y = NULL) {
-  y <- guess_plot_var(data, !!enquo(y))
+  y <- feasts:::guess_plot_var(data, !!enquo(y))
   data <- tsibble::fill_gaps(data) %>%
     tidyr::fill(!!y)
 
@@ -16,7 +16,7 @@ get_STL_remainder <- function(data, y = NULL) {
 
 
 get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
-  y <- data[[deparse(guess_plot_var(data, !!enquo(y)))]]
+  y <- data[[deparse(feasts:::guess_plot_var(data, !!enquo(y)))]]
 
   p_adf <- suppressWarnings(
     tseries::adf.test(y, alternative = "explosive")[["p.value"]]
