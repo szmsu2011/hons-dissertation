@@ -1,4 +1,4 @@
-get_STL_remainder <- function(data, y = NULL) {
+get_remainder <- function(data, y = NULL) {
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   data <- tsibble::fill_gaps(data) %>%
     tidyr::fill(!!y)
@@ -12,33 +12,6 @@ get_STL_remainder <- function(data, y = NULL) {
     fabletools::components() %>%
     update_tsibble(key = tsibble::key_vars(data)) %>%
     dplyr::select(remainder, -.model)
-}
-
-
-get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
-  y <- data[[deparse(feasts:::guess_plot_var(data, !!enquo(y)))]]
-
-  p_adf <- suppressWarnings(
-    tseries::adf.test(y, alternative = "explosive")[["p.value"]]
-  )
-
-  if (p_adf <= .05) {
-    order[2] <- ifelse(order[2] == 0, 1, order[2])
-  }
-  resid <- arima(y, order)[["residuals"]]
-
-  data %>%
-    dplyr::select(!!index(data)) %>%
-    dplyr::mutate(remainder = as.numeric(resid))
-}
-
-
-get_remainder <- function(data, y = NULL, arima = FALSE, ...) {
-  r_tsbl <- get_STL_remainder(data, !!enquo(y))
-
-  if (arima) r_tsbl <- get_ARIMA_resid(r_tsbl, remainder, ...)
-
-  r_tsbl
 }
 
 
@@ -164,4 +137,31 @@ extract_period <- function(idx, period) {
 #   eval(parse(text = paste0(
 #     "lubridate::", period, "(idx)"
 #   ))) %>% as.character()
+# }
+#
+#
+# get_ARIMA_resid <- function(data, y = NULL, order = c(1, 0, 1)) {
+#   y <- data[[deparse(feasts:::guess_plot_var(data, !!enquo(y)))]]
+#
+#   p_adf <- suppressWarnings(
+#     tseries::adf.test(y, alternative = "explosive")[["p.value"]]
+#   )
+#
+#   if (p_adf <= .05) {
+#     order[2] <- ifelse(order[2] == 0, 1, order[2])
+#   }
+#   resid <- arima(y, order)[["residuals"]]
+#
+#   data %>%
+#     dplyr::select(!!index(data)) %>%
+#     dplyr::mutate(remainder = as.numeric(resid))
+# }
+#
+#
+# get_remainder <- function(data, y = NULL, arima = FALSE, ...) {
+#   r_tsbl <- get_STL_remainder(data, !!enquo(y))
+#
+#   if (arima) r_tsbl <- get_ARIMA_resid(r_tsbl, remainder, ...)
+#
+#   r_tsbl
 # }
