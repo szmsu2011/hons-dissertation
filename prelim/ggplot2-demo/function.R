@@ -42,7 +42,7 @@ get_remainder <- function(data, y = NULL, arima = FALSE, ...) {
 }
 
 
-anon_anomalize <- function(data) {
+anom_anomalize <- function(data) {
   if (length(tsibble::key_vars(data)) > 1L) {
     data <- data %>%
       dplyr::mutate(

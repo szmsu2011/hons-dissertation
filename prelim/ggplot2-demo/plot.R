@@ -1,15 +1,15 @@
 gg_plots <- function(data, y = NULL, ...,
-                     check_anon = c("none", "anomalize")) {
+                     check_anom = c("none", "anomalize")) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
-  check_anon <- match.arg(check_anon)
+  check_anom <- match.arg(check_anom)
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
 
-  if (check_anon == "anomalize") {
+  if (check_anom == "anomalize") {
     data <- data %>% dplyr::mutate(
-      anomaly = anon_anomalize(get_remainder(data, !!y))
+      anomaly = anom_anomalize(get_remainder(data, !!y))
     )
   }
 
@@ -21,7 +21,7 @@ gg_plots <- function(data, y = NULL, ...,
   p <- ggplot(data, mapping) +
     geom_line(colour = "steelblue", ...)
 
-  if (check_anon != "none") {
+  if (check_anom != "none") {
     p <- p +
       geom_point(
         data = dplyr::filter(data, anomaly == "Yes", !is.na(!!y)),
