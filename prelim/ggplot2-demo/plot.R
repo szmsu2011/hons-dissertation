@@ -1,5 +1,5 @@
 gg_plots <- function(data, y = NULL, ...,
-                     check_anom = c("none", "anomalize")) {
+                     check_anom = c("none", "SHESD")) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   check_anom <- match.arg(check_anom)
@@ -7,9 +7,9 @@ gg_plots <- function(data, y = NULL, ...,
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
 
-  if (check_anom == "anomalize") {
+  if (check_anom == "SHESD") {
     data <- data %>% dplyr::mutate(
-      anomaly = anom_anomalize(get_remainder(data, !!y))
+      anomaly = anom_SHESD(get_remainder(data, !!y))
     )
   }
 

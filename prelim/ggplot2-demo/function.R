@@ -6,7 +6,8 @@ get_remainder <- function(data, y = NULL) {
   data %>%
     fabletools::model(
       feasts::STL(
-        !!y ~ trend() + season(window = "period")
+        !!y ~ trend() + season(window = "period"),
+        robust = TRUE
       )
     ) %>%
     fabletools::components() %>%
@@ -15,7 +16,7 @@ get_remainder <- function(data, y = NULL) {
 }
 
 
-anom_anomalize <- function(data) {
+anom_SHESD <- function(data) {
   if (length(tsibble::key_vars(data)) > 1L) {
     data <- data %>%
       dplyr::mutate(
@@ -42,7 +43,7 @@ anom_anomalize <- function(data) {
     function(key_lvls) {
       (data %>%
         dplyr::filter(.key == key_lvls) %>%
-        anomalize(remainder, alpha = .02))[["anomaly"]]
+        anomalize(remainder, alpha = .011))[["anomaly"]]
     }
   ) %>% purrr::flatten_chr()
 }
