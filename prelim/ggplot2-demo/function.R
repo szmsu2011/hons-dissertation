@@ -65,6 +65,6 @@ extract_period <- function(idx, period) {
   } else if (period == "year") {
     lubridate::month(idx, label = TRUE)
   } else {
-    stop("Invalid period")
+    rlang::abort("Invalid period")
   }
 }

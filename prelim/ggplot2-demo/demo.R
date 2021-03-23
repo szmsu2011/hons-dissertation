@@ -1,13 +1,11 @@
-invisible(purrr::map(
-  paste0(
-    "prelim/ggplot2-demo/",
-    c(
-      "packages", "data_clean",
-      "function", "plot"
-    ),
-    ".R"
-  ), source
-))
+invisible(purrr::map(paste0(
+  "prelim/ggplot2-demo/",
+  c(
+    "packages", "data_clean",
+    "function", "plot"
+  ),
+  ".R"
+), source))
 
 #################### Air Temp Time Series ####################
 
@@ -17,6 +15,7 @@ at_data <- "data-raw/akl-airtemp.csv" %>%
   dplyr::filter(between(year(datetime), 2019, 2020)) %>%
   as_tsibble(index = datetime, key = location) %>%
   tsibble::fill_gaps()
+# readr::write_csv(at_data, "data/akl-airtemp-19-20.csv")
 
 ## Time Plot
 gg_plots(at_data, check_anom = "SHESD")
@@ -35,6 +34,7 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
   ) %>%
   as_tsibble(index = datetime, key = location) %>%
   tsibble::fill_gaps()
+# readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
 
 ## Time Plot
 gg_plots(aqi_data, check_anom = "SHESD")
