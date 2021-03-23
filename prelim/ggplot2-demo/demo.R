@@ -1,7 +1,7 @@
 invisible(purrr::map(paste0(
   "prelim/ggplot2-demo/",
   c(
-    "packages", "data_clean",
+    "packages", "data-clean",
     "function", "plot"
   ),
   ".R"

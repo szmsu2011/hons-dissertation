@@ -8,7 +8,7 @@ invisible(purrr::map(paste0(
 
 ## Tidy Data
 at_data <- "data/akl-airtemp-19-20.csv" %>%
-  readr::read_csv() %>%
+  readr::read_csv(locale = locale(tz = "Pacific/Auckland")) %>%
   as_tsibble(index = datetime, key = location)
 
 ## Extract Timestamp from tsibble Object
