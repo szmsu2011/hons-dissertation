@@ -12,9 +12,9 @@ at_data <- "data/akl-airtemp-19-20.csv" %>%
   as_tsibble(index = datetime, key = location)
 
 ## Extract Timestamp from tsibble Object
-ts_timestamp(as_tibble(at_data), custom_period = NULL)
-ts_timestamp(at_data, custom_period = NULL)
-ts_timestamp(at_data, custom_period = lubridate::days(7))
-ts_timestamp(at_data, custom_period = 24L)
-ts_timestamp(at_data, custom_period = 3.14)
-ts_timestamp(at_data, custom_period = "1 day")
+ts_timestamp(as_tibble(at_data))
+ts_timestamp(at_data, period = lubridate::days(7))
+ts_timestamp(at_data, period = 24L)
+ts_timestamp(at_data, period = 24)
+ts_timestamp(at_data, period = 3.14)
+ts_timestamp(at_data, period = "month")
