@@ -39,15 +39,15 @@ e_heats <- function(data, y = NULL, period = NULL, ...) {
         color = gsub("FF", "", viridis(3, option = "C"))
       )
     ) %>%
+    e_tooltip(e_tooltip_item_formatter(),
+      axisPointer = list(type = "cross")
+    ) %>%
+    e_title(paste(deparse(y), "by", keys)) %>%
     e_axis_labels(
       y = gsub("_", "", xy_labs(period)[["ylab"]])
     ) %>%
     e_y_axis(
       inverse = TRUE,
       nameLocation = "start"
-    ) %>%
-    e_tooltip(
-      e_tooltip_item_formatter(),
-      axisPointer = list(type = "cross")
     )
 }
