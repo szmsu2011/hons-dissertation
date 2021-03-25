@@ -6,7 +6,6 @@ month_ <- function(x) lubridate::month(x, label = TRUE)
 
 xy_labs <- function(period) {
   i <- period == c("minute", "hour", "day", "week", "month", "year")
-
   c(
     xlab = c(
       "floor_min", "floor_hour", "as_date", "yearweek", "yearmonth", "year"
@@ -18,17 +17,39 @@ xy_labs <- function(period) {
 }
 
 
-ts_timestamp <- function(data, period = NULL) {
+ts_timestamp <- function(data, period) {
   if (is.numeric(period)) {
+    keys <- tsibble::key(data)
     ts_interval <- feasts:::interval_to_period(tsibble::interval(data))
     period <- period /
       if (lubridate::is.period(period)) ts_interval else 1
+
+    if (length(keys) > 0) {
+      data <- dplyr::mutate(data,
+        .key = rlang::eval_tidy(new_quosure(
+          expr(as.character(interaction(!!!keys))),
+          env = env(keys = keys)
+        ))
+      )
+    } else {
+      data <- dplyr::mutate(.key = "")
+    }
     mapping <- list(
-      period_n = ((seq_len(nrow(data)) - 1) %/% period + 1) %>%
-        as.character(),
-      obs_n = rep_len(seq_len(period), nrow(data)) %>%
-        as.character()
+      period_n = purrr::map(
+        unique(data[[".key"]]),
+        function(key_lvls) {
+          ((seq_len(sum(data[[".key"]] == key_lvls)) - 1) %/%
+            period + 1) %>% as.integer()
+        }
+      ) %>% purrr::flatten_chr(),
+      obs_n = purrr::map(
+        unique(data[[".key"]]),
+        function(key_lvls) {
+          rep_len(seq_len(period), sum(data[[".key"]] == key_lvls))
+        }
+      ) %>% purrr::flatten_chr()
     )
+    data <- dplyr::select(data, -.key)
   } else {
     idx <- tsibble::index_var(data)
     mapping <- list(
