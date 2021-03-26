@@ -18,11 +18,11 @@ e_heats <- function(data, y = NULL, ...) {
     ) %>%
       update_tsibble(key = .key)
   }
-  ini_row <- if (length(keys) > 0) {
+  ini_row <- (if (length(keys) > 0) {
     dplyr::filter(data, .key == last(data[[".key"]]))[1, ]
   } else {
     data[1, ]
-  }
+  }) %>% dplyr::select(!!y)
   ini_row[[deparse(y)]] <- NA
 
   if (!ini_row[[idx]] == floor_date(ini_row[[idx]], period)) {
