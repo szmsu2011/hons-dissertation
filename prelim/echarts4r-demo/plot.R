@@ -1,6 +1,7 @@
 e_heats <- function(data, y = NULL, ...) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
+  idx <- tsibble::index_var(data)
   keys <- tsibble::key(data)
   ts_interval <- feasts:::interval_to_period(tsibble::interval(data))
   period <- names(
@@ -8,6 +9,27 @@ e_heats <- function(data, y = NULL, ...) {
   )
   valid_period <- c("minute", "hour", "day", "week", "month", "year")
 
+  if (length(keys) > 0) {
+    data <- dplyr::mutate(data,
+      .key = rlang::eval_tidy(new_quosure(
+        expr(as.character(interaction(!!!keys))),
+        env = env(keys = keys)
+      ))
+    ) %>%
+      update_tsibble(key = .key)
+  }
+  ini_row <- if (length(keys) > 0) {
+    dplyr::filter(data, .key == last(data[[".key"]]))[1, ]
+  } else {
+    data[1, ]
+  }
+  ini_row[[deparse(y)]] <- NA
+
+  if (!ini_row[[idx]] == floor_date(ini_row[[idx]], period)) {
+    ini_row[[idx]] <- floor_date(ini_row[[idx]], period)
+    data <- dplyr::bind_rows(data, ini_row) %>%
+      tsibble::fill_gaps()
+  }
   if (period %in% valid_period) {
     data <- ts_timestamp(data, period)
   } else {
@@ -18,17 +40,7 @@ e_heats <- function(data, y = NULL, ...) {
       "The data must contain at least one observation per period."
     )
   }
-  if (length(keys) > 0) {
-    data <- dplyr::mutate(data,
-      .key = rlang::eval_tidy(new_quosure(
-        expr(as.character(interaction(!!!keys))),
-        env = env(keys = keys)
-      ))
-    ) %>%
-      update_tsibble(key = .key) %>%
-      dplyr::select(period_n, obs_n, !!y) %>%
-      dplyr::group_by(.key)
-  }
+  if (length(keys) > 0) data <- dplyr::group_by(data, .key)
 
   data %>%
     e_charts(
