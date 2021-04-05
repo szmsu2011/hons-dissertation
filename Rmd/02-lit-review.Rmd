@@ -1,6 +1,6 @@
 # Literature Review {#ch:litreview}
 
-This chapter contains a summary of the context in which your research is set. 
+**This chapter** contains a summary of the context in which your research is set. 
 
 Imagine you are writing for your fellow PhD students. Topics that are well-known to them do not have to be included here. But things that they may not know about should be included.
 
