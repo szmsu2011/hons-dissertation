@@ -5,7 +5,7 @@ library(forecast)
 library(ggplot2)
 ```
 
-# Introduction {#ch:intro}
+# Introduction (Template Demo) {#ch:intro}
 
 This is where you introduce the main ideas of your thesis, and an overview of the context and background.
 
