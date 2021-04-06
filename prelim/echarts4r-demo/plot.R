@@ -1,6 +1,9 @@
-e_heats <- function(data, y = NULL, ...) {
+e_heats <- function(data, y = NULL,
+                    aggregate = c("none", "mean", "median", "total"),
+                    ...) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
+  aggregate <- match.arg(aggregate)
   idx <- tsibble::index_var(data)
   keys <- tsibble::key(data)
   ts_interval <- feasts:::interval_to_period(tsibble::interval(data))
@@ -10,14 +13,28 @@ e_heats <- function(data, y = NULL, ...) {
   valid_period <- c("minute", "hour", "day", "week", "month", "year")
 
   if (length(keys) > 0) {
-    data <- dplyr::mutate(data,
-      .key = rlang::eval_tidy(new_quosure(
-        expr(as.character(interaction(!!!keys))),
-        env = env(keys = keys)
-      ))
-    ) %>%
+    data <- data %>%
+      dplyr::mutate(
+        .key = rlang::eval_tidy(new_quosure(
+          expr(as.character(interaction(!!!keys))),
+          env = env(keys = keys)
+        ))
+      ) %>%
       update_tsibble(key = .key)
+
+    if (aggregate != "none") {
+      data <- data %>%
+        as_tibble() %>%
+        dplyr::group_by(!!sym(idx)) %>%
+        dplyr::summarise(
+          !!deparse(y) := (eval(sym(aggregate)))(!!y, na.rm = TRUE)
+        ) %>%
+        dplyr::mutate(.key = paste0("_", aggregate, "_")) %>%
+        dplyr::bind_rows(data) %>%
+        as_tsibble(index = idx, key = .key)
+    }
   }
+
   ini_row <- (if (length(keys) > 0) {
     dplyr::filter(data, .key == last(data[[".key"]]))[1, ]
   } else {
@@ -30,6 +47,7 @@ e_heats <- function(data, y = NULL, ...) {
     data <- dplyr::bind_rows(data, ini_row) %>%
       tsibble::fill_gaps()
   }
+
   if (period %in% valid_period) {
     data <- ts_timestamp(data, period)
   } else {

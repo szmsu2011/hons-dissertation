@@ -63,3 +63,12 @@ ts_timestamp <- function(data, period) {
   }
   dplyr::mutate(data, !!!mapping)
 }
+
+
+total <- function(x, na.rm = TRUE) {
+  if (all(is.na(x))) {
+    NA
+  } else {
+    sum(x, na.rm = na.rm)
+  }
+}
