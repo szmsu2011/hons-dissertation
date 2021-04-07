@@ -61,11 +61,10 @@ e_heats <- function(data, y = NULL,
   if (length(keys) > 0) data <- dplyr::group_by(data, .key)
 
   data %>%
-    e_charts(
-      period_n,
+    e_charts(.period_n,
       timeline = length(keys) > 0
     ) %>%
-    e_heatmap_("obs_n", deparse(y), ...) %>%
+    e_heatmap_(".obs_n", deparse(y), ...) %>%
     e_visual_map_(
       deparse(y),
       inRange = list(
@@ -88,5 +87,12 @@ e_heats <- function(data, y = NULL,
     e_y_axis(
       inverse = TRUE,
       nameLocation = "start"
+    ) %>%
+    e_datazoom(x_index = 0) %>%
+    e_datazoom(y_index = 0) %>%
+    e_timeline_opts(
+      right = 50,
+      left = 200,
+      top = 5
     )
 }

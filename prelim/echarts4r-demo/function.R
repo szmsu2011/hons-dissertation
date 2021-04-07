@@ -35,14 +35,14 @@ ts_timestamp <- function(data, period) {
       data <- dplyr::mutate(.key = "")
     }
     mapping <- list(
-      period_n = purrr::map(
+      .period_n = purrr::map(
         unique(data[[".key"]]),
         function(key_lvls) {
           ((seq_len(sum(data[[".key"]] == key_lvls)) - 1) %/%
             period + 1) %>% as.integer()
         }
       ) %>% purrr::flatten_chr(),
-      obs_n = purrr::map(
+      .obs_n = purrr::map(
         unique(data[[".key"]]),
         function(key_lvls) {
           rep_len(seq_len(period), sum(data[[".key"]] == key_lvls))
@@ -53,10 +53,10 @@ ts_timestamp <- function(data, period) {
   } else {
     idx <- tsibble::index_var(data)
     mapping <- list(
-      period_n = data[[idx]] %>%
+      .period_n = data[[idx]] %>%
         (eval(sym(xy_labs(period)[["xlab"]])))() %>%
         as.character(),
-      obs_n = data[[idx]] %>%
+      .obs_n = data[[idx]] %>%
         (eval(sym(xy_labs(period)[["ylab"]])))() %>%
         as.character()
     )

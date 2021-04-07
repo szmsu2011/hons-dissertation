@@ -4,6 +4,7 @@ suppressPackageStartupMessages({
   library(lubridate)
   library(tsibble)
   library(echarts4r)
+  library(htmlwidgets)
   library(viridis)
   library(rlang)
   library(feasts)
