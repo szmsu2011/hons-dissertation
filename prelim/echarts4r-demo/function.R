@@ -74,13 +74,7 @@ total <- function(x, na.rm = TRUE) {
 }
 
 
-tooltip_content <- function(data, y, idx, keys) {
-  tt_data <- data %>%
-    as.data.frame() %>%
-    dplyr::relocate(!!idx, !!!keys, !!y)
-
-  name <- names(tt_data)
-
+get_tooltip_labels <- function(tt_data, name) {
   label <- purrr::map(
     purrr::array_branch(tt_data, 1),
     function(x) {
@@ -95,4 +89,31 @@ tooltip_content <- function(data, y, idx, keys) {
   ) %>% purrr::flatten_chr()
 
   gsub("^\n<br />", "", label)
+}
+
+
+tooltip_content <- function(data, y, idx, keys, tt_nmax) {
+  tt_data <- data %>%
+    as.data.frame() %>%
+    dplyr::relocate(!!idx, !!!keys, !!y) %>%
+    dplyr::select(seq_len(min(ncol(data), tt_nmax)))
+  name <- names(tt_data)[seq_len(min(ncol(data), tt_nmax))]
+
+  get_tooltip_labels(tt_data, name)
+}
+
+
+tooltip_agg <- function(data, y, idx, keys, aggregate) {
+  tt_data <- data %>%
+    as.data.frame() %>%
+    dplyr::relocate(!!idx, !!y)
+  name <- c(
+    names(tt_data)[1],
+    paste(
+      aggregate, deparse(y),
+      "across",
+      paste(keys, collapse = ":")
+    )
+  )
+  get_tooltip_labels(tt_data, name)
 }

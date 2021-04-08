@@ -1,4 +1,4 @@
-e_heats <- function(data, y = NULL,
+e_heats <- function(data, y = NULL, tt_nmax = 11,
                     aggregate = c("none", "mean", "median", "total"),
                     ...) {
   data <- tsibble::fill_gaps(data)
@@ -11,9 +11,18 @@ e_heats <- function(data, y = NULL,
     fabletools::get_frequencies(NULL, data, .auto = "smallest")
   )
   valid_period <- c("minute", "hour", "day", "week", "month", "year")
+  valid_keys <- keys[
+    purrr::map(keys, function(x) length(unique(data[[x]]))) > 1
+  ]
+
+  if (length(keys) != length(valid_keys)) {
+    data <- data %>%
+      update_tsibble(key = as.character(valid_keys))
+    keys <- valid_keys
+  }
 
   data <- data %>%
-    dplyr::mutate(.tt = tooltip_content(data, y, idx, keys))
+    dplyr::mutate(.tt = tooltip_content(data, y, idx, keys, tt_nmax))
 
   if (length(keys) > 0) {
     data <- data %>%
@@ -26,12 +35,13 @@ e_heats <- function(data, y = NULL,
       update_tsibble(key = .key)
 
     if (aggregate != "none") {
-      data <- suppressMessages(data %>%
+      data <- suppressMessages((data_ <- data %>%
         as_tibble() %>%
         dplyr::group_by(!!sym(idx)) %>%
         dplyr::summarise(
           !!y := (eval(sym(aggregate)))(!!y, na.rm = TRUE)
-        ) %>%
+        )) %>%
+        dplyr::mutate(.tt = tooltip_agg(data_, y, idx, keys, aggregate)) %>%
         dplyr::mutate(.key = paste0("_", aggregate, "_")) %>%
         dplyr::bind_rows(data) %>%
         as_tsibble(index = idx, key = .key))
@@ -63,7 +73,7 @@ e_heats <- function(data, y = NULL,
   }
   if (length(keys) > 0) data <- dplyr::group_by(data, .key)
 
-  data %>%
+  p <- data %>%
     e_charts(.period_n,
       timeline = length(keys) > 0
     ) %>%
@@ -97,10 +107,16 @@ e_heats <- function(data, y = NULL,
       nameLocation = "start"
     ) %>%
     e_datazoom(x_index = 0) %>%
-    e_datazoom(y_index = 0) %>%
-    e_timeline_opts(
-      right = 50,
-      left = 200,
-      top = 5
-    )
+    e_datazoom(y_index = 0)
+
+  if (length(keys) > 0) {
+    p %>%
+      e_timeline_opts(
+        right = 50,
+        left = 200,
+        top = 5
+      )
+  } else {
+    p
+  }
 }
