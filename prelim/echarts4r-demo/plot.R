@@ -12,6 +12,9 @@ e_heats <- function(data, y = NULL,
   )
   valid_period <- c("minute", "hour", "day", "week", "month", "year")
 
+  data <- data %>%
+    dplyr::mutate(.tt = tooltip_content(data, y, idx, keys))
+
   if (length(keys) > 0) {
     data <- data %>%
       dplyr::mutate(
@@ -23,15 +26,15 @@ e_heats <- function(data, y = NULL,
       update_tsibble(key = .key)
 
     if (aggregate != "none") {
-      data <- data %>%
+      data <- suppressMessages(data %>%
         as_tibble() %>%
         dplyr::group_by(!!sym(idx)) %>%
         dplyr::summarise(
-          !!deparse(y) := (eval(sym(aggregate)))(!!y, na.rm = TRUE)
+          !!y := (eval(sym(aggregate)))(!!y, na.rm = TRUE)
         ) %>%
         dplyr::mutate(.key = paste0("_", aggregate, "_")) %>%
         dplyr::bind_rows(data) %>%
-        as_tsibble(index = idx, key = .key)
+        as_tsibble(index = idx, key = .key))
     }
   }
 
@@ -64,15 +67,20 @@ e_heats <- function(data, y = NULL,
     e_charts(.period_n,
       timeline = length(keys) > 0
     ) %>%
-    e_heatmap_(".obs_n", deparse(y), ...) %>%
+    e_heatmap_(".obs_n", deparse(y), bind = ".tt", ...) %>%
     e_visual_map_(
       deparse(y),
       inRange = list(
         color = gsub("FF", "", viridis(11, option = "C"))
       )
     ) %>%
-    e_tooltip(e_tooltip_item_formatter(),
-      axisPointer = list(type = "cross")
+    e_tooltip(
+      axisPointer = list(type = "cross"),
+      formatter = htmlwidgets::JS("
+        function(params) {
+          return(params.name)
+        }
+      ")
     ) %>%
     e_title(paste(
       deparse(y), ifelse(

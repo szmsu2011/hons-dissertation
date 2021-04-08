@@ -72,3 +72,27 @@ total <- function(x, na.rm = TRUE) {
     sum(x, na.rm = na.rm)
   }
 }
+
+
+tooltip_content <- function(data, y, idx, keys) {
+  tt_data <- data %>%
+    as.data.frame() %>%
+    dplyr::relocate(!!idx, !!!keys, !!y)
+
+  name <- names(tt_data)
+
+  label <- purrr::map(
+    purrr::array_branch(tt_data, 1),
+    function(x) {
+      paste0(
+        c(rbind(
+          paste0("\n<br />", name, ": "),
+          as.character(x)
+        )),
+        collapse = ""
+      )
+    }
+  ) %>% purrr::flatten_chr()
+
+  gsub("^\n<br />", "", label)
+}
