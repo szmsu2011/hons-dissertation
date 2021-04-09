@@ -4,5 +4,5 @@ cache*/
 *.log
 *.run.xml
 *.bbl
-.Rhistory
+_bookdown_files
 .RData
