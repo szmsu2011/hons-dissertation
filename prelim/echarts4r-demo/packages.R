@@ -1,9 +1,9 @@
-# Packages Require_
 suppressPackageStartupMessages({
   library(tidyverse)
   library(lubridate)
   library(tsibble)
   library(echarts4r)
+  library(plotly)
   library(htmlwidgets)
   library(viridis)
   library(rlang)
