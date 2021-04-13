@@ -63,7 +63,7 @@ for (i in seq_along(ym)) {
       location == "takapuna",
       .YM == ym[i]
     ) %>%
-    e_chart(
+    e_charts(
       .D,
       width = paste0(100 / n.m - 1, "vw"),
       height = paste0(100 / n.y - 1, "vh"),
@@ -86,3 +86,28 @@ rlang::eval_tidy(new_quosure(
   expr(e_arrange(!!!e, rows = n.y, cols = n.m)),
   env = env(e = e)
 ))
+
+#################### {echarts4r} Calendar Heatmap ####################
+
+env_data %>%
+  as_tibble() %>%
+  dplyr::filter(location == "takapuna") %>%
+  dplyr::mutate(.date = lubridate::date(datetime)) %>%
+  dplyr::group_by(.date) %>%
+  dplyr::summarise(
+    airtemp = mean(airtemp, na.rm = TRUE),
+    aqi = mean(aqi, na.rm = TRUE)
+  ) %>%
+  dplyr::mutate(.Y = lubridate::year(.date)) %>%
+  dplyr::group_by(.Y) %>%
+  e_charts(.date) %>%
+  e_calendar(range = "2019", top = "40") %>%
+  e_calendar(range = "2020", top = "260") %>%
+  e_heatmap(airtemp, coord_system = "calendar") %>%
+  e_visual_map(
+    airtemp,
+    inRange = list(
+      color = gsub("FF", "", viridis(11, option = "C"))
+    )
+  ) %>%
+  e_tooltip()
