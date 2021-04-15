@@ -52,7 +52,7 @@ e_heats <- function(data, y = NULL, tt_nmax = 11,
     dplyr::filter(data, .key == last(data[[".key"]]))[1, ]
   } else {
     data[1, ]
-  }) %>% dplyr::select(!!y)
+  }) %>% dplyr::select(!!y, .key)
   ini_row[[deparse(y)]] <- NA
 
   if (!ini_row[[idx]] == floor_date(ini_row[[idx]], period)) {
