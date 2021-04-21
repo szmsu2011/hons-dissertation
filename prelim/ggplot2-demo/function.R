@@ -68,3 +68,25 @@ extract_period <- function(idx, period) {
     as.character(lubridate::year(idx))
   }
 }
+
+
+quantile_f <- function(p) {
+  purrr::map(
+    p,
+    function(p) {
+      eval(parse(
+        text = paste0("function(x) quantile(x, probs = ", p, ", na.rm = TRUE)")
+      ))
+    }
+  ) %>% purrr::set_names(p)
+}
+
+
+get_seasquantile <- function(data, y, idx, period, q) {
+  suppressMessages(data %>%
+    dplyr::mutate(.period = extract_period(!!sym(idx), period)) %>%
+    as_tibble() %>%
+    dplyr::group_by(location, .period) %>%
+    dplyr::summarise(across(y, quantile_f(q))) %>%
+    dplyr::ungroup())
+}

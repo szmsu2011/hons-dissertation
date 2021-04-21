@@ -29,6 +29,11 @@ aqi_data %>%
 gg_botsplot(aqi_data, outlier.shape = 1)
 gg_botsplot(aqi_data, period = "years", outlier.shape = 1)
 
+## Seasonal Quantile Plot
+gg_seasquantile(aqi_data)
+gg_seasquantile(aqi_data, period = "years", q = (1:4) / 4)
+gg_seasquantile(aqi_data, period = "day")
+
 # #################### Air Temp Time Series ####################
 #
 # ## Tidy Data
