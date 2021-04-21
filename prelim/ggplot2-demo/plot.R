@@ -131,6 +131,14 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
       levels = sprintf("%1.0f%%", 100 * rev(q))
     ))
 
+  n_period <- length(unique(data[[".period"]]))
+
+  guide_breaks <- unique(data[[".period"]])[seq(
+    1,
+    n_period,
+    by = max(1, (n_key * n_period) %/% 20)
+  )]
+
   mapping <- aes(
     x = .period,
     y = .value,
@@ -141,7 +149,8 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
   p <- ggplot(data, mapping) +
     geom_point() +
     geom_line(...) +
-    ggplot2::labs(x = "", y = deparse(y), col = "quantile")
+    ggplot2::labs(x = "", y = deparse(y), col = "quantile") +
+    ggplot2::scale_x_discrete(breaks = guide_breaks)
 
   if (n_key > 1) {
     p <- p +
