@@ -118,7 +118,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
   }
 
   data <- data %>%
-    get_seasquantile(y, idx, period, q) %>%
+    get_seasquantile(y, idx, keys, period, q) %>%
     tidyr::pivot_longer(
       dplyr::starts_with(paste0(deparse(y), "_")),
       names_to = ".quantile",

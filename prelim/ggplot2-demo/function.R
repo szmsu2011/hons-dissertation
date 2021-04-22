@@ -82,11 +82,11 @@ quantile_f <- function(p) {
 }
 
 
-get_seasquantile <- function(data, y, idx, period, q) {
+get_seasquantile <- function(data, y, idx, keys, period, q) {
   suppressMessages(data %>%
     dplyr::mutate(.period = extract_period(!!sym(idx), period)) %>%
     as_tibble() %>%
-    dplyr::group_by(location, .period) %>%
+    dplyr::group_by(!!!keys, .period) %>%
     dplyr::summarise(across(y, quantile_f(q))) %>%
     dplyr::ungroup())
 }
