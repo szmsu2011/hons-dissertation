@@ -1,7 +1,7 @@
 invisible(purrr::map(paste0(
   "prelim/ggplot2-demo/",
   c(
-    "packages", "data-clean",
+    "packages", "data-clean", "covid19-lvl",
     "function", "plot"
   ),
   ".R"
@@ -16,7 +16,11 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
     between(year(datetime), 2019, 2020), aqi > 0
   ) %>%
   as_tsibble(index = datetime, key = location) %>%
-  tsibble::fill_gaps()
+  tsibble::fill_gaps() %>%
+  dplyr::mutate(
+    akl_level = get_covid19level(datetime, "AKL"),
+    nz_not_akl_level = get_covid19level(datetime, "NZ_not_AKL")
+  )
 # readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
 
 ## Time Plot
@@ -33,6 +37,12 @@ gg_botsplot(aqi_data, period = "years", outlier.shape = 1)
 gg_seasquantile(aqi_data)
 gg_seasquantile(aqi_data, period = "years", q = (1:4) / 4)
 gg_seasquantile(aqi_data, period = "day")
+
+aqi_data %>%
+  ggplot(aes(x = akl_level, y = aqi)) +
+  geom_boxplot() +
+  ggplot2::facet_grid(. ~ location) +
+  ggplot2::scale_y_continuous(trans = "sqrt")
 
 # #################### Air Temp Time Series ####################
 #
