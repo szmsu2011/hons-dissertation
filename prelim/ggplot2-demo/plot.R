@@ -124,7 +124,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
       names_to = ".quantile",
       values_to = ".value"
     ) %>%
-    dplyr::mutate(.quantile = factor(
+    dplyr::mutate(.quantile = ordered(
       sprintf("%1.0f%%", 100 * as.numeric(
         gsub(paste0(deparse(y), "_"), "", .quantile)
       )),
@@ -150,7 +150,10 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
     geom_point() +
     geom_line(...) +
     ggplot2::labs(x = "", y = deparse(y), col = "quantile") +
-    ggplot2::scale_x_discrete(breaks = guide_breaks)
+    ggplot2::scale_x_discrete(breaks = guide_breaks) +
+    ggplot2::scale_colour_manual(
+      values = rev(colorspace::diverge_hcl(length(q), c = 110))
+    )
 
   if (n_key > 1) {
     p <- p +

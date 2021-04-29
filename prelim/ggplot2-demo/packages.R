@@ -1,5 +1,6 @@
 suppressPackageStartupMessages({
   library(tidyverse)
+  library(colorspace)
   library(lubridate)
   library(tsibble)
   library(rlang)
