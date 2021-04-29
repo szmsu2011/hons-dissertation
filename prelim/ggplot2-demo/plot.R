@@ -98,7 +98,7 @@ gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
 
 
 gg_seasquantile <- function(data, y = NULL, period = NULL,
-                            q = seq(.1, 1, .1), ...) {
+                            q = seq(.1, 1, .01), ...) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
@@ -154,6 +154,11 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
     ggplot2::scale_colour_manual(
       values = rev(colorspace::diverge_hcl(length(q), c = 110))
     )
+
+  if (length(q) > 10) {
+    p <- p +
+      ggplot2::theme(legend.position = "none")
+  }
 
   if (n_key > 1) {
     p <- p +
