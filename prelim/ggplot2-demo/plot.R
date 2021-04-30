@@ -16,13 +16,11 @@ gg_plots <- function(data, y = NULL, ...,
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
-    y = !!enquo(y),
-    col = interaction(!!!keys)
+    y = !!enquo(y)
   )
 
   p <- ggplot(data, mapping) +
-    geom_line(...) +
-    ggplot2::theme(legend.position = "none")
+    geom_line(col = "steelblue", ...)
 
   if (check_anom != "none") {
     p <- p +
@@ -40,12 +38,13 @@ gg_plots <- function(data, y = NULL, ...,
         ))
       )
   }
-
-  p <- p +
-    geom_point(
-      data = dplyr::filter(data, .iso),
-      col = "purple"
-    )
+  if (sum(data[[".iso"]]) > 0) {
+    p <- p +
+      geom_point(
+        data = dplyr::filter(data, .iso),
+        col = "purple"
+      )
+  }
 
   p
 }
