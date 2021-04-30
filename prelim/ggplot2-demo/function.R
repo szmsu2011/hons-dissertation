@@ -90,3 +90,9 @@ get_seasquantile <- function(data, y, idx, keys, period, q) {
     dplyr::summarise(across(y, quantile_f(q))) %>%
     dplyr::ungroup())
 }
+
+
+is_isolated <- function(x) {
+  !is.na(x) & is.na(head(c(1, x), -1)) &
+    is.na(tail(c(x, 1), -1))
+}

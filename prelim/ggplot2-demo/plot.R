@@ -1,11 +1,12 @@
 gg_plots <- function(data, y = NULL, ...,
                      check_anom = c("none", "SHESD")) {
-  data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   check_anom <- match.arg(check_anom)
   idx <- tsibble::index_var(data)
   n_key <- tsibble::n_keys(data)
   keys <- tsibble::key(data)
+  data <- tsibble::fill_gaps(data) %>%
+    dplyr::mutate(.iso = is_isolated(!!y))
 
   if (check_anom == "SHESD") {
     data <- data %>% dplyr::mutate(
@@ -37,6 +38,12 @@ gg_plots <- function(data, y = NULL, ...,
         ))
       )
   }
+
+  p <- p +
+    geom_point(
+      data = dplyr::filter(data, .iso),
+      col = "purple"
+    )
 
   p
 }
