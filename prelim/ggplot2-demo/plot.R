@@ -10,23 +10,25 @@ gg_plots <- function(data, y = NULL, ...,
 
   if (check_anom == "SHESD") {
     data <- data %>% dplyr::mutate(
-      anomaly = anom_SHESD(get_remainder(data, !!y))
+      .anomaly = anom_SHESD(get_remainder(data, !!y))
     )
   }
 
   mapping <- aes(
     x = !!dplyr::sym(idx),
-    y = !!enquo(y)
+    y = !!enquo(y),
+    col = interaction(!!!keys)
   )
 
   p <- ggplot(data, mapping) +
-    geom_line(colour = "steelblue", ...)
+    geom_line(...) +
+    ggplot2::theme(legend.position = "none")
 
   if (check_anom != "none") {
     p <- p +
       geom_point(
-        data = dplyr::filter(data, anomaly == "Yes", !is.na(!!y)),
-        aes(colour = NULL), colour = "red"
+        data = dplyr::filter(data, .anomaly == "Yes", !is.na(!!y)),
+        aes(col = NULL), col = "red"
       )
   }
   if (n_key > 1) {
