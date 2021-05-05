@@ -17,4 +17,4 @@ aqi_data <- "data/akl-aqi-19-20.csv" %>%
 env_data <- dplyr::full_join(at_data, aqi_data)
 
 ## {echarts4r} Time Series Heatmap
-e_heats(env_data, aggregate = "mean")
+e_heats(env_data, aggregate = "mean") %>% e_title("airtemp")

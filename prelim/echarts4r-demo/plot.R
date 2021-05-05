@@ -1,4 +1,4 @@
-e_heats <- function(data, y = NULL, tt_nmax = 11,
+e_heats <- function(data, y = NULL, tt_nmax = 11, title = "",
                     aggregate = c("none", "mean", "median", "total"),
                     ...) {
   data <- tsibble::fill_gaps(data)
@@ -52,7 +52,7 @@ e_heats <- function(data, y = NULL, tt_nmax = 11,
     dplyr::filter(data, .key == last(data[[".key"]]))[1, ]
   } else {
     data[1, ]
-  }) %>% dplyr::select(!!y, .key)
+  }) %>% dplyr::select_if(names(.) %in% c(deparse(y), ".key"))
   ini_row[[deparse(y)]] <- NA
 
   if (!ini_row[[idx]] == floor_date(ini_row[[idx]], period)) {
@@ -92,13 +92,7 @@ e_heats <- function(data, y = NULL, tt_nmax = 11,
         }
       ")
     ) %>%
-    e_title(paste(
-      deparse(y), ifelse(
-        length(keys) > 0,
-        paste("by", paste(keys, collapse = ":")),
-        ""
-      )
-    )) %>%
+    e_title(title) %>%
     e_axis_labels(
       y = gsub("_", "", xy_labs(period)[["ylab"]])
     ) %>%
