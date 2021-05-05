@@ -19,7 +19,7 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
   tsibble::fill_gaps() %>%
   dplyr::mutate(
     akl_level = get_covid19level(datetime, "AKL"),
-    nz_not_akl_level = get_covid19level(datetime, "NZ_not_AKL")
+    nz_level = get_covid19level(datetime, "NZ_not_AKL")
   )
 # readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
 
@@ -35,14 +35,26 @@ gg_botsplot(aqi_data, period = "years", outlier.shape = 1)
 
 ## Seasonal Quantile Plot
 gg_seasquantile(aqi_data)
-gg_seasquantile(aqi_data, period = "years", q = (1:4) / 4)
+gg_seasquantile(aqi_data, period = "years", q = (0:4) / 4)
 gg_seasquantile(aqi_data, period = "day")
 
+## The Effect of Lockdown on AQI
 aqi_data %>%
   ggplot(aes(x = akl_level, y = aqi)) +
   geom_boxplot() +
   ggplot2::facet_grid(. ~ location) +
   ggplot2::scale_y_continuous(trans = "sqrt")
+
+source("prelim/echarts4r-demo/function.R")
+
+## Categorical Time Series Heatmap
+aqi_data %>%
+  dplyr::mutate(aqi_level = aqi_cat(aqi)) %>%
+  cat_heats(aqi_level, aqi_pal)
+
+cat_heats(aqi_data, akl_level, covid_alert_pal)
+cat_heats(aqi_data, nz_level, covid_alert_pal)
+
 
 # #################### Air Temp Time Series ####################
 #

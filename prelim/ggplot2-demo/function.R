@@ -96,3 +96,36 @@ is_isolated <- function(x) {
   !is.na(x) & is.na(head(c(1, x), -1)) &
     is.na(tail(c(x, 1), -1))
 }
+
+
+aqi_cat <- function(x) {
+  x <- round(x)
+
+  dplyr::case_when(
+    between(x, 0, 50) ~ "Good",
+    between(x, 51, 100) ~ "Moderate",
+    between(x, 101, 150) ~ "Unhealthy_for_Sensitive",
+    between(x, 151, 200) ~ "Unhealthy",
+    between(x, 201, 300) ~ "Very_Unhealthy",
+    x >= 301 ~ "Hazardous"
+  )
+}
+
+
+aqi_pal <- c(
+  "Good" = "#00E400",
+  "Moderate" = "#FFFF00",
+  "Unhealthy_for_Sensitive" = "#FF7E00",
+  "Unhealthy" = "#FF0000",
+  "Very_Unhealthy" = "#8F3F97",
+  "Hazardous" = "#7E0023"
+)
+
+
+covid_alert_pal <- c(
+  Level_0 = "white",
+  Level_1 = "lightyellow",
+  Level_2 = "yellow",
+  Level_3 = "orange",
+  Level_4 = "darkorange"
+)
