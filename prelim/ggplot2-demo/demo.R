@@ -49,8 +49,8 @@ source("prelim/echarts4r-demo/function.R")
 
 ## Categorical Time Series Heatmap
 aqi_data %>%
-  dplyr::mutate(aqi_level = aqi_cat(aqi)) %>%
-  cat_heats(aqi_level, aqi_pal)
+  dplyr::mutate(aqi = ordered(aqi_cat(aqi), names(aqi_pal))) %>%
+  cat_heats(aqi, aqi_pal)
 
 cat_heats(aqi_data, akl_level, covid_alert_pal)
 cat_heats(aqi_data, nz_level, covid_alert_pal)
