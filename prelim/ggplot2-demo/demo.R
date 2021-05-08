@@ -55,6 +55,18 @@ aqi_data %>%
 cat_heats(aqi_data, akl_level, covid_alert_pal)
 cat_heats(aqi_data, nz_level, covid_alert_pal)
 
+## {geofacet}
+aqi_data %>%
+  gg_seasquantile(q = seq(.01, .9, .01), polar = TRUE) +
+  facet_geo(~location, grid = akl_city_grid)
+
+aqi_data %>%
+  gg_seasquantile(
+    period = "week", q = seq(.01, .9, .01),
+    polar = TRUE
+  ) +
+  facet_geo(~location, grid = akl_city_grid)
+
 
 # #################### Air Temp Time Series ####################
 #

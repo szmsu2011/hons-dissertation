@@ -129,3 +129,11 @@ covid_alert_pal <- c(
   Level_3 = "orange",
   Level_4 = "darkorange"
 )
+
+
+akl_city_grid <- tibble(
+  name = c("glen_eden", "henderson", "penrose", "queen_street", "takapuna"),
+  code = c("GL", "HD", "PR", "QS", "TK"),
+  row = c(3, 2, 3, 2, 1),
+  col = c(1, 1, 2, 2, 2)
+)
