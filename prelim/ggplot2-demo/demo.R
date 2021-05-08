@@ -19,8 +19,10 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
   tsibble::fill_gaps() %>%
   dplyr::mutate(
     akl_level = get_covid19level(datetime, "AKL"),
-    nz_level = get_covid19level(datetime, "NZ_not_AKL")
+    nz_level = get_covid19level(datetime, "NZ_not_AKL"),
+    covid19_period = get_covid19period(nz_level, datetime)
   )
+
 # readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
 
 ## Time Plot
@@ -40,8 +42,8 @@ gg_seasquantile(aqi_data, period = "day")
 
 ## The Effect of Lockdown on AQI
 aqi_data %>%
-  ggplot(aes(x = akl_level, y = aqi)) +
-  geom_boxplot() +
+  ggplot(aes(x = covid19_period, y = aqi)) +
+  geom_boxplot(outlier.shape = 1) +
   ggplot2::facet_grid(. ~ location) +
   ggplot2::scale_y_continuous(trans = "sqrt")
 

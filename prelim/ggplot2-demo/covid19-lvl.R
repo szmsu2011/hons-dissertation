@@ -20,7 +20,7 @@ get_covid19level <- function(date, scope = c("AKL", "NZ_not_AKL")) {
       between(date, dmy("22 February 2021"), dmy("27 February 2021")) ~ "Level_1",
       between(date, dmy("28 February 2021"), dmy("6 March 2021")) ~ "Level_3", # NZ @ Level_2
       between(date, dmy("7 March 2021"), dmy("12 March 2021")) ~ "Level_2", # NZ @ Level_1
-      date >= dmy("12 March 2021") ~ "Level_1"
+      TRUE ~ "Level_1"
     ),
     levels = paste("Level", 0:4, sep = "_")
   )
@@ -35,4 +35,16 @@ get_covid19level <- function(date, scope = c("AKL", "NZ_not_AKL")) {
   }
 
   lvl
+}
+
+
+get_covid19period <- function(lvl, date) {
+  dplyr::case_when(
+    lubridate::year(date) < 2020 ~ "Before 2020",
+    TRUE ~ case_when(
+      lvl %in% paste0("Level_", 0:3) ~ "Level_0~3",
+      TRUE ~ "Level_4"
+    )
+  ) %>%
+    ordered(c("Before 2020", "Level_0~3", "Level_4"))
 }
