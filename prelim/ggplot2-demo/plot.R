@@ -106,7 +106,8 @@ gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
 
 
 gg_seasquantile <- function(data, y = NULL, period = NULL,
-                            q = seq(.01, 1, .01), ...) {
+                            q = seq(.01, 1, .01),
+                            polar = FALSE, ...) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
@@ -141,7 +142,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
   x_breaks <- unique(data[[".period"]])[seq(
     1,
     n_period,
-    by = max(1, (n_key * n_period) %/% 20)
+    by = max(1, (n_key * n_period) %/% ifelse(polar, 40, 20))
   )]
 
   mapping <- aes(
@@ -153,13 +154,21 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
 
   p <- ggplot(data, mapping) +
     geom_point() +
-    geom_line(...) +
     ggplot2::labs(x = "", y = deparse(y), col = "quantile") +
     ggplot2::scale_x_discrete(breaks = x_breaks) +
     colorspace::scale_colour_continuous_diverging(
       mid = 50,
       c1 = 120
     )
+
+  if (!polar) {
+    p <- p +
+      geom_line(...)
+  } else {
+    p <- p +
+      geom_polygon(fill = NA, ...) +
+      ggplot2::coord_polar()
+  }
 
   if (n_key > 1) {
     p <- p +
@@ -168,7 +177,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
           keys,
           function(x) expr(format(!!x))
         )),
-        scale = "free_x"
+        scale = ifelse(polar, "fixed", "free_x")
       )
   }
 
@@ -265,7 +274,7 @@ cat_heats <- function(data, y, pal, ...) {
 
   p <- data %>%
     ggplot(mapping) +
-    geom_tile(aes(fill = after_scale(col))) +
+    geom_tile(aes(fill = after_scale(col)), ...) +
     ggplot2::scale_colour_manual(
       values = pal
     ) +

@@ -6,6 +6,8 @@ suppressPackageStartupMessages({
   library(rlang)
   library(fable)
   library(fabletools)
+  library(geofacet)
+  library(reactable)
   library(janitor)
   library(feasts)
   library(stats)
