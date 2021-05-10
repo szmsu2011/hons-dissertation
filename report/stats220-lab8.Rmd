@@ -1,0 +1,89 @@
+---
+title: "STATS 220 Lab 8"
+author: "Stephen Su"
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: no
+  css: style.css
+---
+
+<style type="text/css">
+
+body {
+  font-family: serif;
+}
+
+</style>
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE, fig.retina = 3,
+  comment = "#>", dev.args = list(type = "cairo")
+)
+```
+
+```{r prep}
+library(tidyverse)
+library(lubridate)
+library(reactable)
+
+source("../prelim/ggplot2-demo/function.R")
+
+# Slightly different from akl-aqi19.csv, unsure why
+(daily_aqi <- "../data/akl-aqi-19-20.csv" %>%
+  read_csv() %>%
+  filter(year(datetime) == 2019, location == "queen_street") %>%
+  group_by(date = date(datetime), location) %>%
+  summarise(max_aqi = max(aqi, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(
+    aqi_cat = factor(aqi_cat(max_aqi),
+      levels = c(
+        "Good", "Moderate", "Unhealthy for Sensitive",
+        "Unhealthy", "Very Unhealthy", "Hazardous"
+      )
+    ),
+    month = month(date, label = TRUE),
+    mday = day(date)
+  ))
+```
+
+
+## Question 1
+```{r q1}
+daily_aqi %>%
+  rename(Month = month) %>%
+  group_by(aqi_cat, Month) %>%
+  count(aqi_cat, Month, .drop = FALSE) %>%
+  pivot_wider(names_from = aqi_cat, values_from = n) %>%
+  reactable(
+    defaultPageSize = 12,
+    bordered = TRUE,
+    striped = TRUE,
+    highlight = TRUE
+  )
+```
+**On 22/10/2019, a fire broke out in the NZ International Convention Centre, which is less than 1km away from the Queen St weather observatory, the nearest AQI station. ** **The fire burnt for two days, unleashing a vast amount of PM2.5 and PM10, causing an extraordinary spike in AQI rarely seen in the history of Auckland, even NZ.**
+
+## Question 2
+```{r q2, fig.align = "center", fig.width = 8}
+daily_aqi %>%
+  ggplot(aes(mday, month)) +
+  geom_tile(aes(fill = aqi_cat), width = .95, height = .95) +
+  geom_text(aes(label = max_aqi), size = 3) +
+  scale_x_continuous(expand = expansion()) +
+  scale_y_discrete(expand = expansion(), limits = rev) +
+  scale_fill_manual(values = aqi_pal, drop = FALSE) +
+  coord_fixed(expand = FALSE) +
+  guides(fill = guide_legend(title = "AQI", nrow = 1)) +
+  theme_bw() +
+  labs(x = "Day of the Month", y = "Month") +
+  theme(
+    axis.ticks = element_blank(),
+    panel.border = element_blank(),
+    legend.position = "top"
+  )
+```
+**The Australia bush fires began from June 2019, and situation worsened significantly at the beginning of November 2019. Depending on the wind speed and direction, some of the pollutants, including PM2.5, PM10 and CO are carried to NZ, causing rising AQI.**
