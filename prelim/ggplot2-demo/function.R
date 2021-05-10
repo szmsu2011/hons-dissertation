@@ -104,9 +104,9 @@ aqi_cat <- function(x) {
   dplyr::case_when(
     between(x, 0, 50) ~ "Good",
     between(x, 51, 100) ~ "Moderate",
-    between(x, 101, 150) ~ "Unhealthy_for_Sensitive",
+    between(x, 101, 150) ~ "Unhealthy for Sensitive",
     between(x, 151, 200) ~ "Unhealthy",
-    between(x, 201, 300) ~ "Very_Unhealthy",
+    between(x, 201, 300) ~ "Very Unhealthy",
     x >= 301 ~ "Hazardous"
   )
 }
@@ -115,9 +115,9 @@ aqi_cat <- function(x) {
 aqi_pal <- c(
   "Good" = "#00E400",
   "Moderate" = "#FFFF00",
-  "Unhealthy_for_Sensitive" = "#FF7E00",
+  "Unhealthy for Sensitive" = "#FF7E00",
   "Unhealthy" = "#FF0000",
-  "Very_Unhealthy" = "#8F3F97",
+  "Very Unhealthy" = "#8F3F97",
   "Hazardous" = "#7E0023"
 )
 
