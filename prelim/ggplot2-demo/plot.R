@@ -240,16 +240,7 @@ cat_heats <- function(data, y, pal, ...) {
       "The data must contain at least one observation per period."
     )
   }
-
-  data <- dplyr::mutate(
-    data,
-    .obs_n = ordered(
-      .obs_n,
-      levels = rev(.obs_n[
-        seq_len(which(.obs_n[-1] == .obs_n[1])[1])
-      ])
-    )
-  )
+  data <- dplyr::mutate(data, .obs_n = fct_rev(fct_inorder(.obs_n)))
 
   mapping <- aes(
     x = .period_n,
