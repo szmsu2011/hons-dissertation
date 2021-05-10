@@ -231,7 +231,8 @@ cat_heats <- function(data, y, pal, ...) {
   }
 
   if (period %in% valid_period) {
-    data <- ts_timestamp(data, period)
+    data <- ts_timestamp(data, period) %>%
+      dplyr::mutate(.obs_n = fct_rev(fct_inorder(.obs_n)))
   } else {
     rlang::abort("Data with unsupported interval")
   }
@@ -240,7 +241,6 @@ cat_heats <- function(data, y, pal, ...) {
       "The data must contain at least one observation per period."
     )
   }
-  data <- dplyr::mutate(data, .obs_n = fct_rev(fct_inorder(.obs_n)))
 
   mapping <- aes(
     x = .period_n,
