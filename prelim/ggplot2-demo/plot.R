@@ -279,10 +279,7 @@ cat_heats <- function(data, y, pal, ...) {
   if (n_key > 1) {
     p <- p +
       ggplot2::facet_grid(
-        rows = vars(!!!purrr::map(
-          keys,
-          function(x) expr(format(!!x))
-        ))
+        rows = vars(.key)
       )
   }
 
