@@ -256,7 +256,6 @@ cat_heats <- function(data, y, pal, ...) {
     n_period,
     by = max(1, n_period %/% 5)
   )]
-
   y_breaks <- unique(data[[".obs_n"]])[seq(
     1,
     n_obs_p,
@@ -267,7 +266,8 @@ cat_heats <- function(data, y, pal, ...) {
     ggplot(mapping) +
     geom_tile(aes(fill = after_scale(col)), ...) +
     ggplot2::scale_colour_manual(
-      values = pal
+      values = pal,
+      drop = FALSE
     ) +
     ggplot2::scale_y_discrete(breaks = y_breaks) +
     ggplot2::scale_x_discrete(breaks = x_breaks) +
