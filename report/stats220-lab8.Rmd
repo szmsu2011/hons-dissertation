@@ -33,7 +33,7 @@ source("../prelim/ggplot2-demo/function.R")
 
 # Slightly different from akl-aqi19.csv, unsure why
 (daily_aqi <- "../data/akl-aqi-19-20.csv" %>%
-  read_csv() %>%
+  read_csv(locale = locale(tz = "Pacific/Auckland")) %>%
   filter(year(datetime) == 2019, location == "queen_street") %>%
   group_by(date = date(datetime), location) %>%
   summarise(max_aqi = max(aqi, na.rm = TRUE)) %>%
