@@ -6,7 +6,9 @@ as_datetime <- function(x) {
   dnt[grep("/", x)] <- x[grep("/", x)] %>%
     strptime("%d/%m/%Y %H:%M") %>%
     format("%Y-%m-%d %H:%M:%S")
-  dnt %>% lubridate::as_datetime(tz = "Pacific/Auckland")
+  dnt %>%
+    lubridate::as_datetime() %>%
+    lubridate::as_datetime(tz = "Pacific/Auckland")
 }
 
 get_varname <- function(x, line = 3) {
