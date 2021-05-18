@@ -132,8 +132,11 @@ covid_alert_pal <- c(
 
 
 akl_city_grid <- tibble(
-  name = c("glen_eden", "henderson", "penrose", "queen_street", "takapuna"),
-  code = c("GL", "HD", "PR", "QS", "TK"),
-  row = c(3, 2, 3, 2, 1),
-  col = c(1, 1, 2, 2, 2)
+  name = c(
+    "glen_eden", "henderson", "penrose", "queen_street",
+    "takapuna", "pakuranga", "patumahoe"
+  ),
+  code = c("GL", "HD", "PR", "QS", "TK", "PK", "PT"),
+  row = c(3, 2, 3, 2, 1, 3, 5),
+  col = c(1, 1, 2, 2, 2, 3, 2)
 )
