@@ -123,11 +123,11 @@ aqi_pal <- c(
 
 
 covid_alert_pal <- c(
-  Level_0 = "white",
-  Level_1 = "lightyellow",
-  Level_2 = "yellow",
-  Level_3 = "orange",
-  Level_4 = "darkorange"
+  "Level 0" = "white",
+  "Level 1" = "lightyellow",
+  "Level 2" = "yellow",
+  "Level 3" = "orange",
+  "Level 4" = "darkorange"
 )
 
 
