@@ -274,7 +274,7 @@ cat_heats <- function(data, y, pal, ...) {
     ggplot2::theme(panel.grid = element_blank()) +
     ggplot2::labs(
       x = "",
-      y = xy_labs(period)[["ylab"]]
+      y = gsub("_", "", xy_labs(period)[["ylab"]])
     )
 
   if (n_key > 1) {
