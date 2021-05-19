@@ -99,15 +99,12 @@ is_isolated <- function(x) {
 
 
 aqi_cat <- function(x) {
-  x <- round(x)
-
-  dplyr::case_when(
-    between(x, 0, 50) ~ "Good",
-    between(x, 51, 100) ~ "Moderate",
-    between(x, 101, 150) ~ "Unhealthy for Sensitive",
-    between(x, 151, 200) ~ "Unhealthy",
-    between(x, 201, 300) ~ "Very Unhealthy",
-    x >= 301 ~ "Hazardous"
+  cut(x,
+    breaks = c(0, 50, 100, 150, 200, 300, Inf),
+    labels = fct_inorder(c(
+      "Good", "Moderate", "Unhealthy for Sensitive",
+      "Unhealthy", "Very Unhealthy", "Hazardous"
+    ))
   )
 }
 

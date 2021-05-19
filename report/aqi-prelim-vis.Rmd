@@ -58,9 +58,9 @@ reactable(head(aqi_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
 ```
 
 ## AQI Level Map
-```{r lineplot, fig.height = 6}
+```{r lineplot, fig.height = 8}
 aqi_data %>%
-  dplyr::mutate(aqi = ordered(aqi_cat(aqi), names(aqi_pal))) %>%
+  dplyr::mutate(aqi = aqi_cat(aqi)) %>%
   cat_heats(aqi, aqi_pal) +
   theme(legend.position = "top") +
   labs(
@@ -81,10 +81,10 @@ gg_seasquantile(aqi_data) +
     title = "1~100% Quantile"
   )
 
-gg_seasquantile(aqi_data, q = seq(.025, .975, .005)) +
+gg_seasquantile(aqi_data, q = seq(.1, .9, .005)) +
   labs(
     x = "Month", y = "AQI",
-    title = "2.5~97.5% Quantile"
+    title = "10~90% Quantile"
   )
 ```
 **On 22/10/2019, a fire broke out in the NZ International Convention Centre, which is less than 1km away from the Queen St weather observatory, the nearest AQI station. ** **The fire burnt for two days, unleashing a vast amount of PM2.5 and PM10, causing an extraordinary spike in AQI. Which is shown on both the boxplot and quantile plot. The plot of the 2.5~97.5% AQI quantile indicates a peak in average AQI in mid-Winter.**
@@ -98,11 +98,11 @@ gg_seasquantile(aqi_data, period = "day") +
     title = "1~100% Quantile"
   )
 
-gg_seasquantile(aqi_data, period = "day", q = seq(.025, .975, .005)) +
+gg_seasquantile(aqi_data, period = "day", q = seq(.1, .9, .005)) +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
   labs(
     x = "Time of Day", y = "AQI",
-    title = "2.5~97.5% Quantile"
+    title = "10~90% Quantile"
   )
 ```
 **It seems that AQI on Queen Street is the most affected by daily traffic peaks.**
@@ -134,22 +134,22 @@ aqi_data %>%
 
 filter(aqi_data, location == "queen_street") %>%
   update_tsibble(key = covid19_period) %>%
-  gg_seasquantile(q = seq(.025, .975, .005), period = "day") +
+  gg_seasquantile(q = seq(.1, .9, .005), period = "day") +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
   labs(
     x = "Time of Day", y = "AQI",
-    title = "2.5~97.5% Quantile of AQI on Queen Street"
+    title = "10~90% Quantile of AQI on Queen Street"
   )
 ```
 **It seems that only a total lockdown has an effect significant on AQI. During alert Level 4, the "traffic peaks" in Queen Street perished as the median area was flat.**
 
 ## The Effect of Location on AQI
-```{r location}
+```{r location, fig.height = 8}
 aqi_data %>%
-  gg_seasquantile(q = seq(0, .95, .005), polar = TRUE) +
+  gg_seasquantile(q = seq(.1, .9, .005), polar = TRUE) +
   facet_geo(~location, grid = akl_city_grid) +
   labs(
-    title = "0~95% Quantile of AQI by Relative Geolocation",
+    title = "10~90% Quantile of AQI by Relative Geolocation",
     y = "AQI"
   )
 ```

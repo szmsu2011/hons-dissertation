@@ -271,6 +271,7 @@ cat_heats <- function(data, y, pal, ...) {
     ) +
     ggplot2::scale_y_discrete(breaks = y_breaks) +
     ggplot2::scale_x_discrete(breaks = x_breaks) +
+    ggplot2::theme(panel.grid = element_blank()) +
     ggplot2::labs(
       x = "",
       y = xy_labs(period)[["ylab"]]
