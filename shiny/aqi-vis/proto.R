@@ -59,18 +59,20 @@ server <- function(input, output, ...) {
         if (intrvl == days(1)) {
           list(aes(mday, month), aes(label = max_aqi))
         } else {
-          list(aes(hour, date), aes(label = aqi))
+          list(aes(hour, aqi), aes(label = aqi))
         }
       p <- current_data() %>%
         ggplot(mapping[[1]]) +
-        geom_tile(aes(fill = aqi_cat), width = .95, height = .95) +
-        geom_text(mapping[[2]], size = 3) +
         scale_x_continuous(expand = expansion()) +
         scale_fill_manual(values = aqi_pal, drop = FALSE) +
-        guides(fill = guide_legend(title = "AQI", nrow = 1)) +
+        guides(fill = guide_legend(title = "Level", nrow = 1)) +
         theme_bw() +
-        labs(x = "Hour of the Day", y = "Date") +
+        labs(
+          title = paste("Hourly AQI at", "Queen Street,", current_day()),
+          x = "Hour of the Day", y = "AQI"
+        ) +
         theme(
+          legend.key.size = unit(1, "lines"),
           axis.ticks = element_blank(),
           panel.border = element_blank(),
           panel.grid = element_blank(),
@@ -78,11 +80,17 @@ server <- function(input, output, ...) {
         )
       if (intrvl == days(1)) {
         return(p +
-          labs(x = "Day of the Month", y = "Month") +
-          scale_y_discrete(expand = expansion(), limits = rev)) +
-          coord_fixed(expand = FALSE)
+          geom_tile(aes(fill = aqi_cat), width = .95, height = .95) +
+          geom_text(mapping[[2]], size = 3) +
+          labs(
+            title = paste("Daily Max AQI at", "Queen Street,", "2019"),
+            x = "Day of the Month", y = "Month"
+          ) +
+          scale_y_discrete(expand = expansion(), limits = rev))
       }
-      p
+      p + geom_col(aes(fill = aqi_cat)) +
+        geom_text(mapping[[2]], size = 3, vjust = -.5) +
+        scale_y_continuous(expand = c(0, 0, .1, 0))
     },
     res = 110
   )
@@ -92,8 +100,9 @@ server <- function(input, output, ...) {
     if (!is.null(cd)) {
       cd <- map(c("x", "y"), function(x) floor(cd[[x]] + .5))
     }
+    intrvl <- feasts:::interval_to_period(interval(current_data()))
     date <- ymd(paste(2019, (12:1)[cd[[2]]], cd[[1]]))
-    if (!(is.null(cd[[1]]) | is.na(date))) {
+    if (!(is.null(cd[[1]]) | is.na(date) | intrvl != days(1))) {
       current_day(date)
     }
   })
