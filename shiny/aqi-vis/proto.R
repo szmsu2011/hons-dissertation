@@ -98,11 +98,15 @@ server <- function(input, output, ...) {
   observe({
     cd <- input[["plot_click"]]
     if (!is.null(cd)) {
-      cd <- map(c("x", "y"), function(x) floor(cd[[x]] + .5))
+      cd[["x"]] <- floor(cd[["x"]] + .5)
+      cd[["y"]] <- floor(cd[["y"]] + .5)
     }
     intrvl <- feasts:::interval_to_period(interval(current_data()))
-    date <- ymd(paste(2019, (12:1)[cd[[2]]], cd[[1]]))
-    if (!(is.null(cd[[1]]) | is.na(date) | intrvl != days(1))) {
+    date <- ymd(paste(2019, (12:1)[cd[["y"]]], cd[["x"]]))
+    if (all(
+      !is.null(cd), !is.na(date), intrvl == days(1),
+      cd[["mapping"]][["x"]] == "mday"
+    )) {
       current_day(date)
     }
   })
@@ -114,6 +118,8 @@ server <- function(input, output, ...) {
   })
 
   observeEvent(input[["clear"]], current_day(NULL))
+
+  observeEvent(input[["plot_click"]], current_day(NULL))
 }
 
 shinyApp(ui, server)
