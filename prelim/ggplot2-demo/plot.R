@@ -153,7 +153,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
   )
 
   p <- ggplot(data, mapping) +
-    geom_point() +
+    geom_point(...) +
     ggplot2::labs(x = "", y = deparse(y), col = "quantile") +
     ggplot2::scale_x_discrete(breaks = x_breaks) +
     colorspace::scale_colour_continuous_diverging(
@@ -163,10 +163,10 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
 
   if (!polar) {
     p <- p +
-      geom_line(...)
+      geom_line()
   } else {
     p <- p +
-      geom_polygon(fill = NA, ...) +
+      geom_polygon(fill = NA) +
       ggplot2::coord_polar()
   }
 

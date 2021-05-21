@@ -62,26 +62,39 @@ reactable(head(aqi_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
 aqi_data %>%
   dplyr::mutate(aqi = aqi_cat(aqi)) %>%
   cat_heats(aqi, aqi_pal) +
+  ggplot2::facet_grid(fct_reorder(location, -get_lat(location)) ~ .) +
   theme(legend.position = "top") +
   labs(
     col = "AQI in Auckland",
     x = "Date",
     y = "Hour of Day"
   )
+
+kable(rbind(
+  unique(aqi_data[["location"]]),
+  unique(aqi_data[["location"]]) %>%
+    map_dbl(function(x) {
+      round(mean(is.na(filter(aqi_data, location == x)[["aqi"]])) * 100, 2)
+    }) %>%
+    paste0("% missing")
+))
 ```
 
 ## Seasonal Variation
-```{r season}
+```{r season, fig.height = 4}
 gg_botsplot(aqi_data, outlier.shape = 1) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   labs(x = "Month", y = "AQI")
 
 gg_seasquantile(aqi_data) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   labs(
     x = "Month", y = "AQI",
     title = "1~100% Quantile"
   )
 
-gg_seasquantile(aqi_data, q = seq(.1, .9, .005)) +
+gg_seasquantile(aqi_data, q = seq(.1, .9, .001)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   labs(
     x = "Month", y = "AQI",
     title = "10~90% Quantile"
@@ -90,15 +103,17 @@ gg_seasquantile(aqi_data, q = seq(.1, .9, .005)) +
 **On 22/10/2019, a fire broke out in the NZ International Convention Centre, which is less than 1km away from the Queen St weather observatory, the nearest AQI station. ** **The fire burnt for two days, unleashing a vast amount of PM2.5 and PM10, causing an extraordinary spike in AQI. Which is shown on both the boxplot and quantile plot. The plot of the 2.5~97.5% AQI quantile indicates a peak in average AQI in mid-Winter.**
 
 ## Hourly Variation within One Day
-```{r hourly}
+```{r hourly, fig.height = 4}
 gg_seasquantile(aqi_data, period = "day") +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
   labs(
     x = "Time of Day", y = "AQI",
     title = "1~100% Quantile"
   )
 
-gg_seasquantile(aqi_data, period = "day", q = seq(.1, .9, .005)) +
+gg_seasquantile(aqi_data, period = "day", q = seq(.1, .9, .001)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
   labs(
     x = "Time of Day", y = "AQI",
@@ -108,12 +123,12 @@ gg_seasquantile(aqi_data, period = "day", q = seq(.1, .9, .005)) +
 **It seems that AQI on Queen Street is the most affected by daily traffic peaks.**
 
 ## The Effect of COVID-19 on AQI
-```{r lockdown}
+```{r lockdown, fig.height = 4}
 aqi_data %>%
   ggplot(aes(x = akl_level, y = aqi)) +
   geom_boxplot(outlier.shape = 1) +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
-  ggplot2::facet_grid(. ~ location) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   labs(
     title = "The Effect of COVID-19 Alert Levels on AQI",
     x = "COVID-19 Alert Level",
@@ -124,7 +139,7 @@ aqi_data %>%
   ggplot(aes(x = covid19_period, y = aqi)) +
   geom_boxplot(outlier.shape = 1) +
   theme(axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1)) +
-  ggplot2::facet_grid(. ~ location) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
   ggplot2::scale_y_continuous(trans = "sqrt") +
   labs(
     title = "The Effect of Total Lockdown on AQI",
@@ -134,7 +149,7 @@ aqi_data %>%
 
 filter(aqi_data, location == "queen_street") %>%
   update_tsibble(key = covid19_period) %>%
-  gg_seasquantile(q = seq(.1, .9, .005), period = "day") +
+  gg_seasquantile(q = seq(.1, .9, .001), period = "day") +
   theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
   labs(
     x = "Time of Day", y = "AQI",
@@ -146,7 +161,7 @@ filter(aqi_data, location == "queen_street") %>%
 ## The Effect of Location on AQI
 ```{r location, fig.height = 8}
 aqi_data %>%
-  gg_seasquantile(q = seq(.1, .9, .005), polar = TRUE) +
+  gg_seasquantile(q = seq(.1, .9, .005), polar = TRUE, size = .1) +
   facet_geo(~location, grid = akl_city_grid) +
   labs(
     title = "10~90% Quantile of AQI by Relative Geolocation",
