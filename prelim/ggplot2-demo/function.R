@@ -137,3 +137,16 @@ akl_city_grid <- tibble(
   row = c(3, 2, 3, 2, 1, 3, 5),
   col = c(1, 1, 2, 2, 2, 3, 2)
 )
+
+
+get_lat <- function(x) {
+  dplyr::case_when(
+    x == "queen_street" ~ -36.848194,
+    x == "glen_eden" ~ -36.922501,
+    x == "penrose" ~ -36.904525,
+    x == "henderson" ~ -36.867860,
+    x == "pakuranga" ~ -36.913014,
+    x == "takapuna" ~ -36.780563,
+    TRUE ~ -37.204669
+  )
+}

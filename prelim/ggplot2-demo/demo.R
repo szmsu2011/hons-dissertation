@@ -20,7 +20,8 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
   dplyr::mutate(
     akl_level = get_covid19level(datetime, "AKL"),
     nz_level = get_covid19level(datetime, "NZ_not_AKL"),
-    covid19_period = get_covid19period(nz_level, datetime)
+    covid19_period = get_covid19period(nz_level, datetime),
+    lat = get_lat(location)
   )
 
 # readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
