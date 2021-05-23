@@ -65,7 +65,7 @@ server <- function(input, output, ...) {
         return(current_data() %>%
           ggplot_calendar_heatmap("date", "aqi_cat", monthBorderSize = .6) +
           geom_text(
-            data = mutate(.data,
+            data = mutate(current_data(),
               wday = wday(date, week_start = 1),
               week = (seq(yday(first(date)), yday(last(date))) +
                 (wday(floor_date(date, unit = "year"), week_start = 1) - 1)
