@@ -13,7 +13,7 @@ invisible(purrr::map(paste0(
 aqi_data <- "data-raw/akl-aqi.csv" %>%
   clean_data("aqi", n_loc = 7) %>%
   dplyr::filter(
-    between(year(datetime), 2019, 2020), aqi > 0
+    between(year(datetime), 2019, 2020), aqi >= 0
   ) %>%
   as_tsibble(index = datetime, key = location) %>%
   tsibble::fill_gaps() %>%

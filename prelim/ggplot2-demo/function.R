@@ -100,7 +100,7 @@ is_isolated <- function(x) {
 
 aqi_cat <- function(x) {
   cut(x,
-    breaks = c(0, 50, 100, 150, 200, 300, Inf),
+    breaks = c(-Inf, 50, 100, 150, 200, 300, Inf),
     labels = fct_inorder(c(
       "Good", "Moderate", "Unhealthy for Sensitive",
       "Unhealthy", "Very Unhealthy", "Hazardous"
