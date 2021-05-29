@@ -1,4 +1,5 @@
 library(shiny)
+library(shinydashboard)
 library(ggTimeSeries)
 
 invisible(purrr::map(c(
@@ -16,9 +17,13 @@ invisible(purrr::map(c(
   )
 ), source))
 
+Max <- function(x) max(x, na.rm = TRUE)
+Mean <- function(x) round(mean(x, na.rm = TRUE))
+Median <- function(x) round(median(x, na.rm = TRUE))
+fmt_date <- stamp("March 1, 1999")
+
 aqi_hourly <- "../../data/akl-aqi-19-20.csv" %>%
   read_csv(locale = locale(tz = "Pacific/Auckland")) %>%
-  filter(year(datetime) == 2019, location == "queen_street") %>%
   mutate(
     aqi_cat = aqi_cat(aqi),
     date = as_date(datetime),
@@ -28,34 +33,65 @@ aqi_hourly <- "../../data/akl-aqi-19-20.csv" %>%
       TRUE ~ "b"
     )
   ) %>%
-  as_tsibble(index = datetime)
+  as_tsibble(index = datetime, key = location)
 
-aqi_daily <- aqi_hourly %>%
-  as_tibble() %>%
-  group_by(date = date(datetime), location) %>%
-  summarise(max_aqi = max(aqi, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(
-    aqi_cat = aqi_cat(max_aqi),
-    month = month(date, label = TRUE),
-    mday = day(date)
-  ) %>%
-  as_tsibble(index = date)
-
-ui <- fluidPage(
-  plotOutput("p", click = "plot_click"),
-  uiOutput("back")
+ui <- dashboardPage(
+  dashboardHeader(),
+  dashboardSidebar(),
+  dashboardBody(
+    box(
+      selectInput("loc", "Location", map_chr(
+        unique(aqi_hourly[["location"]]),
+        function(x) {
+          x <- strsplit(x, "_")[[1]]
+          paste(
+            toupper(substring(x, 1, 1)), substring(x, 2),
+            sep = "", collapse = " "
+          )
+        }
+      )),
+      width = 4
+    ),
+    box(
+      selectInput("yr", "Year", rev(unique(year(aqi_hourly[["datetime"]])))),
+      width = 4
+    ),
+    box(
+      radioButtons("agg", "Aggregate With", c("Max", "Mean", "Median")),
+      width = 3
+    ),
+    box(plotOutput("p", click = "plot_click"), uiOutput("back"), width = 12),
+    tags[["head"]](tags[["style"]](HTML(
+      ".content-wrapper, .right-side {
+        background-color: #ffffff;
+      }"
+    )))
+  )
 )
 
 server <- function(input, output, ...) {
-  day_range <- unique(aqi_daily[["date"]])
   current_day <- reactiveVal()
 
   current_data <- reactive({
+    .data <- filter(
+      aqi_hourly,
+      location == make_clean_names(input[["loc"]]),
+      year(datetime) == input[["yr"]]
+    )
     if (!length(current_day())) {
-      return(aqi_daily)
+      return(.data %>%
+        as_tibble() %>%
+        group_by(date = date(datetime), location) %>%
+        summarise(agg_aqi = aqi %>% eval(sym(input[["agg"]]))()) %>%
+        ungroup() %>%
+        mutate(
+          aqi_cat = aqi_cat(agg_aqi),
+          month = month(date, label = TRUE),
+          mday = day(date)
+        ) %>%
+        as_tsibble(index = date))
     }
-    filter(aqi_hourly, date == current_day())
+    filter(.data, date == current_day())
   })
 
   output[["p"]] <- renderPlot(
@@ -71,19 +107,22 @@ server <- function(input, output, ...) {
                 (wday(floor_date(date, unit = "year"), week_start = 1) - 1)
                 %% 7 + 6) %/% 7,
               text_col = case_when(
-                max_aqi > 150 ~ "w",
+                agg_aqi > 150 ~ "w",
                 TRUE ~ "b"
               )
             ),
-            aes(week, wday, label = max_aqi, col = text_col),
-            show.legend = FALSE, size = 2.9
+            aes(week, wday, label = agg_aqi, col = text_col),
+            show.legend = FALSE, size = 2.5
           ) +
           scale_fill_manual(values = aqi_pal, drop = FALSE) +
           scale_colour_manual(values = c(b = "black", w = "white")) +
           guides(fill = guide_legend(title = "Level", nrow = 1)) +
           theme_bw() +
           labs(
-            title = paste("Daily Max AQI at", "Queen Street,", "2019"),
+            title = paste0(
+              "Daily ", input[["agg"]], " AQI at ",
+              input[["loc"]], " in ", input[["yr"]]
+            ),
             x = "", y = ""
           ) +
           theme(
@@ -109,7 +148,10 @@ server <- function(input, output, ...) {
         guides(fill = guide_legend(title = "Level", nrow = 1)) +
         theme_bw() +
         labs(
-          title = paste("Hourly AQI at", "Queen Street,", current_day()),
+          title = paste0(
+            "Hourly AQI at ", input[["loc"]],
+            " on ", fmt_date(current_day())
+          ),
           x = "Hour of the Day", y = "AQI"
         ) +
         theme(
@@ -131,10 +173,10 @@ server <- function(input, output, ...) {
       cd[["y"]] <- floor(cd[["y"]] + .5)
     }
     intrvl <- feasts:::interval_to_period(interval(current_data()))
-    date <- ymd(paste0(2019, "-01-01")) + 7 * (cd[["x"]] - 1) + cd[["y"]] -
+    date <- ymd(paste0(input[["yr"]], "-01-01")) + 7 * (cd[["x"]] - 1) + cd[["y"]] -
       wday(floor_date(current_data()[["date"]][1], unit = "year"), week_start = 1)
     if (all(
-      cd[["mapping"]][["x"]] == "WeekOfYear", year(date) == 2019,
+      cd[["mapping"]][["x"]] == "WeekOfYear", year(date) == input[["yr"]],
       !is.null(cd), length(date) == 1, intrvl == days(1)
     )) {
       current_day(date)
