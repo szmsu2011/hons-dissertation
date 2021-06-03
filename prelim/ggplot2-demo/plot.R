@@ -106,8 +106,8 @@ gg_botsplot <- function(data, y = NULL, period = NULL, ...) {
 
 
 gg_seasquantile <- function(data, y = NULL, period = NULL,
-                            q = seq(.01, 1, .01),
-                            polar = FALSE, ...) {
+                            q = seq(.01, 1, .01), alpha = 1,
+                            polar = FALSE, lwd = .5, ...) {
   data <- tsibble::fill_gaps(data)
   y <- feasts:::guess_plot_var(data, !!enquo(y))
   idx <- tsibble::index_var(data)
@@ -153,7 +153,7 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
   )
 
   p <- ggplot(data, mapping) +
-    geom_point(...) +
+    geom_point(alpha = alpha, ...) +
     ggplot2::labs(x = "", y = deparse(y), col = "quantile") +
     ggplot2::scale_x_discrete(breaks = x_breaks) +
     colorspace::scale_colour_continuous_diverging(
@@ -163,10 +163,10 @@ gg_seasquantile <- function(data, y = NULL, period = NULL,
 
   if (!polar) {
     p <- p +
-      geom_line()
+      geom_line(size = lwd, alpha = alpha)
   } else {
     p <- p +
-      geom_polygon(fill = NA) +
+      geom_polygon(fill = NA, size = lwd, alpha = alpha) +
       ggplot2::coord_polar()
   }
 

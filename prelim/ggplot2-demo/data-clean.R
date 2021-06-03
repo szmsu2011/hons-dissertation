@@ -29,3 +29,28 @@ clean_data <- function(x, value_name = "value", n_loc = 1) {
       values_to = value_name
     )
 }
+
+read_env_data <- function(x, dir) {
+  (data <- readr::read_csv(paste0(dir, x),
+    col_types = "cctcd"
+  ) %>%
+    dplyr::filter(!is.na(Time)) %>%
+    dplyr::mutate(datetime = lubridate::as_datetime(
+      mdy(Date) + hms(Time) - hours(12),
+      tz = "Pacific/Auckland"
+    )) %>%
+    dplyr::select(-c(Site, Date, Time))) %>%
+    dplyr::filter(!tsibble::are_duplicated(
+      data,
+      index = datetime, key = Parameter
+    )) %>%
+    as_tsibble(index = datetime, key = Parameter) %>%
+    tidyr::pivot_wider(
+      names_from = Parameter,
+      values_from = Value
+    ) %>%
+    tsibble::fill_gaps() %>%
+    dplyr::mutate(
+      location = gsub("\\d_([a-z_]*).csv", "\\1", x)
+    )
+}

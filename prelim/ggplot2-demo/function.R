@@ -133,7 +133,7 @@ akl_city_grid <- tibble(
     "glen_eden", "henderson", "penrose", "queen_street",
     "takapuna", "pakuranga", "patumahoe"
   ),
-  code = c("GL", "HD", "PR", "QS", "TK", "PK", "PT"),
+  code = c("GLE", "HEN", "PEN", "QUS", "TAK", "PAK", "PAT"),
   row = c(3, 2, 3, 2, 1, 3, 5),
   col = c(1, 1, 2, 2, 2, 3, 2)
 )

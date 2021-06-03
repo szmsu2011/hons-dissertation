@@ -2,20 +2,17 @@ library(shiny)
 library(shinydashboard)
 library(ggTimeSeries)
 
-invisible(purrr::map(c(
-  paste0(
-    "../../prelim/ggplot2-demo/",
-    c(
-      "packages", "data-clean", "covid19-lvl",
-      "function", "plot"
-    ), ".R"
-  ),
-  paste0(
-    "../../prelim/echarts4r-demo/",
-    c("packages", "function", "plot"),
-    ".R"
-  )
-), source))
+import <- function(dir, file) {
+  invisible(purrr::map(c(paste0(dir, file, ".R")), source))
+}
+import(
+  "../../prelim/ggplot2-demo/",
+  c("packages", "data-clean", "covid19-lvl", "function", "plot")
+)
+import(
+  "../../prelim/echarts4r-demo/",
+  c("packages", "function", "plot")
+)
 
 Max <- function(x) max(x, na.rm = TRUE)
 Mean <- function(x) round(mean(x, na.rm = TRUE))
