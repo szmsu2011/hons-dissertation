@@ -25,28 +25,6 @@ aqi_data <- "data-raw/akl-aqi.csv" %>%
 
 # readr::write_csv(aqi_data, "data/akl-aqi-19-20.csv")
 
-## Shiny Proto
-# Line Plot with Quantile Background
-# Hourly AQI at Takapuna on April 4, 2019
-aqi_data %>%
-  filter(location == "takapuna", year(datetime) == 2019) %>%
-  gg_seasquantile(
-    period = "day", size = -1, lwd = 4, alpha = .8,
-    q = seq(.25, .75, length = 400)
-  ) +
-  geom_line(
-    data = mutate(
-      filter(
-        aqi_data,
-        location == "takapuna",
-        as_date(datetime) == ymd("2019-04-04")
-      ),
-      hour = paste0(sprintf("%02d", hour(datetime)), ":00")
-    ),
-    aes(hour, aqi, group = 1), col = 1
-  ) +
-  theme(panel.background = element_blank())
-
 ## Time Plot
 gg_plots(aqi_data)
 aqi_data %>%
@@ -91,6 +69,28 @@ aqi_data %>%
   ) +
   facet_geo(~location, grid = akl_city_grid)
 
+
+# ## Shiny Proto
+# # Line Plot with Quantile Background
+# # Hourly AQI at Takapuna on April 4, 2019
+# aqi_data %>%
+#   filter(location == "takapuna", year(datetime) == 2019) %>%
+#   gg_seasquantile(
+#     period = "day", size = -1, lwd = 4, alpha = .8,
+#     q = seq(.25, .75, length = 400)
+#   ) +
+#   geom_line(
+#     data = mutate(
+#       filter(
+#         aqi_data,
+#         location == "takapuna",
+#         as_date(datetime) == ymd("2019-04-04")
+#       ),
+#       hour = paste0(sprintf("%02d", hour(datetime)), ":00")
+#     ),
+#     aes(hour, aqi, group = 1), col = 1
+#   ) +
+#   theme(panel.background = element_blank())
 
 # #################### Air Temp Time Series ####################
 #

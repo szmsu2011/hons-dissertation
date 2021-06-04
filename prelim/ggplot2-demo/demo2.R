@@ -6,12 +6,12 @@ import(
   c("packages", "data-clean", "covid19-lvl", "function", "plot")
 )
 
-dir <- "data-raw/envir-data/"
-env_files <- list.files(dir)
-env_data <- tibble()
+# env_data <- read_env_data("data-raw/envir-data/")
 
-for (x in env_files) {
-  env_data <- dplyr::bind_rows(env_data, as_tibble(read_env_data(x, dir)))
-}
+# readr::write_csv(env_data, "data/akl-env-data.csv")
 
-env_data <- as_tsibble(env_data, index = datetime, key = location) #FIXME
+env_data <- readr::read_csv(
+  "data/akl-env-data.csv",
+  col_types = paste0("Tc", paste(rep("d", 16), collapse = ""))
+) %>%
+  as_tsibble(index = datetime, key = location)
