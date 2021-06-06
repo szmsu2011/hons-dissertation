@@ -14,7 +14,10 @@ import(
   c("packages", "function", "plot")
 )
 
-Max <- function(x) max(x, na.rm = TRUE)
+Max <- function(x) {
+  x <- max(x, na.rm = TRUE)
+  ifelse(x > -Inf, x, NA)
+}
 Mean <- function(x) round(mean(x, na.rm = TRUE))
 Median <- function(x) round(median(x, na.rm = TRUE))
 fmt_date <- stamp("March 1, 1999")
@@ -133,15 +136,32 @@ server <- function(input, output, ...) {
       }
       current_data() %>%
         ggplot(aes(hour, aqi)) +
-        geom_col(aes(fill = aqi_cat)) +
-        geom_text(
-          aes(label = aqi, col = text_col),
-          size = 3, vjust = 2,
-          show.legend = FALSE
+        geom_errorbar(
+          data = (.day_data <- filter(
+            aqi_hourly,
+            location == make_clean_names(input[["loc"]]),
+            year(datetime) == input[["yr"]]
+          ) %>%
+            as_tibble() %>%
+            group_by(hour = hour(datetime)) %>%
+            summarise(
+              lower = quantile(aqi, .025, na.rm = TRUE),
+              q50 = quantile(aqi, .5, na.rm = TRUE),
+              upper = quantile(aqi, .975, na.rm = TRUE)
+            )),
+          mapping = aes(hour, q50, ymin = lower, ymax = upper),
+          col = "grey55",
+          width = .2
         ) +
-        scale_x_continuous(expand = expansion()) +
+        geom_point(
+          data = .day_data,
+          mapping = aes(hour, q50),
+          col = "grey55",
+          size = .5
+        ) +
+        geom_line(size = .8, col = "steelblue") +
+        geom_point(aes(fill = aqi_cat), shape = 21, col = "steelblue", size = 2) +
         scale_fill_manual(values = aqi_pal, drop = FALSE) +
-        scale_colour_manual(values = c(b = "black", w = "white")) +
         guides(fill = guide_legend(title = "Level", nrow = 1)) +
         theme_bw() +
         labs(
@@ -152,13 +172,10 @@ server <- function(input, output, ...) {
           x = "Hour of the Day", y = "AQI"
         ) +
         theme(
-          legend.key.size = unit(1, "lines"),
-          axis.ticks = element_blank(),
-          panel.border = element_blank(),
           panel.grid = element_blank(),
           legend.position = "top"
         ) +
-        scale_y_continuous(expand = expansion())
+        ylim(c(0, NA))
     },
     res = 110
   )
@@ -177,6 +194,13 @@ server <- function(input, output, ...) {
       !is.null(cd), length(date) == 1, intrvl == days(1)
     )) {
       current_day(date)
+    }
+    if (length(current_day())) {
+      if (year(current_day()) != input[["yr"]]) {
+        current_day(
+          update(current_day(), year = as.numeric(input[["yr"]]))
+        )
+      }
     }
   })
 
