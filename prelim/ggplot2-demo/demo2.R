@@ -12,6 +12,6 @@ import(
 
 env_data <- readr::read_csv(
   "data/akl-env-data.csv",
-  col_types = paste0("Tc", paste(rep("d", 16), collapse = ""))
+  col_types = paste0("Tc", paste(rep("d", 14), collapse = ""))
 ) %>%
   as_tsibble(index = datetime, key = location)

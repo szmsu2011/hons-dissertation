@@ -35,10 +35,13 @@ read_env_file <- function(x, dir) {
     col_types = "cctcd"
   ) %>%
     dplyr::filter(!is.na(Time)) %>%
-    dplyr::mutate(datetime = lubridate::as_datetime(
-      mdy(Date) + hms(Time) - hours(12),
-      tz = "Pacific/Auckland"
-    )) %>%
+    dplyr::mutate(
+      datetime = lubridate::as_datetime(
+        mdy(Date) + hms(Time) - hours(12),
+        tz = "Pacific/Auckland"
+      ),
+      Parameter = tolower(Parameter)
+    ) %>%
     dplyr::select(-c(Site, Date, Time)) %>%
     dplyr::mutate(
       location = gsub("\\d_([a-z_]*).csv", "\\1", x)
