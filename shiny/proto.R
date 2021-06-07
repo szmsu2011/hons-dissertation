@@ -32,7 +32,6 @@ env_data <- read_csv("../data/akl-env-data.csv",
     date = as_date(datetime),
     hour = hour(datetime)
   ) %>%
-  filter(year(datetime) > 2015) %>%
   as_tsibble(index = datetime, key = location)
 
 ui <- dashboardPage(
@@ -108,7 +107,12 @@ server <- function(input, output, ...) {
         as_tsibble(index = date))
     }
     filter(.data, date == current_day())
-  })
+  }) %>%
+    bindCache(
+      input[["var"]], input[["agg"]],
+      input[["loc"]], input[["yr"]],
+      current_day()
+    )
 
   output[["p"]] <- renderPlot(
     {
@@ -256,7 +260,12 @@ server <- function(input, output, ...) {
       }
     },
     res = 110
-  )
+  ) %>%
+    bindCache(
+      input[["var"]], input[["agg"]],
+      input[["loc"]], input[["yr"]],
+      current_day()
+    )
 
   observe({
     if (!is.character(current_data())) {
