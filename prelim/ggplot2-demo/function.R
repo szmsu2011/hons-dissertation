@@ -130,12 +130,12 @@ covid_alert_pal <- c(
 
 akl_city_grid <- tibble(
   name = c(
-    "glen_eden", "henderson", "penrose", "queen_street",
-    "takapuna", "pakuranga", "patumahoe"
+    "glen_eden", "henderson", "penrose", "queen_street", "customs_st",
+    "takapuna", "pakuranga", "patumahoe", "khyber_pass", "papatoetoe"
   ),
-  code = c("GLE", "HEN", "PEN", "QUS", "TAK", "PAK", "PAT"),
-  row = c(3, 2, 3, 2, 1, 3, 5),
-  col = c(1, 1, 2, 2, 2, 3, 2)
+  code = c("GLE", "HEN", "PEN", "QUS", "CUS", "TAK", "PAK", "PAT", "KHY", "PAP"),
+  row = c(5, 3, 5, 3, 2, 1, 5, 7, 4, 6),
+  col = c(1, 1, 2, 2, 2, 2, 3, 2, 2, 3)
 )
 
 
@@ -147,6 +147,9 @@ get_lat <- function(x) {
     x == "henderson" ~ -36.867860,
     x == "pakuranga" ~ -36.913014,
     x == "takapuna" ~ -36.780563,
-    TRUE ~ -37.204669
+    x == "patumahoe" ~ -37.204669,
+    x == "customs_st" ~ -36.844975,
+    x == "khyber_pass" ~ -36.865291,
+    TRUE ~ -36.975622
   )
 }

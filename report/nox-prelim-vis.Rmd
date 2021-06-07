@@ -1,0 +1,167 @@
+---
+title: "Preliminary Data Visualisation of Auckland NOx Data"
+author: "Stephen Su"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    fig_caption: yes
+    number_sections: no
+  css: style.css
+---
+
+<style type="text/css">
+
+body {
+  font-family: serif;
+}
+
+</style>
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  message = FALSE, warning = FALSE, fig.retina = 3, fig.align = "center",
+  comment = "#>", dev.args = list(type = "cairo"), dpi = 200
+)
+```
+
+```{r prep}
+import <- function(dir, file) {
+  invisible(purrr::map(c(paste0(dir, file, ".R")), source))
+}
+import(
+  "../prelim/ggplot2-demo/",
+  c("packages", "data-clean", "covid19-lvl", "function", "plot")
+)
+import(
+  "../prelim/echarts4r-demo/",
+  c("packages", "function", "plot")
+)
+```
+
+## The Dataset
+```{r data}
+env_data <- "../data/akl-env-data.csv" %>%
+  readr::read_csv(col_types = paste0("Tc", paste(rep("d", 14), collapse = ""))) %>%
+  as_tsibble(index = datetime, key = location) %>%
+  dplyr::mutate(
+    akl_level = get_covid19level(datetime, "AKL"),
+    nz_level = get_covid19level(datetime, "NZ_not_AKL"),
+    covid19_period = get_covid19period(nz_level, datetime),
+    lat = get_lat(location)
+  )
+
+reactable(head(env_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
+```
+
+## Missing Data
+```{r lineplot, fig.height = 11}
+dplyr::mutate(env_data, nox = cut_number(nox, 5)) %>%
+  cat_heats(
+    nox,
+    setNames(viridis(5, option = "C"), levels(cut_number(env_data[["nox"]], 5)))
+  ) +
+  ggplot2::facet_grid(fct_reorder(.key, -get_lat(.key)) ~ .) +
+  theme(legend.position = "top") +
+  labs(col = "NOx in Auckland", x = "Date", y = "Hour of Day")
+
+kable(
+  rbind(
+    unique(env_data[["location"]]),
+    unique(env_data[["location"]]) %>%
+      map_dbl(function(x) {
+        round(mean(is.na(filter(env_data, location == x)[["nox"]])) * 100, 2)
+      }) %>%
+      paste0("% missing")
+  )
+)
+env_data <- filter(env_data, !location %in% c("pakuranga", "papatoetoe"))
+```
+
+## Seasonal Variation
+```{r season, fig.height = 4}
+gg_botsplot(env_data, nox, outlier.shape = 1) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  labs(x = "Month", y = "NOx")
+
+gg_seasquantile(env_data, nox) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  labs(
+    x = "Month", y = "NOx",
+    title = "1~100% Quantile"
+  )
+
+gg_seasquantile(env_data, nox, q = seq(.1, .9, .001)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  labs(
+    x = "Month", y = "NOx",
+    title = "10~90% Quantile"
+  )
+```
+**Khyber Pass has the most serious traffic-induced air pollution within Auckland.**
+
+## Hourly Variation within One Day
+```{r hourly, fig.height = 4}
+gg_seasquantile(env_data, nox, period = "day") +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(
+    x = "Time of Day", y = "NOx",
+    title = "1~100% Quantile"
+  )
+
+gg_seasquantile(env_data, nox, period = "day", q = seq(.1, .9, .001)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(
+    x = "Time of Day", y = "NOx",
+    title = "10~90% Quantile"
+  )
+```
+
+## The Effect of COVID-19 on NOx
+```{r lockdown, fig.height = 4}
+env_data %>%
+  ggplot(aes(x = akl_level, y = nox)) +
+  geom_boxplot(outlier.shape = 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  labs(
+    title = "The Effect of COVID-19 Alert Levels on NOx",
+    x = "COVID-19 Alert Level",
+    y = "NOx"
+  )
+
+env_data %>%
+  ggplot(aes(x = covid19_period, y = nox)) +
+  geom_boxplot(outlier.shape = 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1)) +
+  ggplot2::facet_grid(~ fct_reorder(location, -get_lat(location))) +
+  ggplot2::scale_y_continuous(trans = "sqrt") +
+  labs(
+    title = "The Effect of Total Lockdown on NOx",
+    x = "COVID-19 Period",
+    y = "NOx (Square Root Scale)"
+  )
+
+filter(env_data, location == "queen_street") %>%
+  update_tsibble(key = covid19_period) %>%
+  gg_seasquantile(nox, q = seq(.1, .9, .001), period = "day") +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(
+    x = "Time of Day", y = "NOx",
+    title = "10~90% Quantile of NOx on Queen Street"
+  )
+```
+
+## The Effect of Location on NOx
+```{r location, fig.height = 11}
+env_data %>%
+  gg_seasquantile(nox, q = seq(.1, .9, .005), polar = TRUE, size = .1) +
+  facet_geo(~location, grid = akl_city_grid) +
+  labs(
+    title = "10~90% Quantile of NOx by Relative Geolocation",
+    y = "NOx"
+  )
+```

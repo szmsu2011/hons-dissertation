@@ -40,11 +40,11 @@ get_covid19level <- function(date, scope = c("AKL", "NZ_not_AKL")) {
 
 get_covid19period <- function(lvl, date) {
   dplyr::case_when(
-    lubridate::year(date) < 2020 ~ "Before 2020",
+    lubridate::year(date) < 2020 ~ "~2019",
     TRUE ~ case_when(
-      lvl %in% paste0("Level ", 0:3) ~ "Level 0~3",
-      TRUE ~ "Level 4"
+      lvl %in% paste0("Level ", 0:3) ~ "LVL0~3",
+      TRUE ~ "LVL4"
     )
   ) %>%
-    ordered(c("Before 2020", "Level 0~3", "Level 4"))
+    ordered(c("~2019", "LVL0~3", "LVL4"))
 }

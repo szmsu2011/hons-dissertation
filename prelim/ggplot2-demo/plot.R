@@ -251,7 +251,7 @@ cat_heats <- function(data, y, pal, ...) {
   n_period <- length(unique(data[[".period_n"]]))
   n_obs_p <- nlevels(data[[".obs_n"]])
 
-  x_breaks <- unique(data[[".period_n"]])[seq(
+  x_breaks <- sort(unique(data[[".period_n"]]))[seq(
     1,
     n_period,
     by = max(1, n_period %/% 5)
