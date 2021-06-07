@@ -40,7 +40,7 @@ ui <- dashboardPage(
   dashboardSidebar(),
   dashboardBody(
     box(
-      selectInput("var", "Pollutant", gsub(
+      selectInput("var", "Parameter", gsub(
         "X", "x",
         toupper(names(env_data[3:16]))
       )),
@@ -64,7 +64,7 @@ ui <- dashboardPage(
       width = 3
     ),
     box(
-      radioButtons("agg", "Aggregate With", c("Max", "Mean", "Median")),
+      selectInput("agg", "Aggregate With", c("Max", "Mean", "Median")),
       width = 2
     ),
     box(plotOutput("p", click = "plot_click"), uiOutput("back"), width = 12),
@@ -131,7 +131,8 @@ server <- function(input, output, ...) {
                   wday = wday(date, week_start = 1),
                   week = (seq(yday(first(date)), yday(last(date))) +
                     (wday(floor_date(date, unit = "year"), week_start = 1) - 1)
-                    %% 7 + 6) %/% 7,
+                    %% 7 + 6) %/% 7 + #!!! Accommodate bug in {ggTimeSeries}
+                    ifelse(wday(first(date)) == 2, 1, 0),
                   text_col = case_when(
                     input[["var"]] == "AQI" ~ case_when(
                       agg_aqi > 150 ~ "w",
