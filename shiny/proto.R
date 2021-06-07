@@ -27,6 +27,7 @@ env_data <- read_csv("../data/akl-env-data.csv",
   col_types = paste0("Tc", paste(rep("d", 14), collapse = "")),
   locale = locale(tz = "Pacific/Auckland")
 ) %>%
+  filter(year(datetime) > 2015) %>%
   mutate(
     aqi_cat = aqi_cat(aqi),
     date = as_date(datetime),
@@ -234,8 +235,7 @@ server <- function(input, output, ...) {
               theme(
                 panel.grid = element_blank(),
                 legend.position = "top"
-              ) +
-              ylim(c(0, NA))
+              )
             if (input[["var"]] == "AQI") {
               p <- p + geom_point(
                 aes(fill = aqi_cat),
