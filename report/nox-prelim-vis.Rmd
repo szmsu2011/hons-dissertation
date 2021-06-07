@@ -43,15 +43,16 @@ import(
 ## The Dataset
 ```{r data}
 env_data <- "../data/akl-env-data.csv" %>%
-  readr::read_csv(col_types = paste0("Tc", paste(rep("d", 14), collapse = ""))) %>%
+  read_csv(
+    col_types = paste0("Tc", paste(rep("d", 14), collapse = "")),
+    locale = locale(tz = "Pacific/Auckland")
+  ) %>%
   as_tsibble(index = datetime, key = location) %>%
   dplyr::mutate(
     akl_level = get_covid19level(datetime, "AKL"),
     nz_level = get_covid19level(datetime, "NZ_not_AKL"),
-    covid19_period = get_covid19period(nz_level, datetime),
-    lat = get_lat(location)
+    covid19_period = get_covid19period(nz_level, datetime)
   )
-
 reactable(head(env_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
 ```
 
@@ -72,8 +73,7 @@ kable(
     unique(env_data[["location"]]) %>%
       map_dbl(function(x) {
         round(mean(is.na(filter(env_data, location == x)[["nox"]])) * 100, 2)
-      }) %>%
-      paste0("% missing")
+      }) %>% paste0("% missing")
   )
 )
 env_data <- filter(env_data, !location %in% c("pakuranga", "papatoetoe"))
