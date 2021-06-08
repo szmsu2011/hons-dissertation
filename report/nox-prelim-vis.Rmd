@@ -57,7 +57,7 @@ reactable(head(env_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
 ```
 
 ## Missing Data
-```{r lineplot, fig.height = 11}
+```{r expl, fig.height = 11}
 dplyr::mutate(env_data, nox = cut_number(nox, 5)) %>%
   cat_heats(
     nox,

@@ -1,0 +1,110 @@
+---
+title: "Visual Constituent Analysis of Auckland AQI Data"
+author: "Stephen Su"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    fig_caption: yes
+    number_sections: no
+  css: style.css
+---
+
+<style type="text/css">
+
+body {
+  font-family: serif;
+}
+
+</style>
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  message = FALSE, warning = FALSE, fig.retina = 3, fig.align = "center",
+  comment = "#>", dev.args = list(type = "cairo"), dpi = 200
+)
+```
+
+```{r prep}
+import <- function(dir, file) {
+  invisible(purrr::map(c(paste0(dir, file, ".R")), source))
+}
+import(
+  "../prelim/ggplot2-demo/",
+  c("packages", "data-clean", "covid19-lvl", "function", "plot")
+)
+import(
+  "../prelim/echarts4r-demo/",
+  c("packages", "function", "plot")
+)
+```
+
+## The Dataset
+```{r data}
+aqi_data <- "../data/akl-env-data.csv" %>%
+  read_csv(
+    col_types = paste0("Tc", paste(rep("d", 14), collapse = "")),
+    locale = locale(tz = "Pacific/Auckland")
+  ) %>%
+  filter(year(datetime) > 2015) %>%
+  as_tsibble(index = datetime, key = location) %>%
+  select(aqi, !!sym("pm2.5"), pm10, no2, so2, co, o3)
+```
+
+## Completeness of AQI Constituents
+```{r missing}
+exec(
+  "rbind",
+  !!!unique(aqi_data[["location"]]) %>%
+    map(function(x) {
+      filter(aqi_data, location == x)[2:7] %>%
+        array_branch(2) %>%
+        map_dbl(function(y) round(mean(!is.na(y)) * 100, 2))
+    })
+) %>%
+  as_data_frame() %>%
+  setNames(names(aqi_data)[2:7]) %>%
+  mutate(location = unique(aqi_data[["location"]])) %>%
+  column_to_rownames(var = "location") %>%
+  reactable(
+    defaultColDef = colDef(
+      style = function(value) {
+        list(background = case_when(
+          between(value, 50, 100) ~ alpha(rgb(0, 1, 0), .5),
+          value == 0 ~ alpha(rgb(1, 0, 0), .5),
+          is.character(value) ~ rgb(1, 1, 1),
+          TRUE ~ alpha(rgb(1, 1, 0), .5)
+        ))
+      }
+    )
+  )
+
+# aqi_data <- filter(aqi_data, location %in% tail(unique(aqi_data[["location"]]), 4))
+```
+**AQI data from over half of the sites in Auckland should be considered unreliable.**
+
+**In Auckland, New Zealand, AQI (different from US Standards) is calculated by**
+
+\begin{equation} AQI = 100 \times max\{\frac{PM_{2.5}}{25}, \frac{PM_{10}}{50}, \frac{NO_{2}}{200}, \frac{SO_{2}}{350}, \frac{CO}{10}, \frac{O_{3}}{150}\} \end{equation}
+
+## The Decisive Pollutant to AQI
+```{r pollutant, fig.height = 11}
+pol <- names(aqi_data)[2:7]
+
+aqi_data <- aqi_data %>%
+  mutate(
+    aqi_pol = toupper(aqi_data[2:7] %>%
+      array_branch(1) %>%
+      map_chr(function(x) {
+        p <- pol[which.max(x / c(25, 50, 200, 350, 10, 150))]
+        if (!length(p)) NA else p
+      })) %>%
+      factor(toupper(pol))
+  )
+
+cat_heats(aqi_data, aqi_pol, setNames(qualitative_hcl(6), toupper(pol))) +
+  ggplot2::facet_grid(fct_reorder(.key, -get_lat(.key)) ~ .) +
+  theme(legend.position = "top") +
+  labs(col = "Decisive Pollutant", x = "Date", y = "Hour of Day")
+```

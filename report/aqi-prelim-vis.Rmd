@@ -58,7 +58,7 @@ reactable(head(aqi_data, 10), bordered = TRUE, striped = TRUE, highlight = TRUE)
 ```
 
 ## AQI Level Map
-```{r lineplot, fig.height = 8}
+```{r expl, fig.height = 8}
 aqi_data %>%
   dplyr::mutate(aqi = aqi_cat(aqi)) %>%
   cat_heats(aqi, aqi_pal) +
