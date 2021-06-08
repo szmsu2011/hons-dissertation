@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
+
 library(ggTimeSeries)
 
 import <- function(dir, file) {
@@ -131,7 +132,7 @@ server <- function(input, output, ...) {
                   wday = wday(date, week_start = 1),
                   week = (seq(yday(first(date)), yday(last(date))) +
                     (wday(floor_date(date, unit = "year"), week_start = 1) - 1)
-                    %% 7 + 6) %/% 7 + #!!! Accommodate bug in {ggTimeSeries}
+                    %% 7 + 6) %/% 7 + # !!! Accommodate bug in {ggTimeSeries}
                     ifelse(wday(first(date)) == 2, 1, 0),
                   text_col = case_when(
                     input[["var"]] == "AQI" ~ case_when(
@@ -274,6 +275,10 @@ server <- function(input, output, ...) {
       if (!is.null(cd)) {
         cd[["x"]] <- floor(cd[["x"]] + .5)
         cd[["y"]] <- floor(cd[["y"]] + .5)
+      }
+      if (wday(first(current_data()[["date"]])) == 2) {
+        # !!! Accommodate bug in {ggTimeSeries}
+        cd[["x"]] <- cd[["x"]] - 1
       }
       intrvl <- feasts:::interval_to_period(interval(current_data()))
       date <- ymd(paste0(input[["yr"]], "-01-01")) +
