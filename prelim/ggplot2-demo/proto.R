@@ -35,11 +35,11 @@ wind_dir_data %>%
   ) %>%
   ggplot(aes(theta, 0, xend = theta, yend = r, col = Month)) +
   geom_segment(arrow = arrow(15, length = unit(.04, "npc"))) +
+  ggplot2::scale_x_continuous(breaks = seq(0, 315, 45), limits = c(0, 360)) +
   ggplot2::scale_colour_gradient2(
     low = "blue", mid = "red", high = "orange",
     midpoint = 6.5
   ) +
-  ggplot2::xlim(c(0, 360)) +
   ggplot2::coord_polar() +
   ggplot2::labs(y = "ABS(Mean Wind Velocity)")
 
@@ -56,11 +56,11 @@ wind_dir_data %>%
   ) %>%
   ggplot(aes(theta, 0, xend = theta, yend = r, col = Hour)) +
   geom_segment(arrow = arrow(15, length = unit(.04, "npc"))) +
+  ggplot2::scale_x_continuous(breaks = seq(0, 315, 45), limits = c(0, 360)) +
   ggplot2::scale_colour_gradient2(
     low = "blue", mid = "red", high = "orange",
     midpoint = 12.5
   ) +
-  ggplot2::xlim(c(0, 360)) +
   ggplot2::coord_polar() +
   ggplot2::labs(y = "ABS(Mean Wind Velocity)")
 
@@ -77,10 +77,10 @@ wind_dir_data %>%
   ) %>%
   ggplot(aes(theta, 0, xend = theta, yend = r, col = WoY)) +
   geom_segment(arrow = arrow(15, length = unit(.04, "npc"))) +
+  ggplot2::scale_x_continuous(breaks = seq(0, 315, 45), limits = c(0, 360)) +
   ggplot2::scale_colour_gradient2(
     low = "blue", mid = "red", high = "orange",
     midpoint = 26
   ) +
-  ggplot2::xlim(c(0, 360)) +
   ggplot2::coord_polar() +
   ggplot2::labs(y = "ABS(Mean Wind Velocity)")
