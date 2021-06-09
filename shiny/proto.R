@@ -133,7 +133,7 @@ server <- function(input, output, ...) {
                   week = (seq(yday(first(date)), yday(last(date))) +
                     (wday(floor_date(date, unit = "year"), week_start = 1) - 1)
                     %% 7 + 6) %/% 7 + # !!! Accommodate bug in {ggTimeSeries}
-                    ifelse(wday(floor_date(date, unit = "year")) == 2, 1, 0),
+                    ifelse(wday(floor_date(date[1], unit = "year")) == 2, 1, 0),
                   text_col = case_when(
                     input[["var"]] == "AQI" ~ case_when(
                       agg_aqi > 150 ~ "w",
@@ -276,7 +276,7 @@ server <- function(input, output, ...) {
         cd[["x"]] <- floor(cd[["x"]] + .5)
         cd[["y"]] <- floor(cd[["y"]] + .5)
       }
-      if (wday(floor_date(current_data()[["date"]], unit = "year")) == 2) {
+      if (wday(floor_date(current_data()[["date"]][1], unit = "year")) == 2) {
         # !!! Accommodate bug in {ggTimeSeries}
         cd[["x"]] <- cd[["x"]] - 1
       }
