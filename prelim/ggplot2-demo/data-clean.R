@@ -66,3 +66,30 @@ read_env_data <- function(dir) {
     ) %>%
     tsibble::fill_gaps()
 }
+
+get_wind_dir_varname <- function(x) {
+  varname <- strsplit(readLines(x)[1], ",")[[1]]
+  varname[-(1:2)] <- gsub(".*AC | WDR.*| \\(NIWA Data\\)", "", varname[-(1:2)])
+  janitor::make_clean_names(varname)
+}
+
+read_wind_dir_data <- function(x, loc) {
+  data <- readr::read_csv(x,
+    col_types = paste0("cc", paste0(rep("d", 14), collapse = "")),
+    col_names = get_wind_dir_varname(x)
+  )[-1, ] %>%
+    dplyr::mutate(
+      time_cleaned = gsub(":00:00", ":00", time),
+      datetime = lubridate::as_datetime(
+        dmy(date) + hm(time_cleaned) - hours(12),
+        tz = "Pacific/Auckland"
+      )
+    ) %>%
+    dplyr::select(-c(1:2, 17)) %>%
+    tidyr::pivot_longer(!datetime,
+      names_to = "location",
+      values_to = "wind_dir"
+    ) %>%
+    dplyr::filter(location %in% loc) %>%
+    as_tsibble(index = datetime, key = location)
+}

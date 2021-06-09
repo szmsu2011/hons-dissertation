@@ -153,3 +153,9 @@ get_lat <- function(x) {
     TRUE ~ -36.975622
   )
 }
+
+vector_mean <- function(theta_deg, r = 1, offset_deg = 0, i = 1:2) {
+  theta_rad <- (theta_deg - offset_deg) * pi / 180
+  (cbind(x = r * cos(theta_rad), y = r * sin(theta_rad)) %>%
+    colMeans(na.rm = TRUE))[i]
+}
