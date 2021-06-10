@@ -1,7 +1,6 @@
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
-
 library(ggTimeSeries)
 
 import <- function(dir, file) {
@@ -276,9 +275,10 @@ server <- function(input, output, ...) {
         cd[["x"]] <- floor(cd[["x"]] + .5)
         cd[["y"]] <- floor(cd[["y"]] + .5)
       }
-      if (wday(floor_date(current_data()[["date"]][1], unit = "year")) == 2) {
-        # !!! Accommodate bug in {ggTimeSeries}
-        cd[["x"]] <- cd[["x"]] - 1
+      if (nrow(current_data())) {
+        if (wday(floor_date(current_data()[["date"]][1], unit = "year")) == 2) {
+          cd[["x"]] <- cd[["x"]] - 1 # !!! Accommodate bug in {ggTimeSeries}
+        }
       }
       intrvl <- feasts:::interval_to_period(interval(current_data()))
       date <- ymd(paste0(input[["yr"]], "-01-01")) +
