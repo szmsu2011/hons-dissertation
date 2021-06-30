@@ -23,7 +23,7 @@ map_ui <- function(id) {
   tagList(mapboxerOutput(ns("map")))
 }
 
-map_server <- function(id) {
+map_server <- function(id, state) {
   module <- function(input, output, session) {
     output[["map"]] <- renderMapboxer({
       station %>%
@@ -37,6 +37,11 @@ map_server <- function(id) {
           circle_color = "white",
           circle_blur = .5
         )
+    })
+
+    observeEvent(input[["map_onclick"]], {
+      state[["map_onclick"]] <- input[["map_onclick"]]
+      print(input[["map_onclick"]])
     })
   }
 
