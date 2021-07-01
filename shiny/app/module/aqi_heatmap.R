@@ -4,7 +4,7 @@ aqi_heatmap_ui <- function(id) {
   tagList(echarts4rOutput(ns("aqi_heatmap")))
 }
 
-aqi_heatmap_server <- function(id, state) {
+aqi_heatmap_mod <- function(id, state) {
   module <- function(input, output, session) {
     output[["aqi_heatmap"]] <- renderEcharts4r({
       .data <- aqi_data %>%

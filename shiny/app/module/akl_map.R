@@ -4,7 +4,7 @@ map_ui <- function(id) {
   tagList(mapboxerOutput(ns("map")))
 }
 
-map_server <- function(id, state) {
+map_mod <- function(id, state) {
   module <- function(input, output, session) {
     output[["map"]] <- renderMapboxer({
       station %>%
