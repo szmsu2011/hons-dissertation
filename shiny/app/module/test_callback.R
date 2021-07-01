@@ -9,10 +9,14 @@ callback_ui <- function(id) {
   )
 }
 
-callback_server <- function(id, state) {
+callback_server <- function(id, state, ...) {
+  arg <- list(...)
+
   module <- function(input, output, session) {
     observeEvent(state[["map_onclick"]], {
-      output[["map_info"]] <- renderPrint(state[["map_onclick"]])
+      output[["map_info"]] <- renderPrint({
+        arg[[1]]()
+      })
     })
   }
 

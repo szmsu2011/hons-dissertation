@@ -4,5 +4,8 @@ app_server <- function(input, output, session) {
   )
 
   map_server("map", app_state)
-  callback_server("callback", app_state)
+
+  current_loc_aqi_data <- data_select_server("data_select", app_state)
+
+  callback_server("callback", app_state, current_loc_aqi_data)
 }

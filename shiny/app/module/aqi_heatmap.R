@@ -10,7 +10,7 @@ heatmap_server <- function(id, state) {
   }
 }
 
-test_data <- filter(aqi_data, location == "queen_street", year(datetime) == 2019)
+test_data <- filter(aqi_data, location == "queen_street")
 
 data <- test_data %>%
   as_tibble() %>%
@@ -57,7 +57,6 @@ data %>%
       }
     )
   ) %>%
-  e_y_axis(inverse = TRUE) %>%
   e_tooltip(
     axisPointer = list(type = "cross"),
     formatter = htmlwidgets::JS("
@@ -65,4 +64,6 @@ data %>%
           return(params.name)
         }
       ")
-  )
+  ) %>%
+  e_y_axis(inverse = TRUE) %>%
+  e_datazoom(x_index = 0)

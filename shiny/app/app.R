@@ -6,8 +6,10 @@ library(echarts4r)
 library(mapboxer)
 library(tsibble)
 library(lubridate)
+library(janitor)
 
 invisible(map(paste0("shiny/app/module/", list.files("shiny/app/module/")), source))
+
 source("shiny/app/function.R")
 source("shiny/app/data.R")
 source("shiny/app/ui.R")
