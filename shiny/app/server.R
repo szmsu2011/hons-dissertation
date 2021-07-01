@@ -1,6 +1,6 @@
 app_server <- function(input, output, session) {
   app_state <- reactiveValues(
-    map_onclick = "Queen Street"
+    map_onclick = initial_location
   )
 
   map_server("map", app_state)
