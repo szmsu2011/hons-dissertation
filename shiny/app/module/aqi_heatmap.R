@@ -28,7 +28,7 @@ aqi_heatmap_mod <- function(id, state) {
       if (ini_row[["date"]] != floor_date(ini_row[["date"]], "week")) {
         ini_row <- ini_row %>%
           mutate(aqi_cat = NA, date = floor_date(ini_row[["date"]], "week"))
-
+        ini_c <- year(ini_row[[1]]) != year(first(.data[[1]]))
         .data <- bind_rows(.data, ini_row) %>%
           fill_gaps()
       }
@@ -69,7 +69,7 @@ aqi_heatmap_mod <- function(id, state) {
           "Max AQI at ",
           state[["map_onclick"]],
           " [",
-          paste(range(year(.data[["date"]])), collapse = "-"),
+          paste(range(year(.data[["date"]])) + c(ini_c, 0), collapse = "-"),
           "]"
         ))
     }) %>%
