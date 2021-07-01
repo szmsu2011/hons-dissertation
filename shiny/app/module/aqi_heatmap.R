@@ -7,7 +7,7 @@ aqi_heatmap_ui <- function(id) {
 aqi_heatmap_mod <- function(id, state) {
   module <- function(input, output, session) {
     output[["aqi_heatmap"]] <- renderEcharts4r({
-      .data <- aqi_data %>%
+      data <- aqi_data %>%
         filter(location == make_clean_names(state[["map_onclick"]])) %>%
         as_tibble() %>%
         group_by(date = date(datetime), location) %>%
@@ -23,26 +23,26 @@ aqi_heatmap_mod <- function(id, state) {
         ) %>%
         as_tsibble(index = date)
 
-      ini_row <- slice_head(.data, n = 1)
+      ini_row <- slice_head(data, n = 1)
 
       if (ini_row[["date"]] != floor_date(ini_row[["date"]], "week")) {
         ini_row <- ini_row %>%
           mutate(aqi_cat = NA, date = floor_date(ini_row[["date"]], "week"))
-        ini_c <- year(ini_row[[1]]) != year(first(.data[[1]]))
-        .data <- bind_rows(.data, ini_row) %>%
+        ini_c <- year(ini_row[[1]]) != year(first(data[[1]]))
+        data <- bind_rows(data, ini_row) %>%
           fill_gaps()
       }
 
-      level <- levels(.data[["aqi_cat"]])
+      level <- levels(data[["aqi_cat"]])
 
-      .data <- .data %>%
+      data <- data %>%
         mutate(
           wday = wday(date, label = TRUE),
           aqi_cat = as.numeric(aqi_cat),
           yw = paste0(Year(date), " W", sprintf("%02d", Week(date)))
         )
 
-      .data %>%
+      data %>%
         e_charts(yw) %>%
         e_heatmap(wday, aqi_cat, bind = tt) %>%
         e_visual_map(aqi_cat,
@@ -69,11 +69,16 @@ aqi_heatmap_mod <- function(id, state) {
           "Max AQI at ",
           state[["map_onclick"]],
           " [",
-          paste(range(year(.data[["date"]])) + c(ini_c, 0), collapse = "-"),
+          paste(range(year(data[["date"]])) + c(ini_c, 0), collapse = "-"),
           "]"
-        ))
+        )) %>%
+        e_capture("datazoom")
     }) %>%
       bindCache(state[["map_onclick"]])
+
+    observeEvent(input[["aqi_heatmap_datazoom"]], {
+      state[["aqi_heatmap_datazoom"]] <- input[["aqi_heatmap_datazoom"]]
+    })
   }
 
   moduleServer(id, module)

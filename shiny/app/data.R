@@ -11,4 +11,4 @@ data <- read_csv("data/akl-env-data.csv",
   as_tsibble(index = datetime, key = location)
 
 aqi_data <- select(data, c(aqi, aqi_cat))
-data <- select(data, -c(aqi, aqi_cat))
+other_data <- select(data, -c(aqi, aqi_cat))
