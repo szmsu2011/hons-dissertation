@@ -22,23 +22,23 @@ Median <- function(x) round(median(x, na.rm = TRUE))
 
 fmt_date <- stamp("March 1, 1999")
 
-Week <- function(date) {
-  map(
-    unique(year(date)),
-    function(x) {
-      d <- date[year(date) == x]
-      w <- (seq(yday(first(d)), yday(last(d))) +
-        (wday(floor_date(d, "year")) - 1)
-        %% 7 + 6) %/% 7
-      last_day <- ceiling_date(last(d), "year") - days(1)
-      if (wday(last_day) != 7) {
-        w[d %in% seq(last_day, by = -1, length = wday(last_day))] <- 1
-      }
-      w
-    }
-  ) %>%
-    flatten_dbl()
-}
+# Week <- function(date) {
+#   map(
+#     unique(year(date)),
+#     function(x) {
+#       d <- date[year(date) == x]
+#       w <- (seq(yday(first(d)), yday(last(d))) +
+#         (wday(floor_date(d, "year")) - 1)
+#         %% 7 + 6) %/% 7
+#       last_day <- ceiling_date(last(d), "year") - days(1)
+#       if (wday(last_day) != 7) {
+#         w[d %in% seq(last_day, by = -1, length = wday(last_day))] <- 1
+#       }
+#       w
+#     }
+#   ) %>%
+#     flatten_dbl()
+# }
 
 Year <- function(date) {
   map(

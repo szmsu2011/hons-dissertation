@@ -39,11 +39,11 @@ aqi_heatmap_mod <- function(id, state) {
         mutate(
           wday = wday(date, label = TRUE),
           aqi_cat = as.numeric(aqi_cat),
-          yw = paste0(Year(date), " W", sprintf("%02d", Week(date)))
+          week_start = floor_date(date, "week")
         )
 
       data %>%
-        e_charts(yw) %>%
+        e_charts(week_start) %>%
         e_heatmap(wday, aqi_cat, bind = tt) %>%
         e_visual_map(aqi_cat,
           type = "piecewise",
@@ -59,20 +59,22 @@ aqi_heatmap_mod <- function(id, state) {
           axisPointer = list(type = "cross"),
           formatter = htmlwidgets::JS("
             function(params) {
-              return(params.name)
+              return params.name
             }
           ")
         ) %>%
         e_y_axis(inverse = TRUE) %>%
         e_datazoom(x_index = 0) %>%
         e_title(paste0(
-          "Max AQI at ",
+          "Daily Max AQI at ",
           state[["map_onclick"]],
           " [",
           paste(range(year(data[["date"]])) + c(ini_c, 0), collapse = "-"),
           "]"
         )) %>%
-        e_capture("datazoom")
+        e_capture("datazoom") %>%
+        e_group("aqi_grp") %>%
+        e_connect_group("aqi_grp")
     }) %>%
       bindCache(state[["map_onclick"]])
 

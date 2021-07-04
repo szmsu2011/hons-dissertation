@@ -22,6 +22,7 @@ map_mod <- function(id, state) {
 
     observeEvent(input[["map_onclick"]], {
       state[["map_onclick"]] <- input[["map_onclick"]][["props"]][["site"]]
+      state[["aqi_heatmap_datazoom"]] <- NULL
     })
   }
 
