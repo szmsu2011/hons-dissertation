@@ -24,7 +24,7 @@ aqi_lineplot_mod <- function(id, state) {
           "AQI Level: ", aqi_cat
         )') %>%
         e_charts(datetime) %>%
-        e_line(aqi, bind = tt, symbol = "none") %>%
+        e_line(aqi, symbol = "none") %>%
         # e_tooltip(
         #   axisPointer = list(type = "cross"),
         #   formatter = htmlwidgets::JS("
