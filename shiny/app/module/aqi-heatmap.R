@@ -70,7 +70,7 @@ aqi_heatmap_mod <- function(id, state) {
           axisPointer = list(type = "cross"),
           formatter = htmlwidgets::JS("
             function(params) {
-              return params.name
+              return params.name;
             }
           ")
         ) %>%

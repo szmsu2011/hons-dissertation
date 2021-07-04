@@ -88,7 +88,7 @@ e_heats <- function(data, y = NULL, tt_nmax = 11, title = "",
       axisPointer = list(type = "cross"),
       formatter = htmlwidgets::JS("
         function(params) {
-          return(params.name)
+          return params.name;
         }
       ")
     ) %>%
