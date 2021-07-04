@@ -55,6 +55,9 @@ aqi_heatmap_mod <- function(id, state) {
         e_heatmap(wday, aqi_cat, bind = tt) %>%
         e_visual_map(aqi_cat,
           type = "piecewise",
+          orient = "horizontal",
+          top = "top",
+          left = "center",
           calculable = FALSE,
           pieces = map2(
             level, seq_along(level),
@@ -73,12 +76,9 @@ aqi_heatmap_mod <- function(id, state) {
         ) %>%
         e_y_axis(inverse = TRUE) %>%
         e_datazoom(x_index = 0, start = start, end = 100) %>%
-        e_title(paste0(
-          "Daily Max AQI at ",
-          state[["map_onclick"]],
-          " [",
-          paste(range(year(data[["date"]])) + c(ini_c, 0), collapse = "-"),
-          "]"
+        e_title(paste(
+          "Daily Max AQI,",
+          state[["map_onclick"]]
         )) %>%
         e_capture("datazoom") %>%
         e_group("aqi_grp") %>%
