@@ -5,11 +5,11 @@ app_ui <- dashboardPage(
     shinyDashboardThemes(theme = "blue_gradient"),
     fluidPage(
       fluidRow(
-        column(map_ui("map"), width = 6),
-        column(aqi_lineplot_ui("aqi_lineplot"), width = 6)
+        column(aqi_heatmap_ui("aqi_heatmap"), width = 12)
       ),
       fluidRow(
-        column(aqi_heatmap_ui("aqi_heatmap"), width = 12)
+        column(map_ui("map"), width = 6),
+        column(aqi_lineplot_ui("aqi_lineplot"), width = 6)
       )
     )
   )

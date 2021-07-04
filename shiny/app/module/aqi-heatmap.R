@@ -42,6 +42,14 @@ aqi_heatmap_mod <- function(id, state) {
           week_start = floor_date(date, "week")
         )
 
+      if (is.null(state[["aqi_heatmap_datazoom"]])) {
+        start <- with(data, ifelse(
+          last(date) - years(1) <= first(date),
+          0,
+          (1 - years(1) / as.period(diff(range(date)))) * 100
+        ))
+      }
+
       data %>%
         e_charts(week_start) %>%
         e_heatmap(wday, aqi_cat, bind = tt) %>%
@@ -64,7 +72,7 @@ aqi_heatmap_mod <- function(id, state) {
           ")
         ) %>%
         e_y_axis(inverse = TRUE) %>%
-        e_datazoom(x_index = 0) %>%
+        e_datazoom(x_index = 0, start = start, end = 100) %>%
         e_title(paste0(
           "Daily Max AQI at ",
           state[["map_onclick"]],
