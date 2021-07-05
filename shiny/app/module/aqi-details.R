@@ -38,10 +38,12 @@ aqi_details_mod <- function(id, state) {
         e_group("aqi_grp")
 
       for (x in c(50, 100, 150, 200, 300)) {
-        e <- e %>% #FIXME markLine colours
+        e <- e %>%
           e_mark_line(
-            data = list(yAxis = x),
-            lineStyle = list(color = aqi_pal[[aqi_cat(x + 1)]]),
+            data = list(
+              yAxis = x,
+              lineStyle = list(color = aqi_pal[[aqi_cat(x + 1)]])
+            ),
             symbol = "none",
             title = ""
           )
