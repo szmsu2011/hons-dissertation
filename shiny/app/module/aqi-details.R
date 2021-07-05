@@ -15,7 +15,7 @@ aqi_details_mod <- function(id, state) {
         ))
       }
 
-      data %>%
+      aqi_data %>%
         filter(location == make_clean_names(state[["map_onclick"]])) %>%
         mutate(tt = 'paste0(
           "Date: ", fmt_date(datetime), "<br />",
