@@ -15,7 +15,7 @@ aqi_details_mod <- function(id, state) {
         ))
       }
 
-      aqi_data %>%
+      e <- aqi_data %>%
         filter(location == make_clean_names(state[["map_onclick"]])) %>%
         mutate(tt = 'paste0(
           "Date: ", fmt_date(datetime), "<br />",
@@ -36,6 +36,18 @@ aqi_details_mod <- function(id, state) {
         e_datazoom(x_index = 0, start = start, end = 100, show = FALSE) %>%
         e_legend(show = FALSE) %>%
         e_group("aqi_grp")
+
+      for (x in c(50, 100, 150, 200, 300)) {
+        e <- e %>% #FIXME markLine colours
+          e_mark_line(
+            data = list(yAxis = x),
+            lineStyle = list(color = aqi_pal[[aqi_cat(x + 1)]]),
+            symbol = "none",
+            title = ""
+          )
+      }
+
+      e
     }) %>%
       bindCache(state[["map_onclick"]])
   }
