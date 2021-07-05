@@ -1,10 +1,10 @@
-aqi_lineplot_ui <- function(id) {
+aqi_details_ui <- function(id) {
   ns <- NS(id)
 
   tagList(echarts4rOutput(ns("aqi_lineplot")))
 }
 
-aqi_lineplot_mod <- function(id, state) {
+aqi_details_mod <- function(id, state) {
   module <- function(input, output, session) {
     output[["aqi_lineplot"]] <- renderEcharts4r({
       if (is.null(state[["aqi_heatmap_datazoom"]])) {

@@ -8,5 +8,5 @@ app_server <- function(input, output, session) {
   map_mod("map", app_state)
   callback_mod("callback", app_state)
   aqi_heatmap_mod("aqi_heatmap", app_state)
-  aqi_lineplot_mod("aqi_lineplot", app_state)
+  aqi_details_mod("aqi_lineplot", app_state)
 }
