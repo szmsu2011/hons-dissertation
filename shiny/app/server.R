@@ -1,9 +1,5 @@
 app_server <- function(input, output, session) {
-  # Initial state of the application
-  app_state <- reactiveValues(
-    map_onclick = initial_location,
-    aqi_heatmap_datazoom = NULL
-  )
+  app_state <- eval_tidy(new_quosure(expr(reactiveValues(!!!initial_app_state))))
 
   map_mod("map", app_state)
   callback_mod("callback", app_state)

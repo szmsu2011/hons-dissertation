@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(dashboardthemes)
 library(tidyverse)
+library(rlang)
 library(echarts4r)
 library(mapboxer)
 library(tsibble)
@@ -15,6 +16,10 @@ source("shiny/app/data.R")
 source("shiny/app/ui.R")
 source("shiny/app/server.R")
 
-initial_location <- "Queen Street"
+initial_app_state <- list(
+  map_onclick = "Queen Street",
+  aqi_heatmap_datazoom = NULL,
+  aqi_details_display = "lineplot"
+)
 
 shinyApp(app_ui, app_server)
