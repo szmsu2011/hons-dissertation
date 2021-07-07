@@ -9,7 +9,7 @@ app_ui <- dashboardPage(
       ),
       fluidRow(
         column(map_ui("map"), width = 6),
-        column(callback_ui("callback"), width = 6)
+        column(aqi_details_ui("aqi_details"), width = 6)
       )
     )
   )

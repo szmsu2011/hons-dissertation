@@ -20,6 +20,9 @@ aqi_details_mod <- function(id, state) {
             0,
             (1 - years(1) / as.period(diff(range(date)))) * 100
           ))
+        } else {
+          start <- state[["aqi_heatmap_datazoom"]][["start"]]
+          end <- state[["aqi_heatmap_datazoom"]][["end"]]
         }
 
         e <- aqi_data %>%
@@ -58,11 +61,41 @@ aqi_details_mod <- function(id, state) {
         }
 
         e
+      } else if (state[["aqi_details_display"]] == "quantile") {
+        day_data <- aqi_data %>%
+          filter(
+            location == make_clean_names(state[["map_onclick"]]),
+            date(datetime) == state[["aqi_date_selected"]]
+          ) %>%
+          mutate(hour = hour(datetime))
+
+        aqi_data %>%
+          filter(location == make_clean_names(state[["map_onclick"]])) %>%
+          as_tibble() %>%
+          group_by(hour = hour(datetime)) %>%
+          summarise(
+            lower = quantile(aqi, prob = .025, na.rm = TRUE),
+            median = quantile(aqi, prob = .5, na.rm = TRUE),
+            upper = quantile(aqi, prob = .975, na.rm = TRUE)
+          ) %>%
+          select(-hour) %>%
+          bind_cols(day_data) %>%
+          e_charts(hour) %>%
+          e_line(aqi) %>%
+          e_scatter(median, symbol_size = 5, itemStyle = list(color = "#808080")) %>%
+          e_legend(show = FALSE) %>%
+          e_error_bar(lower, upper) %>%
+          e_axis_labels(x = "Hour of Day") %>%
+          e_x_axis(nameLocation = "center")
       } else {
         if (test) print("")
       }
     }) %>%
-      bindCache(state[["map_onclick"]], state[["aqi_details_display"]])
+      bindCache( #FIXME Cache keys and dataZoom clashes
+        state[["map_onclick"]],
+        state[["aqi_details_display"]],
+        state[["aqi_date_selected"]]
+      )
 
     observeEvent(input[["aqi_lineplot"]], {
       state[["aqi_details_display"]] <- "lineplot"

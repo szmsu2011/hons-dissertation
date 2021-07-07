@@ -103,6 +103,8 @@ aqi_heatmap_mod <- function(id, state) {
       aqi_date_selected <- input[["aqi_heatmap_clicked_data"]][["value"]]
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected[1]) +
         which(wday(1:7, TRUE) == aqi_date_selected[2]) - 1
+
+      state[["aqi_details_display"]] <- "quantile"
     })
   }
 
