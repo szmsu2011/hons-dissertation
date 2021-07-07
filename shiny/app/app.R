@@ -19,7 +19,8 @@ source("shiny/app/server.R")
 initial_app_state <- list(
   map_onclick = "Queen Street",
   aqi_heatmap_datazoom = NULL,
-  aqi_details_display = "lineplot"
+  aqi_details_display = "lineplot",
+  aqi_date_selected = NULL
 )
 
 shinyApp(app_ui, app_server)

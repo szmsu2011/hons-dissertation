@@ -12,7 +12,7 @@ callback_ui <- function(id) {
 callback_mod <- function(id, state) {
   module <- function(input, output, session) {
     observeEvent(state[["map_onclick"]], {
-      output[["map_info"]] <- renderPrint(state[["aqi_heatmap_datazoom"]])
+      output[["map_info"]] <- renderPrint(state[["aqi_date_selected"]])
     })
   }
 

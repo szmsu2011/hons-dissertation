@@ -31,6 +31,7 @@ aqi_details_mod <- function(id, state) {
             "AQI Level: ", aqi_cat
           )') %>%
           e_charts(datetime) %>%
+          e_axis_labels(y = "AQI") %>%
           e_line(aqi, symbol = "none") %>%
           # e_tooltip(
           #   axisPointer = list(type = "cross"),
