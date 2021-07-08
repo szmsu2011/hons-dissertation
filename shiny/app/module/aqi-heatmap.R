@@ -6,6 +6,8 @@ aqi_heatmap_ui <- function(id) {
 
 aqi_heatmap_mod <- function(id, state) {
   module <- function(input, output, session) {
+    ns <- session[["ns"]]
+
     output[["aqi_heatmap"]] <- renderEcharts4r({
       data <- aqi_data %>%
         filter(location == make_clean_names(state[["map_onclick"]])) %>%
@@ -104,7 +106,45 @@ aqi_heatmap_mod <- function(id, state) {
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected[1]) +
         which(wday(1:7, TRUE) == aqi_date_selected[2]) - 1
 
-      state[["aqi_details_display"]] <- "quantile"
+      output[["aqi_quantile"]] <- renderEcharts4r({
+        day_data <- aqi_data %>%
+          filter(
+            location == make_clean_names(state[["map_onclick"]]),
+            date(datetime) == state[["aqi_date_selected"]]
+          ) %>%
+          mutate(hour = hour(datetime))
+
+        aqi_data %>%
+          filter(location == make_clean_names(state[["map_onclick"]])) %>%
+          as_tibble() %>%
+          group_by(hour = hour(datetime)) %>%
+          summarise(
+            lower = quantile(aqi, prob = .025, na.rm = TRUE),
+            median = quantile(aqi, prob = .5, na.rm = TRUE),
+            upper = quantile(aqi, prob = .975, na.rm = TRUE)
+          ) %>%
+          select(-hour) %>%
+          bind_cols(day_data) %>%
+          e_charts(hour) %>%
+          e_line(aqi) %>%
+          e_scatter(median, symbol_size = 5, itemStyle = list(color = "#808080")) %>%
+          e_legend(show = FALSE) %>%
+          e_error_bar(lower, upper) %>%
+          e_axis_labels(x = "Hour of Day") %>%
+          e_x_axis(nameLocation = "center") %>%
+          e_title(paste(
+            state[["map_onclick"]], "AQI,",
+            fmt_date(state[["aqi_date_selected"]])
+          ))
+      }) %>%
+        bindCache(state[["map_onclick"]], state[["aqi_date_selected"]])
+
+      showModal(modalDialog(
+        echarts4rOutput(ns("aqi_quantile")),
+        footer = NULL,
+        size = "l",
+        easyClose = TRUE
+      ))
     })
   }
 
