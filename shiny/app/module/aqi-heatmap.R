@@ -61,8 +61,8 @@ aqi_heatmap_mod <- function(id, state) {
         e_visual_map(aqi_cat,
           type = "piecewise",
           orient = "horizontal",
-          top = "top", left = "center",
-          calculable = FALSE,
+          top = "top",
+          left = "center",
           pieces = map2(
             level, seq_along(level),
             function(x, i) {
