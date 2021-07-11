@@ -9,11 +9,12 @@ aqi_heatmap_mod <- function(id, state) {
     ns <- session[["ns"]]
 
     output[["aqi_heatmap"]] <- renderEcharts4r({
-      data <- aqi_data %>%
-        filter(
-          location == make_clean_names(state[["map_onclick"]]),
-          year(datetime) == state[["year"]]
-        ) %>%
+      data <- filter(aqi_data, location == make_clean_names(state[["map_onclick"]]))
+
+      req(state[["year"]] %in% year(data[["datetime"]]))
+
+      data <- data %>%
+        filter(year(datetime) == state[["year"]]) %>%
         as_tibble() %>%
         group_by(date = date(datetime), location) %>%
         summarise(agg_aqi = as.numeric(Max(aqi))) %>%

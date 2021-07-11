@@ -5,7 +5,7 @@ app_ui <- dashboardPage(
     shinyDashboardThemes(theme = "blue_gradient"),
     fluidPage(
       fluidRow(
-        selectInput("year", "Year", sort(unique(year(aqi_data[["datetime"]]))))
+        selectInput("year", "Year", 0, 0)
       ),
       fluidRow(column(aqi_heatmap_ui("aqi_heatmap"), width = 12)),
       fluidRow(

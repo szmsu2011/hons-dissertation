@@ -18,7 +18,7 @@ source("shiny/app/server.R")
 
 initial_app_state <- list(
   map_onclick = "Queen Street",
-  year = year(min(aqi_data[["datetime"]])),
+  year = year(max(aqi_data[["datetime"]])),
   aqi_date_selected = NULL
 )
 
