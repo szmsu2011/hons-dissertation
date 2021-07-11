@@ -138,7 +138,7 @@ aqi_heatmap_mod <- function(id, state) {
           ))
 
         for (x in c(50, 100, 150, 200, 300)) {
-          ac <- aqi_cat(x + 1)
+          ac <- as.character(aqi_cat(x + 1))
           pat <- "ealthy|sitive"
 
           e <- e %>%
@@ -148,8 +148,8 @@ aqi_heatmap_mod <- function(id, state) {
                 lineStyle = list(color = aqi_pal[[ac]]),
                 label = list(formatter = case_when(
                   ac == "Unhealthy" ~ "Unhealthy",
-                  grepl(pat, as.character(ac)) ~ gsub(pat, "\\.", as.character(ac)),
-                  TRUE ~ as.character(ac)
+                  grepl(pat, ac) ~ gsub(pat, "\\.", ac),
+                  TRUE ~ ac
                 ))
               ),
               symbol = "none"
