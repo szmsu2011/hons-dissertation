@@ -9,25 +9,15 @@ aqi_details_ui <- function(id) {
 aqi_details_mod <- function(id, state) {
   module <- function(input, output, session) {
     output[["aqi_lineplot"]] <- renderEcharts4r({
-      if (is.null(state[["aqi_heatmap_datazoom"]])) {
-        start <- with(data, ifelse(
-          last(date) - years(1) <= first(date),
-          0,
-          (1 - years(1) / as.period(diff(range(date)))) * 100
-        ))
-      } else {
-        start <- state[["aqi_heatmap_datazoom"]][["start"]]
-        end <- state[["aqi_heatmap_datazoom"]][["end"]]
-      }
-
       e <- aqi_data %>%
-        filter(location == make_clean_names(state[["map_onclick"]])) %>%
+        filter(
+          location == make_clean_names(state[["map_onclick"]]),
+          year(datetime) == state[["year"]]
+        ) %>%
         e_charts(datetime) %>%
         e_axis_labels(y = "AQI") %>%
         e_line(aqi, symbol = "none") %>%
-        e_datazoom(x_index = 0, start = start, end = 100, show = FALSE) %>%
-        e_legend(show = FALSE) %>%
-        e_group("aqi_grp")
+        e_legend(show = FALSE)
 
       for (x in c(50, 100, 150, 200, 300)) {
         e <- e %>%
@@ -43,7 +33,7 @@ aqi_details_mod <- function(id, state) {
 
       e
     }) %>%
-      bindCache(state[["map_onclick"]])
+      bindCache(state[["map_onclick"]], state[["year"]])
   }
 
   moduleServer(id, module)

@@ -10,7 +10,10 @@ aqi_heatmap_mod <- function(id, state) {
 
     output[["aqi_heatmap"]] <- renderEcharts4r({
       data <- aqi_data %>%
-        filter(location == make_clean_names(state[["map_onclick"]])) %>%
+        filter(
+          location == make_clean_names(state[["map_onclick"]]),
+          year(datetime) == state[["year"]]
+        ) %>%
         as_tibble() %>%
         group_by(date = date(datetime), location) %>%
         summarise(agg_aqi = as.numeric(Max(aqi))) %>%
@@ -41,21 +44,13 @@ aqi_heatmap_mod <- function(id, state) {
         mutate(
           wday = wday(date, label = TRUE),
           aqi_cat = as.numeric(aqi_cat),
-          week_start = floor_date(date, "week"),
+          week_end = ceiling_date(date, "week"),
           x = paste(
-            year(week_start),
-            month(week_start, label = TRUE),
-            day(week_start)
+            year(week_end),
+            month(week_end, label = TRUE),
+            day(week_end)
           )
         )
-
-      if (is.null(state[["aqi_heatmap_datazoom"]])) {
-        start <- with(data, ifelse(
-          last(date) - years(1) <= first(date),
-          0,
-          (1 - years(1) / as.period(diff(range(date)))) * 100
-        ))
-      }
 
       data %>%
         e_charts(x) %>%
@@ -86,25 +81,17 @@ aqi_heatmap_mod <- function(id, state) {
             return value.substring(0, 8);
           }
         ")) %>%
-        e_datazoom(x_index = 0, start = start, end = 100) %>%
         e_title(paste(
           "Daily Max AQI,",
           state[["map_onclick"]]
-        )) %>%
-        e_capture("datazoom") %>%
-        e_group("aqi_grp") %>%
-        e_connect_group("aqi_grp")
+        ))
     }) %>%
-      bindCache(state[["map_onclick"]])
-
-    observeEvent(input[["aqi_heatmap_datazoom"]], {
-      state[["aqi_heatmap_datazoom"]] <- input[["aqi_heatmap_datazoom"]]
-    })
+      bindCache(state[["map_onclick"]], state[["year"]])
 
     observeEvent(input[["aqi_heatmap_clicked_data"]], {
       aqi_date_selected <- input[["aqi_heatmap_clicked_data"]][["value"]]
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected[1]) +
-        which(wday(1:7, TRUE) == aqi_date_selected[2]) - 1
+        which(wday(1:7, TRUE) == aqi_date_selected[2]) - 8
 
       output[["aqi_quantile"]] <- renderEcharts4r({
         day_data <- aqi_data %>%

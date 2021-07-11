@@ -18,7 +18,7 @@ source("shiny/app/server.R")
 
 initial_app_state <- list(
   map_onclick = "Queen Street",
-  aqi_heatmap_datazoom = NULL,
+  year = year(min(aqi_data[["datetime"]])),
   aqi_date_selected = NULL
 )
 

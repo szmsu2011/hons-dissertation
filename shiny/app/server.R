@@ -5,4 +5,8 @@ app_server <- function(input, output, session) {
   callback_mod("callback", app_state)
   aqi_heatmap_mod("aqi_heatmap", app_state)
   aqi_details_mod("aqi_details", app_state)
+
+  observeEvent(input[["year"]], {
+    app_state[["year"]] <- input[["year"]]
+  })
 }
