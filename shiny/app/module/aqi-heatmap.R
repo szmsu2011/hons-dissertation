@@ -114,7 +114,7 @@ aqi_heatmap_mod <- function(id, state) {
           ) %>%
           mutate(hour = hour(datetime))
 
-        aqi_data %>%
+        e <- aqi_data %>%
           filter(location == make_clean_names(state[["map_onclick"]])) %>%
           as_tibble() %>%
           group_by(hour = hour(datetime)) %>%
@@ -136,6 +136,27 @@ aqi_heatmap_mod <- function(id, state) {
             state[["map_onclick"]], "AQI,",
             fmt_date(state[["aqi_date_selected"]])
           ))
+
+        for (x in c(50, 100, 150, 200, 300)) {
+          ac <- aqi_cat(x + 1)
+          pat <- "ealthy|sitive"
+
+          e <- e %>%
+            e_mark_line(
+              data = list(
+                yAxis = x,
+                lineStyle = list(color = aqi_pal[[ac]]),
+                label = list(formatter = case_when(
+                  ac == "Unhealthy" ~ "Unhealthy",
+                  grepl(pat, as.character(ac)) ~ gsub(pat, "\\.", as.character(ac)),
+                  TRUE ~ as.character(ac)
+                ))
+              ),
+              symbol = "none"
+            )
+        }
+
+        e
       }) %>%
         bindCache(state[["map_onclick"]], state[["aqi_date_selected"]])
 
