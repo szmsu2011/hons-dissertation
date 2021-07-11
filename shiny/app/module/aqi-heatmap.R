@@ -44,11 +44,11 @@ aqi_heatmap_mod <- function(id, state) {
         mutate(
           wday = wday(date, label = TRUE),
           aqi_cat = as.numeric(aqi_cat),
-          week_end = ceiling_date(date, "week"),
+          week_start = floor_date(date, "week"),
           x = paste(
-            year(week_end),
-            month(week_end, label = TRUE),
-            day(week_end)
+            year(week_start),
+            month(week_start, label = TRUE),
+            day(week_start)
           )
         )
 
@@ -67,14 +67,11 @@ aqi_heatmap_mod <- function(id, state) {
             }
           )
         ) %>%
-        e_tooltip(
-          axisPointer = list(type = "cross"),
-          formatter = htmlwidgets::JS("
-            function(params) {
-              return params.name;
-            }
-          ")
-        ) %>%
+        e_tooltip(formatter = htmlwidgets::JS("
+          function(params) {
+            return params.name;
+          }
+        ")) %>%
         e_y_axis(inverse = TRUE) %>%
         e_x_axis(formatter = htmlwidgets::JS("
           function(value) {
@@ -91,7 +88,7 @@ aqi_heatmap_mod <- function(id, state) {
     observeEvent(input[["aqi_heatmap_clicked_data"]], {
       aqi_date_selected <- input[["aqi_heatmap_clicked_data"]][["value"]]
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected[1]) +
-        which(wday(1:7, TRUE) == aqi_date_selected[2]) - 8
+        which(wday(1:7, TRUE) == aqi_date_selected[2]) - 1
 
       output[["aqi_quantile"]] <- renderEcharts4r({
         day_data <- aqi_data %>%
