@@ -54,12 +54,15 @@ aqi_details_mod <- function(id, state) {
             }
           )
         ) %>%
+        e_title(paste(
+          "Key Pollutant,",
+          state[["map_onclick"]]
+        )) %>%
         e_tooltip(formatter = htmlwidgets::JS("
           function(params) {
             return params.name;
           }
-        ")) %>%
-        e_group("aqi_grp")
+        "))
     }) %>%
       bindCache(state[["map_onclick"]], state[["year"]])
   }

@@ -56,9 +56,7 @@ aqi_heatmap_mod <- function(id, state) {
         e_title(paste(
           "Daily Max AQI,",
           state[["map_onclick"]]
-        )) %>%
-        e_group("aqi_grp") %>%
-        e_connect_group("aqi_grp")
+        ))
     }) %>%
       bindCache(state[["map_onclick"]], state[["year"]])
 
