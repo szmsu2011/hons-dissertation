@@ -1,7 +1,7 @@
 aqi_heatmap_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(echarts4rOutput(ns("aqi_heatmap")))
+  tagList(echarts4rOutput(ns("aqi_heatmap"), height = 220))
 }
 
 aqi_heatmap_mod <- function(id, state) {
@@ -16,7 +16,7 @@ aqi_heatmap_mod <- function(id, state) {
       data <- data %>%
         filter(year(datetime) == state[["year"]]) %>%
         as_tibble() %>%
-        group_by(date = date(datetime), location) %>%
+        group_by(date = date(datetime)) %>%
         summarise(agg_aqi = as.numeric(Max(aqi))) %>%
         ungroup() %>%
         mutate(
@@ -56,7 +56,9 @@ aqi_heatmap_mod <- function(id, state) {
         e_title(paste(
           "Daily Max AQI,",
           state[["map_onclick"]]
-        ))
+        )) %>%
+        e_group("aqi_grp") %>%
+        e_connect_group("aqi_grp")
     }) %>%
       bindCache(state[["map_onclick"]], state[["year"]])
 

@@ -11,7 +11,7 @@ data <- read_csv("data/akl-env-data.csv",
   as_tsibble(index = datetime, key = location)
 
 aqi_data <- select(data, c(aqi, aqi_cat))
-other_data <- select(data, -c(aqi, aqi_cat))
+con_data <- select(data, aqi, !!sym("pm2.5"), pm10, no2, so2, co, o3)
 
 station <- tibble(
   site = c(
