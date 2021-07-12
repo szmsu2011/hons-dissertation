@@ -13,7 +13,9 @@ app_server <- function(input, output, session) {
   observeEvent(app_state[["map_onclick"]], {
     loc <- make_clean_names(app_state[["map_onclick"]])
     yr <- unique(year(filter(aqi_data, location == loc)[["datetime"]]))
-    if (!app_state[["year"]] %in% yr) {
+    if (app_state[["year"]] %in% yr) {
+      updateSelectInput(session, "year", "Year", sort(yr), app_state[["year"]])
+    } else {
       updateSelectInput(session, "year", "Year", sort(yr), max(yr))
     }
   })
