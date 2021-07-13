@@ -48,7 +48,7 @@ aqi_heatmap_mod <- function(id, state) {
             }
           )
         ) %>%
-        e_tooltip(formatter = htmlwidgets::JS("
+        e_tooltip(formatter = JS("
           function(params) {
             return params.name;
           }
