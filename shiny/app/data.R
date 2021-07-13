@@ -4,8 +4,8 @@ data <- read_csv("data/akl-env-data.csv",
 ) %>%
   filter(year(datetime) > 2015) %>%
   mutate(
+    datetime = as_datetime(datetime) + hours(12),
     aqi_cat = aqi_cat(aqi),
-    date = as_date(datetime),
     hour = hour(datetime)
   ) %>%
   as_tsibble(index = datetime, key = location)

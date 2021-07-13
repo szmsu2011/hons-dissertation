@@ -65,15 +65,14 @@ aqi_heatmap_mod <- function(id, state) {
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected)
 
       output[["aqi_quantile"]] <- renderEcharts4r({
-        day_data <- aqi_data %>%
-          filter(
-            location == make_clean_names(state[["map_onclick"]]),
-            date(datetime) == state[["aqi_date_selected"]]
-          ) %>%
+        data <- aqi_data %>%
+          filter(location == make_clean_names(state[["map_onclick"]]))
+
+        day_data <- data %>%
+          filter(date(datetime) == state[["aqi_date_selected"]]) %>%
           mutate(hour = hour(datetime))
 
-        e <- aqi_data %>%
-          filter(location == make_clean_names(state[["map_onclick"]])) %>%
+        e <- data %>%
           as_tibble() %>%
           group_by(hour = hour(datetime)) %>%
           summarise(
@@ -88,8 +87,8 @@ aqi_heatmap_mod <- function(id, state) {
           e_scatter(median, symbol_size = 5, itemStyle = list(color = "#808080")) %>%
           e_legend(show = FALSE) %>%
           e_error_bar(lower, upper) %>%
-          e_axis_labels(x = "Hour of Day") %>%
-          e_x_axis(nameLocation = "center") %>%
+          e_axis_labels(x = "(UTC+12:00)") %>%
+          e_x_axis(nameLocation = "end") %>%
           e_title(paste(
             state[["map_onclick"]], "AQI,",
             fmt_date(state[["aqi_date_selected"]])
