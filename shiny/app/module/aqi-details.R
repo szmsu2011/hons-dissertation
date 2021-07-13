@@ -2,13 +2,13 @@ aqi_details_ui <- function(id) {
   ns <- NS(id)
 
   fluidPage(
-    fluidRow(tagList(echarts4rOutput(ns("aqi_lineplot"))))
+    fluidRow(tagList(echarts4rOutput(ns("aqi_details"))))
   )
 }
 
 aqi_details_mod <- function(id, state) {
   module <- function(input, output, session) {
-    output[["aqi_lineplot"]] <- renderEcharts4r({
+    output[["aqi_details"]] <- renderEcharts4r({
       data <- filter(con_data, location == make_clean_names(state[["map_onclick"]]))
 
       req(state[["year"]] %in% year(data[["datetime"]]))
