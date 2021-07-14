@@ -1,9 +1,7 @@
 aqi_details_ui <- function(id) {
   ns <- NS(id)
 
-  fluidPage(
-    fluidRow(tagList(echarts4rOutput(ns("aqi_details"))))
-  )
+  tagList(echarts4rOutput(ns("aqi_details"), height = 220))
 }
 
 aqi_details_mod <- function(id, state) {
