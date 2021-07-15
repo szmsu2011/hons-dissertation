@@ -76,39 +76,57 @@ aqi_heatmap_mod <- function(id, state) {
           as_tibble() %>%
           group_by(hour = hour(datetime)) %>%
           summarise(
-            lower = quantile(aqi, prob = .025, na.rm = TRUE),
-            median = quantile(aqi, prob = .5, na.rm = TRUE),
-            upper = quantile(aqi, prob = .975, na.rm = TRUE)
+            lower = quantile(aqi, prob = .025, na.rm = TRUE) %>% round(2),
+            median = quantile(aqi, prob = .5, na.rm = TRUE) %>% round(2),
+            upper = quantile(aqi, prob = .975, na.rm = TRUE) %>% round(2)
           ) %>%
           select(-hour) %>%
           bind_cols(day_data) %>%
+          mutate(tt = paste("AQI:", aqi)) %>%
           e_charts(hour) %>%
-          e_line(aqi) %>%
-          e_scatter(median, symbol_size = 5, itemStyle = list(color = "#808080")) %>%
+          e_line(aqi, bind = tt) %>%
+          e_scatter(
+            median,
+            symbol_size = 9.5,
+            itemStyle = list(color = "#808080"),
+            name = "median",
+            tooltip = list(formatter = JS("
+              function(x) {
+                return 'Median: ' + x.value[1]
+              }
+            "))
+          ) %>%
           e_legend(show = FALSE) %>%
-          e_error_bar(lower, upper) %>%
+          e_error_bar(lower, upper, name = "eb", tooltip = list(
+            formatter = JS("
+              function(x) {
+                return '97.5% Quantile: ' + x.value[2] +
+                  '<br>2.5% Quantile: ' + x.value[1];
+              }
+            ")
+          )) %>%
           e_axis_labels(x = "(UTC+12:00)") %>%
           e_x_axis(nameLocation = "end") %>%
           e_title(paste(
             state[["map_onclick"]], "AQI,",
             fmt_date(state[["aqi_date_selected"]])
-          ))
+          )) %>%
+          e_tooltip(formatter = JS("
+            function(params) {
+              return params.name;
+            }
+          "))
 
         for (x in c(50, 100, 150, 200, 300)) {
-          ac <- as.character(aqi_cat(x + 1))
-          pat <- "ealthy|sitive"
-
           e <- e %>%
             e_mark_line(
               data = list(
                 yAxis = x,
-                lineStyle = list(color = aqi_pal[[ac]]),
-                label = list(formatter = case_when(
-                  ac == "Unhealthy" ~ "Unhealthy",
-                  grepl(pat, ac) ~ gsub(pat, "\\.", ac),
-                  TRUE ~ ac
-                ))
+                lineStyle = list(color = aqi_pal[[aqi_cat(x + 1)]]),
+                label = list(formatter = ""),
+                tooltip = list(formatter = aqi_cat(x + 1))
               ),
+              name = paste("mark", x),
               symbol = "none"
             )
         }

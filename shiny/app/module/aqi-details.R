@@ -74,11 +74,9 @@ aqi_details_mod <- function(id, state) {
       con_selected <- gsub("(.*)t: (.*)<(.*)", "\\2", con_selected)
 
       output[["con_quantile"]] <- renderEcharts4r({
-        data <- con_data %>%
+        day_data <- (data <- con_data %>%
           filter(location == make_clean_names(state[["map_onclick"]])) %>%
-          mutate(pol = !!sym(tolower(con_selected)))
-
-        day_data <- data %>%
+          mutate(pol = !!sym(tolower(con_selected)))) %>%
           filter(date(datetime) == state[["con_date_selected"]]) %>%
           mutate(hour = hour(datetime))
 
@@ -88,23 +86,43 @@ aqi_details_mod <- function(id, state) {
           as_tibble() %>%
           group_by(hour = hour(datetime)) %>%
           summarise(
-            lower = quantile(pol, prob = .025, na.rm = TRUE),
-            median = quantile(pol, prob = .5, na.rm = TRUE),
-            upper = quantile(pol, prob = .975, na.rm = TRUE)
+            lower = quantile(pol, prob = .025, na.rm = TRUE) %>% round(2),
+            median = quantile(pol, prob = .5, na.rm = TRUE) %>% round(2),
+            upper = quantile(pol, prob = .975, na.rm = TRUE) %>% round(2)
           ) %>%
           select(-hour) %>%
           bind_cols(day_data) %>%
+          mutate(tt = paste0(con_selected, ": ", pol)) %>%
           e_charts(hour) %>%
-          e_line(pol) %>%
-          e_scatter(median, symbol_size = 5, itemStyle = list(color = "#808080")) %>%
+          e_line(pol, bind = tt) %>%
+          e_scatter(
+            median,
+            symbol_size = 9.5,
+            itemStyle = list(color = "#808080"),
+            name = "median",
+            tooltip = list(formatter = JS("
+              function(x) {
+                return 'Median: ' + x.value[1]
+              }
+            "))
+          ) %>%
           e_legend(show = FALSE) %>%
-          e_error_bar(lower, upper) %>%
+          e_error_bar(lower, upper, name = "eb", tooltip = list(
+            formatter = JS("
+              function(x) {
+                return '97.5% Quantile: ' + x.value[2] +
+                  '<br>2.5% Quantile: ' + x.value[1];
+              }
+            ")
+          )) %>%
           e_mark_line(
             data = list(
               yAxis = threshold[tolower(con_selected) == names(con_data)[2:7]],
               lineStyle = list(color = "steelblue"),
-              label = list(formatter = "threshold")
+              label = list(formatter = ""),
+              tooltip = list(formatter = "Threshold")
             ),
+            name = "mark",
             symbol = "none"
           ) %>%
           e_axis_labels(x = "(UTC+12:00)") %>%
@@ -112,7 +130,12 @@ aqi_details_mod <- function(id, state) {
           e_title(paste0(
             state[["map_onclick"]], " ", con_selected, ", ",
             fmt_date(state[["con_date_selected"]])
-          ))
+          )) %>%
+          e_tooltip(formatter = JS("
+            function(params) {
+              return params.name;
+            }
+          "))
       }) %>%
         bindCache(state[["map_onclick"]], state[["con_date_selected"]])
 
