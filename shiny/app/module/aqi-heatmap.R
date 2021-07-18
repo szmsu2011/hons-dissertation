@@ -1,7 +1,7 @@
 aqi_heatmap_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(echarts4rOutput(ns("aqi_heatmap"), height = 220))
+  tagList(echarts4rOutput(ns("aqi_heatmap"), height = "1150px"))
 }
 
 aqi_heatmap_mod <- function(id, state) {
@@ -22,9 +22,9 @@ aqi_heatmap_mod <- function(id, state) {
         mutate(
           aqi_cat = aqi_cat(agg_aqi),
           tt = paste0(
-            "Date: ", fmt_date(date), "<br />",
-            "Max AQI: ", agg_aqi, "<br />",
-            "Max AQI Level: ", aqi_cat
+            "Date: <b>", fmt_date(date), "</b><br>",
+            "Max AQI: <b>", agg_aqi, "</b><br>",
+            "Max AQI Level: <b>", aqi_cat, "</b>"
           )
         ) %>%
         as_tsibble(index = date)
@@ -34,9 +34,10 @@ aqi_heatmap_mod <- function(id, state) {
       data %>%
         mutate(aqi_cat = as.numeric(aqi_cat)) %>%
         e_charts(date) %>%
-        e_calendar(range = state[["year"]]) %>%
+        e_calendar(range = state[["year"]], orient = "vertical", top = 95) %>%
         e_heatmap(aqi_cat, bind = tt, coord_system = "calendar") %>%
         e_visual_map(aqi_cat,
+          show = FALSE,
           type = "piecewise",
           orient = "horizontal",
           top = "top",
@@ -48,15 +49,17 @@ aqi_heatmap_mod <- function(id, state) {
             }
           )
         ) %>%
-        e_tooltip(formatter = JS("
+        e_tooltip(borderWidth = 2, formatter = JS("
           function(params) {
             return params.name;
           }
         ")) %>%
-        e_title(paste(
-          "Daily Max AQI,",
+        e_title(
+          "Daily Max AQI",
           state[["map_onclick"]]
-        ))
+        ) %>%
+        e_group("grp") %>%
+        e_connect_group("grp")
     }) %>%
       bindCache(state[["map_onclick"]], state[["year"]])
 

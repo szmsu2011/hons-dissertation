@@ -1,7 +1,7 @@
 aqi_details_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(echarts4rOutput(ns("aqi_details"), height = 220))
+  tagList(echarts4rOutput(ns("aqi_details"), height = "1150px"))
 }
 
 aqi_details_mod <- function(id, state) {
@@ -29,8 +29,8 @@ aqi_details_mod <- function(id, state) {
         summarise(aqi_pol = factor(names(table(aqi_pol))[1], toupper(pol))) %>%
         ungroup() %>%
         mutate(tt = paste0(
-          "Date: ", fmt_date(date), "<br />",
-          "Key AQI Constituent: ", aqi_pol, "<br />"
+          "Date: <b>", fmt_date(date), "</b><br>",
+          "Key AQI Constituent: <b>", aqi_pol, "</b>"
         )) %>%
         as_tsibble(index = date)
 
@@ -40,11 +40,11 @@ aqi_details_mod <- function(id, state) {
       data %>%
         mutate(aqi_pol = as.numeric(aqi_pol)) %>%
         e_charts(date) %>%
-        e_calendar(range = state[["year"]]) %>%
+        e_calendar(range = state[["year"]], orient = "vertical", top = 95) %>%
         e_heatmap(aqi_pol, bind = tt, coord_system = "calendar") %>%
         e_visual_map(aqi_pol,
+          show = FALSE,
           type = "piecewise",
-          orient = "horizontal",
           top = "top",
           left = "center",
           pieces = map2(
@@ -54,15 +54,16 @@ aqi_details_mod <- function(id, state) {
             }
           )
         ) %>%
-        e_title(paste(
-          "Key Pollutant,",
+        e_title(
+          "Key Pollutant",
           state[["map_onclick"]]
-        )) %>%
+        ) %>%
         e_tooltip(formatter = JS("
           function(params) {
             return params.name;
           }
-        "))
+        ")) %>%
+        e_group("grp")
     }) %>%
       bindCache(state[["map_onclick"]], state[["year"]])
 
@@ -71,7 +72,7 @@ aqi_details_mod <- function(id, state) {
       state[["con_date_selected"]] <- ymd(con_date_selected)
 
       con_selected <- input[["aqi_details_clicked_data"]][["name"]]
-      con_selected <- gsub("(.*)t: (.*)<(.*)", "\\2", con_selected)
+      con_selected <- gsub("(.*)t: <b>(.*)<(.*)", "\\2", con_selected)
 
       output[["con_quantile"]] <- renderEcharts4r({
         day_data <- (data <- con_data %>%
