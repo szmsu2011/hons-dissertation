@@ -1,7 +1,7 @@
 aqi_details_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(echarts4rOutput(ns("aqi_details"), height = "1150px"))
+  tagList(echarts4rOutput(ns("aqi_details"), height = "1190px"))
 }
 
 aqi_details_mod <- function(id, state) {

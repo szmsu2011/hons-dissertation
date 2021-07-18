@@ -1,7 +1,7 @@
 aqi_heatmap_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(echarts4rOutput(ns("aqi_heatmap"), height = "1150px"))
+  tagList(echarts4rOutput(ns("aqi_heatmap"), height = "1190px"))
 }
 
 aqi_heatmap_mod <- function(id, state) {

@@ -1,7 +1,7 @@
 map_ui <- function(id) {
   ns <- NS(id)
 
-  tagList(leafletOutput(ns("map"), height = "1150px"))
+  tagList(leafletOutput(ns("map"), height = "1190px"))
 }
 
 map_mod <- function(id, state) {
