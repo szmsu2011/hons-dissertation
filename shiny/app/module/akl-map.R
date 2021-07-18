@@ -9,7 +9,7 @@ map_mod <- function(id, state) {
     output[["map"]] <- renderLeaflet({
       leaflet(data = station) %>%
         addTiles() %>%
-        setView(174.7945, -37.2109, zoom = 9.5) %>%
+        setView(174.7485, -37.2109, zoom = 9.5) %>%
         addMarkers(~lng, ~lat, ~site, label = ~site)
     })
 
