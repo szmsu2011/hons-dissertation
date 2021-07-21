@@ -68,6 +68,15 @@ wind_rose_mod <- function(id, state) {
           e_bar_(y, coord_system = "polar", stack = "stack")
       }
 
+      if (mth != 1L) {
+        e <- e %>%
+          e_group("grp2") %>%
+          e_connect_group("grp2")
+      } else {
+        e <- e %>%
+          e_group("grp2")
+      }
+
       e
     }
 
