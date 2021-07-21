@@ -85,7 +85,7 @@ aqi_heatmap_mod <- function(id, state) {
           ) %>%
           select(-hour) %>%
           bind_cols(day_data) %>%
-          mutate(tt = paste("AQI:", aqi)) %>%
+          mutate(tt = paste0("AQI: <b>", aqi, "</b>")) %>%
           e_charts(hour) %>%
           e_line(aqi, bind = tt) %>%
           e_scatter(
@@ -95,7 +95,7 @@ aqi_heatmap_mod <- function(id, state) {
             name = "median",
             tooltip = list(formatter = JS("
               function(x) {
-                return 'Median: ' + x.value[1]
+                return 'Median: <b>' + x.value[1] + '</b>'
               }
             "))
           ) %>%
@@ -103,8 +103,8 @@ aqi_heatmap_mod <- function(id, state) {
           e_error_bar(lower, upper, name = "eb", tooltip = list(
             formatter = JS("
               function(x) {
-                return '97.5% Quantile: ' + x.value[2] +
-                  '<br>2.5% Quantile: ' + x.value[1];
+                return '97.5% Quantile: <b>' + x.value[2] + '</b>' +
+                  '<br>2.5% Quantile: <b>' + x.value[1] + '</b>';
               }
             ")
           )) %>%
@@ -126,8 +126,8 @@ aqi_heatmap_mod <- function(id, state) {
               data = list(
                 yAxis = x,
                 lineStyle = list(color = aqi_pal[[aqi_cat(x + 1)]]),
-                label = list(formatter = ""),
-                tooltip = list(formatter = aqi_cat(x + 1))
+                tooltip = list(formatter = paste0("<b>", aqi_cat(x + 1), "</b>")),
+                label = list(formatter = "")
               ),
               name = paste("mark", x),
               symbol = "none"

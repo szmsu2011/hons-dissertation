@@ -93,7 +93,7 @@ aqi_details_mod <- function(id, state) {
           ) %>%
           select(-hour) %>%
           bind_cols(day_data) %>%
-          mutate(tt = paste0(con_selected, ": ", pol)) %>%
+          mutate(tt = paste0(con_selected, ": <b>", pol, "</b>")) %>%
           e_charts(hour) %>%
           e_line(pol, bind = tt) %>%
           e_scatter(
@@ -103,7 +103,7 @@ aqi_details_mod <- function(id, state) {
             name = "median",
             tooltip = list(formatter = JS("
               function(x) {
-                return 'Median: ' + x.value[1]
+                return 'Median: <b>' + x.value[1] + '</b>'
               }
             "))
           ) %>%
@@ -111,8 +111,8 @@ aqi_details_mod <- function(id, state) {
           e_error_bar(lower, upper, name = "eb", tooltip = list(
             formatter = JS("
               function(x) {
-                return '97.5% Quantile: ' + x.value[2] +
-                  '<br>2.5% Quantile: ' + x.value[1];
+                return '97.5% Quantile: <b>' + x.value[2] + '</b>' +
+                  '<br>2.5% Quantile: <b>' + x.value[1] + '</b>';
               }
             ")
           )) %>%
@@ -120,8 +120,8 @@ aqi_details_mod <- function(id, state) {
             data = list(
               yAxis = threshold[tolower(con_selected) == names(con_data)[2:7]],
               lineStyle = list(color = "steelblue"),
-              label = list(formatter = ""),
-              tooltip = list(formatter = "Threshold")
+              tooltip = list(formatter = "<b>Threshold</b>"),
+              label = list(formatter = "")
             ),
             name = "mark",
             symbol = "none"
