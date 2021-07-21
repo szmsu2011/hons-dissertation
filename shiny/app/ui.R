@@ -9,17 +9,31 @@ app_ui <- dashboardPage(
     shinyDashboardThemes(theme = "blue_gradient"),
     tabItems(
       tabItem("aqi", fluidPage(
-        fluidRow(selectInput("year", "Year", "")),
         fluidRow(
-          column(map_ui("map"), width = 4),
+          column(width = 8),
+          column(selectInput("year", "Year", ""), width = 4)
+        ),
+        fluidRow(
+          column(map_aqi_ui("map_aqi"), width = 4),
           column(aqi_heatmap_ui("aqi_heatmap"), width = 4),
           column(aqi_details_ui("aqi_details"), width = 4)
         )
       )),
-      tabItem("weather"),
+      tabItem("weather", fluidPage(
+        fluidRow()
+      )),
       tabItem("wind", fluidPage(
         fluidRow(
-          column(wind_rose_ui("wind_rose"), width = 4)
+          column(width = 8),
+          column(selectInput(
+            "year_wind", "Year",
+            sort(unique(year(wind_data[["datetime"]]))),
+            last(year(range(wind_data[["datetime"]])))
+          ), width = 4)
+        ),
+        fluidRow(
+          column(map_wind_ui("map_wind"), width = 4),
+          column(wind_rose_ui("wind_rose"), width = 8)
         )
       ))
     )
