@@ -1,43 +1,9 @@
-require_load <- function(x, md5) {
-  if (exists(x)) {
-    x <- eval(sym(x))
-    as.character(openssl::md5(serialize(x, NULL))) != md5
-  } else {
-    TRUE
-  }
-}
-
-if (require_load("wind_dir_data", "cf3691c6ea3c57ac8dca8a63ce0e2315")) {
-  wind_dir_data <- "data/akl-wind-dir.csv" %>%
-    read_csv(col_types = "Tcd") %>%
-    mutate(datetime = datetime + hours(12)) %>%
+append_data <- function(data, loc) {
+  paste0("data/app/", gsub("_", "-", loc), ".csv") %>%
+    read_csv(col_types = "Tddddddddddddddcd") %>%
+    mutate(location = loc) %>%
+    bind_rows(data) %>%
     as_tsibble(index = datetime, key = location)
-}
-
-if (require_load("data", "b72ec360895f0babbf84d43b6cc87c74")) {
-  data <- "data/akl-env-data.csv" %>%
-    read_csv(col_types = paste0("Tc", paste(rep("d", 14), collapse = ""))) %>%
-    mutate(
-      datetime = datetime + hours(12),
-      aqi_cat = aqi_cat(aqi),
-      hour = hour(datetime)
-    ) %>%
-    filter(year(datetime) > 2015) %>%
-    as_tsibble(index = datetime, key = location)
-}
-
-if (require_load("aqi_data", "15e0b7480c010a3db774ac801a34fcc6")) {
-  aqi_data <- select(data, c(aqi, aqi_cat))
-}
-if (require_load("con_data", "fb838b5ede632f3cde868948659a289b")) {
-  con_data <- select(data, aqi, !!sym("pm2.5"), pm10, no2, so2, co, o3)
-}
-
-if (require_load("wind_data", "cd37cb8149617202041c8084082a61a1")) {
-  wind_data <- data %>%
-    left_join(wind_dir_data, by = c("datetime", "location")) %>%
-    select(ws, wind_dir) %>%
-    drop_na()
 }
 
 station <- tibble(

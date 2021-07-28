@@ -19,17 +19,11 @@ app_ui <- dashboardPage(
           column(aqi_details_ui("aqi_details"), width = 4)
         )
       )),
-      tabItem("weather", fluidPage(
-        fluidRow()
-      )),
+      tabItem("weather", fluidPage()),
       tabItem("wind", fluidPage(
         fluidRow(
           column(width = 8),
-          column(selectInput(
-            "year_wind", "Year",
-            sort(unique(year(wind_data[["datetime"]]))),
-            last(year(range(wind_data[["datetime"]])))
-          ), width = 4)
+          column(selectInput("year2", "Year", ""), width = 4)
         ),
         fluidRow(
           column(map_wind_ui("map_wind"), width = 4),

@@ -21,6 +21,9 @@ source("shiny/app/ui.R")
 source("shiny/app/server.R")
 
 # Initiate App (Initial Location)
-initial_app_state <- list(map_onclick = "Queen Street")
+initial_app_state <- list(
+  data = append_data(NULL, "queen_street"),
+  map_onclick = "Queen Street"
+)
 
 shinyApp(app_ui, app_server)

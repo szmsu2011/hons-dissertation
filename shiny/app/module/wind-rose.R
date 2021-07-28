@@ -82,9 +82,12 @@ wind_rose_mod <- function(id, state) {
 
     map(1:12, function(i) {
       output[["wind_rose" %>% paste0(i)]] <- renderEcharts4r({
-        e_wind_rose(wind_data, state[["year_wind"]], i, state[["map_onclick"]])
+        state[["data"]] %>%
+          select(ws, wind_dir, location) %>%
+          drop_na() %>%
+          e_wind_rose(state[["year"]], i, state[["map_onclick"]])
       }) %>%
-        bindCache(state[["year_wind"]], state[["map_onclick"]], i)
+        bindCache(state[["year"]], state[["map_onclick"]], i)
     })
   }
 

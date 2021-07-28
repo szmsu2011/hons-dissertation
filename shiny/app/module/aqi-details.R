@@ -9,7 +9,12 @@ aqi_details_mod <- function(id, state) {
     ns <- session[["ns"]]
 
     output[["aqi_details"]] <- renderEcharts4r({
-      data <- filter(con_data, location == make_clean_names(state[["map_onclick"]]))
+      loc <- make_clean_names(state[["map_onclick"]])
+      req(loc %in% state[["data"]][["location"]])
+
+      data <- state[["data"]] %>%
+        select(aqi, !!sym("pm2.5"), pm10, no2, so2, co, o3, location) %>%
+        filter(location == loc)
 
       req(state[["year"]] %in% year(data[["datetime"]]))
 
@@ -75,6 +80,9 @@ aqi_details_mod <- function(id, state) {
       con_selected <- gsub("(.*)t: <b>(.*)<(.*)", "\\2", con_selected)
 
       output[["con_quantile"]] <- renderEcharts4r({
+        con_data <- state[["data"]] %>%
+          select(aqi, !!sym("pm2.5"), pm10, no2, so2, co, o3, location)
+
         day_data <- (data <- con_data %>%
           filter(location == make_clean_names(state[["map_onclick"]])) %>%
           mutate(pol = !!sym(tolower(con_selected)))) %>%

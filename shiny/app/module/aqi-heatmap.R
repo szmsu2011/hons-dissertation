@@ -9,7 +9,12 @@ aqi_heatmap_mod <- function(id, state) {
     ns <- session[["ns"]]
 
     output[["aqi_heatmap"]] <- renderEcharts4r({
-      data <- filter(aqi_data, location == make_clean_names(state[["map_onclick"]]))
+      loc <- make_clean_names(state[["map_onclick"]])
+      req(loc %in% state[["data"]][["location"]])
+
+      data <- state[["data"]] %>%
+        select(aqi, aqi_cat, location) %>%
+        filter(location == loc)
 
       req(state[["year"]] %in% year(data[["datetime"]]))
 
@@ -68,7 +73,8 @@ aqi_heatmap_mod <- function(id, state) {
       state[["aqi_date_selected"]] <- ymd(aqi_date_selected)
 
       output[["aqi_quantile"]] <- renderEcharts4r({
-        data <- aqi_data %>%
+        data <- state[["data"]] %>%
+          select(aqi, aqi_cat, location) %>%
           filter(location == make_clean_names(state[["map_onclick"]]))
 
         day_data <- data %>%
