@@ -19,11 +19,17 @@ app_ui <- dashboardPage(
           column(aqi_details_ui("aqi_details"), width = 4)
         )
       )),
-      tabItem("weather", fluidPage()),
+      tabItem("weather", fluidPage(
+        fluidRow()
+      )),
       tabItem("wind", fluidPage(
         fluidRow(
-          column(width = 8),
-          column(selectInput("year2", "Year", ""), width = 4)
+          column(width = 4),
+          column(textOutput("wind_loc"), width = 4),
+          column(selectInput("year2", "Year", ""), width = 4),
+          tags[["head"]](tags[["style"]]("#wind_loc{
+            padding-top:40px;padding-left:30px;font-weight:bold;font-size:20px;
+          }"))
         ),
         fluidRow(
           column(map_wind_ui("map_wind"), width = 4),

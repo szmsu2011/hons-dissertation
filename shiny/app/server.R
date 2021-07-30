@@ -6,6 +6,7 @@ app_server <- function(input, output, session) {
   map_aqi_mod("map_aqi", app_state)
   map_wind_mod("map_wind", app_state)
   wind_rose_mod("wind_rose", app_state)
+  # callback_mod("test", app_state)
 
   observeEvent(input[["year"]], {
     loc <- make_clean_names(app_state[["map_onclick"]])
@@ -50,4 +51,6 @@ app_server <- function(input, output, session) {
       updateSelectInput(session, "year2", "Year", sort(yr), last_yr)
     }
   })
+
+  output[["wind_loc"]] <- renderText(app_state[["map_onclick"]])
 }
