@@ -3,6 +3,7 @@ library(shinydashboard)
 library(dashboardthemes)
 library(tidyverse)
 library(htmlwidgets)
+library(shinyWidgets)
 library(rlang)
 library(echarts4r)
 library(reactable)
@@ -20,7 +21,6 @@ source("shiny/app/data.R")
 source("shiny/app/ui.R")
 source("shiny/app/server.R")
 
-# Initiate App (Initial Location)
 initial_app_state <- list(
   data = append_data(NULL, "queen_street"),
   map_onclick = "Queen Street"

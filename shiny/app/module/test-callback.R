@@ -4,7 +4,7 @@ callback_ui <- function(id) {
   tagList(
     column(
       width = 6,
-      verbatimTextOutput(ns("map_info"))
+      verbatimTextOutput(ns("test_out"))
     )
   )
 }
@@ -12,7 +12,7 @@ callback_ui <- function(id) {
 callback_mod <- function(id, state) {
   module <- function(input, output, session) {
     observeEvent(state[["map_onclick"]], {
-      output[["map_info"]] <- renderPrint(state[["map_onclick"]])
+      output[["test_out"]] <- renderPrint(state[["yrmth"]])
     })
   }
 

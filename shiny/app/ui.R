@@ -2,8 +2,8 @@ app_ui <- dashboardPage(
   dashboardHeader(title = "AKL Environment"),
   dashboardSidebar(sidebarMenu(
     menuItem("Air Quality", tabName = "aqi", icon = icon("dashboard")),
-    menuItem("Weather", tabName = "weather", icon = icon("cloud-sun")),
-    menuItem("Wind", tabName = "wind", icon = icon("wind"))
+    menuItem("Wind", tabName = "wind", icon = icon("wind")),
+    menuItem("Weather", tabName = "weather", icon = icon("cloud-sun"))
   )),
   dashboardBody(
     shinyDashboardThemes(theme = "blue_gradient"),
@@ -19,9 +19,6 @@ app_ui <- dashboardPage(
           column(aqi_details_ui("aqi_details"), width = 4)
         )
       )),
-      tabItem("weather", fluidPage(
-        fluidRow()
-      )),
       tabItem("wind", fluidPage(
         fluidRow(
           column(width = 4),
@@ -35,6 +32,18 @@ app_ui <- dashboardPage(
           column(map_wind_ui("map_wind"), width = 4),
           column(wind_rose_ui("wind_rose"), width = 8)
         )
+      )),
+      tabItem("weather", fluidPage(
+        fluidRow(
+          column(width = 4),
+          column(selectInput("met_loc", "Site", station[["site"]]), width = 4),
+          column(airMonthpickerInput(
+            "yrmth", "Select Month",
+            value = ymd(20201201),
+            minDate = ymd(20160101), maxDate = ymd(20211201)
+          ), width = 4)
+        ),
+        fluidRow(met_info_ui("met_info"))
       ))
     )
   )
