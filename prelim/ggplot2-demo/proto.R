@@ -43,7 +43,7 @@ wind_data %>%
   dplyr::mutate(
     month = month(date, label = TRUE),
     r = sqrt(x^2 + y^2),
-    theta = acos(x / r) * 180 / pi
+    theta = (atan(y / x) / pi + (x < 0) + 2 * (x > 0 & y < 0)) * 180
   ) %>%
   ggplot(aes(theta, r, xend = theta, yend = 0)) +
   geom_segment(col = "steelblue", alpha = .8) +
@@ -72,7 +72,7 @@ wind_data %>%
 #   ) %>%
 #   dplyr::mutate(
 #     r = sqrt(x^2 + y^2),
-#     theta = acos(x / r) * 180 / pi
+#     theta = (atan(y / x) / pi + (x < 0) + 2 * (x > 0 & y < 0)) * 180
 #   ) %>%
 #   ggplot(aes(theta, 0, xend = theta, yend = r, col = WoY)) +
 #   geom_segment(arrow = arrow(15, length = unit(.02, "npc"))) +
@@ -98,7 +98,7 @@ wind_data %>%
 #   ) %>%
 #   dplyr::mutate(
 #     r = sqrt(x^2 + y^2),
-#     theta = acos(x / r) * 180 / pi
+#     theta = (atan(y / x) / pi + (x < 0) + 2 * (x > 0 & y < 0)) * 180
 #   ) %>%
 #   ggplot(aes(theta, 0, xend = theta, yend = r, col = Hour)) +
 #   geom_segment(arrow = arrow(15, length = unit(.02, "npc"))) +
@@ -123,7 +123,7 @@ wind_data %>%
 #   ) %>%
 #   dplyr::mutate(
 #     r = sqrt(x^2 + y^2),
-#     theta = acos(x / r) * 180 / pi
+#     theta = (atan(y / x) / pi + (x < 0) + 2 * (x > 0 & y < 0)) * 180
 #   ) %>%
 #   ggplot(aes(theta, 0, xend = theta, yend = r, col = WoY)) +
 #   geom_segment(arrow = arrow(15, length = unit(.02, "npc"))) +
@@ -149,7 +149,7 @@ wind_data %>%
 #   ) %>%
 #   dplyr::mutate(
 #     r = sqrt(x^2 + y^2),
-#     theta = acos(x / r) * 180 / pi
+#     theta = (atan(y / x) / pi + (x < 0) + 2 * (x > 0 & y < 0)) * 180
 #   ) %>%
 #   ggplot(aes(theta, 0, xend = theta, yend = r, col = Hour)) +
 #   geom_segment(arrow = arrow(15, length = unit(.02, "npc"))) +
