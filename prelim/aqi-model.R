@@ -4,7 +4,7 @@ source(textConnection(readLines("../akl-air-quality/data/prep.R")[seq_len(20)]))
 data <- map(unique(data[["location"]]), function(loc) {
   data %>%
     filter(location == loc) %>%
-    select(-c(!!sym("pm2.5"), pm10, no2, so2, co, o3, location, aqi_cat))
+    select(datetime, rh, temp, ws, wind_dir, aqi)
 }) %>%
   set_names(unique(data[["location"]]))
 
@@ -66,11 +66,42 @@ data_raw <- map(data, function(x) {
     )
 })
 
-## Categorise wind direction
+## Categorise wind direction, numerise date and initialise lags
 data <- map(data_raw, function(x) {
-  if ("wind_dir" %in% names(x)) {
+  (if ("wind_dir" %in% names(x)) {
     mutate(x, wind_dir = cut(wind_dir, seq(0, 360, 30), include.lowest = TRUE))
   } else {
     x
-  }
+  }) %>%
+    mutate(
+      t = as.numeric(date),
+      lag_1 = lag(aqi),
+      lag_2 = lag(aqi, 2L),
+      lag_3 = lag(aqi, 3L)
+    ) %>%
+    drop_na() %>%
+    select(-date)
+})
+
+## Full fit
+full_fit <- map(data, function(x) {
+  lm(aqi ~ ., data = x, na.action = na.fail)
+})
+op <- par(mfrow = c(1, 2))
+invisible(map(full_fit, function(x) {
+  plot.ts(residuals(x))
+  acf(residuals(x))
+}))
+par(op)
+
+## Search for Information-Theoretically best fit
+library(MuMIn)
+all_fits <- map(data, function(x) {
+  dredge(lm(aqi ~ ., data = x, na.action = na.fail))
+})
+map(all_fits, function(x) {
+  anova(get.models(x, 1)[[1]])
+})
+map(all_fits, function(x) {
+  summary(get.models(x, 1)[[1]])
 })
