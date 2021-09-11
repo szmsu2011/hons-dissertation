@@ -105,3 +105,15 @@ map(all_fits, function(x) {
 map(all_fits, function(x) {
   summary(get.models(x, 1)[[1]])
 })
+
+## Interaction with wind direction
+# all_fits <- map(data, function(x) {
+#   formula <- "aqi ~ ." %>%
+#     paste0(ifelse("wind_dir" %in% names(x), " * wind_dir", "")) %>%
+#     as.formula()
+#   dredge(lm(formula, data = x, na.action = na.fail))
+# })
+# write_rds(map(all_fits, function(x) {
+#   anova(get.models(x, 1)[[1]])
+# }), "prelim/intr-anova.rds")
+read_rds("prelim/intr-anova.rds")
