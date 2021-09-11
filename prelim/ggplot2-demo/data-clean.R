@@ -34,7 +34,7 @@ read_env_file <- function(x, dir) {
   readr::read_csv(paste0(dir, x),
     col_types = "cctcd"
   ) %>%
-    dplyr::filter(!is.na(Time), Value >= 0) %>%
+    dplyr::filter(!is.na(Time), !(Parameter != "TEMP" & Value < 0)) %>%
     dplyr::mutate(
       datetime = lubridate::as_datetime(
         mdy(Date) + hms(Time) - hours(12),

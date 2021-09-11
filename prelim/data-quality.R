@@ -37,12 +37,12 @@ for (x in env_files) {
 }
 n
 
-## Negative values
+## Insensible negative values
 n <- 0
 for (x in env_files) {
   n <- n + paste0(dir, x) %>%
     read_csv(col_types = "cctcd") %>%
-    filter(Value < 0) %>%
+    filter(Parameter != "TEMP" & Value < 0) %>%
     nrow()
 }
 n
@@ -101,9 +101,9 @@ data <- pivot_wider(data, names_from = Parameter, values_from = Value)
 nrow(fill_gaps(data)) - nrow(data)
 
 ## Wind data (raw)
-data <- read_csv(x,
+data <- read_csv("data-raw/akl-wind-dir.csv",
   col_types = paste0("cc", paste0(rep("d", 14), collapse = "")),
-  col_names = get_wind_dir_varname(x)
+  col_names = get_wind_dir_varname("data-raw/akl-wind-dir.csv")
 )[-1, ]
 
 ## Inconsistent time format (with "hh:mm:ss" format)
