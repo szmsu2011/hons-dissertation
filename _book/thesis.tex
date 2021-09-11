@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \author{ZHAOMING SU}
-\title{The Automation of Visual Analysis for Time Series Data with R Shiny}
+\title{Time Series Visualisation for Auckland Air Quality}
 \degrees{Bachelor of Science (Honours) in Statistics}
 \supervisor{Dr.~Earo Wang}
 \cosupervisor{Prof.~Chris Wild}
@@ -15,7 +15,7 @@
      %pdfsubject={The Subject},
      %pdfkeywords={Some Keywords},
      pdfauthor={ZHAOMING SU},
-     pdftitle={The Automation of Visual Analysis for Time Series Data with R Shiny},
+     pdftitle={Time Series Visualisation for Auckland Air Quality},
      pdfproducer={Bookdown with LaTeX}
 }
 
@@ -108,7 +108,7 @@ The contribution in Chapter \ref{ch:litreview} of this thesis was presented in t
 \clearpage\pagenumbering{arabic}\setcounter{page}{0}
 
 \hypertarget{ch:intro}{%
-\chapter{Introduction}\label{ch:intro}}
+\chapter{Introduction (Template Demo)}\label{ch:intro}}
 
 This is where you introduce the main ideas of your thesis, and an overview of the context and background.
 
@@ -188,26 +188,33 @@ Again, notice the use of labels and references to automatically generate Table n
 The \texttt{knitLatex} package is useful for generating tables from R output. Other packages can do similar things including the \texttt{kable} function in \texttt{knitr} which is somewhat simpler but you have less control over the result. If you use \texttt{knitLatex} to generate tables, don't forget to include \texttt{results="asis"} in the chunk settings.
 
 \hypertarget{ch:litreview}{%
-\chapter{Literature Review}\label{ch:litreview}}
-
-\textbf{This chapter} contains a summary of the context in which your research is set.
-
-Imagine you are writing for your fellow PhD students. Topics that are well-known to them do not have to be included here. But things that they may not know about should be included.
-
-Resist the temptation to discuss everything you've read in the last few years. And you are not writing a textbook either. This chapter is meant to provide the background necessary to understand the material in subsequent chapters. Stick to that.
-
-You will need to organize the literature review around themes, and within each theme provide a story explaining the development of ideas to date. In each theme, you should get to the point where your ideas will fit in. But leave your ideas to later chapters. This way it is clear what has been done beforehand, and what new contributions you are making to the research field.
-
-All citations should be done using markdown notation as shown below. This way, your bibliography will be compiled automatically and correctly.
+\chapter{Literature Review (Draft)}\label{ch:litreview}}
 
 \hypertarget{sec:expsmooth}{%
-\section{Exponential smoothing}\label{sec:expsmooth}}
+\section{Exponential smoothing (Template Demo)}\label{sec:expsmooth}}
 
 Exponential smoothing was originally developed in the late 1950s \autocite{Brown59,Brown63,Holt57,Winters60}. Because of their computational simplicity and interpretability, they became widely used in practice.
 
 Empirical studies by \textcite{MH79} and \textcite{Metal82} found little difference in forecast accuracy between exponential smoothing and ARIMA models. This made the family of exponential smoothing procedures an attractive proposition \autocite[see][]{CKOS01}.
 
 The methods were less popular in academic circles until \textcite{OKS97} introduced a state space formulation of some of the methods, which was extended in \textcite{HKSG02} to cover the full range of exponential smoothing methods.
+
+\hypertarget{ch:data}{%
+\chapter{The Auckland Environmental Data}\label{ch:data}}
+
+\hypertarget{sec:intro}{%
+\section{Introduction}\label{sec:intro}}
+
+\hypertarget{sec:clean}{%
+\section{Data Cleaning}\label{sec:clean}}
+
+The final data set is composed of two separate data sets, each with a different data structure. Cleaning and manipulation are needed for ensuring the consistency of format for combination. The desired structure of the final data consists of observations, each uniquely identified by the date-time and location serving as the index and key, with records of all parameters.
+
+The environmental parameter data set is in long format, with each observation consisting of a single record of one parameter. In total, there are 7,461,261 records from 10 locations with 14 parameters in the data set. Preliminary inspection finds that 4,654 records (0.06\% of total) have a missing time-stamp and 60,312 records (0.81\%) have missing value. Besides, 104,332 records are found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters except for temperature are only sensible if positive. Thus, 104,257 records of insensible negative values are removed. Of the 7,292,038 time-and-numerically sensible records, 239,374 (3.28\%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is small, the first-appearing records of duplicates are kept. The cleaned data set consists of 7,171,831 (96.12\%) valid records with 719,640 records (10.03\%) of implicit time gaps.
+
+The parameter wind direction is from a differently structured data set, with each observation consisting of wind direction records of all locations uniquely identified by a date-time stamp. Of the seven locations of interest (locations also in the environmental data set), the data set includes 940,632 records with 207,436 (22.05\%) missing values but no implicit time gaps. It is worth noting that 39,193 records (4.17\%) have an inconsistent format for their time-stamp.
+
+The final data set consists of 1,138,535 observations and 18 variables (date-time as the index, location as the key, 15 original parameters and one derived parameter) from Jun 1, 2003, to Apr 30, 2021. The time range is different for each location, with Customs St as short as since Jan 1, 2020. Due to structural change of data, 9,173,003 records (53.71\%) have missing values.
 
 \appendix
 

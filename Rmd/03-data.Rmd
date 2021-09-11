@@ -1,0 +1,15 @@
+# The Auckland Environmental Data {#ch:data}
+
+
+## Introduction {#sec:intro}
+
+## Data Cleaning {#sec:clean}
+
+The final data set is composed of two separate data sets, each with a different data structure. Cleaning and manipulation are needed for ensuring the consistency of format for combination. The desired structure of the final data consists of observations, each uniquely identified by the date-time and location serving as the index and key, with records of all parameters.
+
+The environmental parameter data set is in long format, with each observation consisting of a single record of one parameter. In total, there are 7,461,261 records from 10 locations with 14 parameters in the data set. Preliminary inspection finds that 4,654 records (0.06% of total) have a missing time-stamp and 60,312 records (0.81%) have missing value. Besides, 104,332 records are found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters except for temperature are only sensible if positive. Thus, 104,257 records of insensible negative values are removed. Of the 7,292,038 time-and-numerically sensible records, 239,374 (3.28%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is small, the first-appearing records of duplicates are kept. The cleaned data set consists of 7,171,831 (96.12%) valid records with 719,640 records (10.03%) of implicit time gaps.
+
+The parameter wind direction is from a differently structured data set, with each observation consisting of wind direction records of all locations uniquely identified by a date-time stamp. Of the seven locations of interest (locations also in the environmental data set), the data set includes 940,632 records with 207,436 (22.05%) missing values but no implicit time gaps. It is worth noting that 39,193 records (4.17%) have an inconsistent format for their time-stamp.
+
+The final data set consists of 1,138,535 observations and 18 variables (date-time as the index, location as the key, 15 original parameters and one derived parameter) from Jun 1, 2003, to Apr 30, 2021. The time range is different for each location, with Customs St as short as since Jan 1, 2020. Due to structural change of data, 9,173,003 records (53.71%) have missing values.
+
