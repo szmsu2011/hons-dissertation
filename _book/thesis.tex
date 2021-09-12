@@ -205,16 +205,47 @@ The methods were less popular in academic circles until \textcite{OKS97} introdu
 \hypertarget{sec:intro}{%
 \section{Introduction}\label{sec:intro}}
 
+The data, provided by \textcite{aklenvdata}, includes data on 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Parameters consist of air quality index (AQI), 10 pollutant levels and four other meteorological variables, reported in hourly resolution, with various starting dates (since as early as 2003 in Takapuna) until April 2021. All time-stamps are in New Zealand Standard Time (UTC+12) to avoid duplicated index upon boundaries of daylight saving.
+
+\begin{center}
+\begin{longtable}{lll}
+\toprule
+Parameter & Unit & Note \\
+\midrule
+\endhead
+\caption{Parameters available in the data.}\\
+\bottomrule
+\endfoot
+AQI &  & Air Quality Index \\
+BC(370) & ngm\textsuperscript{-3} & Black carbon at 370nm wavelength \\
+BC(880) & ngm\textsuperscript{-3} & Black carbon at 880nm wavelength \\
+NO & \(\mu\)gm\textsuperscript{-3} & Nitrogen monoxide concentration \\
+NO\textsubscript{2} & \(\mu\)gm\textsuperscript{-3} & Nitrogen dioxide concentration \\
+NOx & \(\mu\)gm\textsuperscript{-3} & Nitrogen oxides concentration \\
+PM2.5 & \(\mu\)gm\textsuperscript{-3} & Particulate matter with diameter <2.5\(\mu\)m \\
+PM10 & \(\mu\)gm\textsuperscript{-3} & Particulate matter with diameter <10\(\mu\)m \\
+SO\textsubscript{2} & \(\mu\)gm\textsuperscript{-3} & Sulphur monoxide concentration \\
+O\textsubscript{3} & \(\mu\)gm\textsuperscript{-3} & Ozone concentration \\
+CO & mgm\textsuperscript{-3} & Carbon monoxide concentration \\
+Relative Humidity & \% &  \\
+Temperature & $^{\circ}$C &  \\
+Wind Speed & ms\textsuperscript{-1} &  \\
+Wind Direction & $^{\circ}$ &  \\
+AQI Level of Concern &  & Derived from AQI \\
+\label{tab:datasummary}
+\end{longtable}
+\end{center}
+
 \hypertarget{sec:clean}{%
 \section{Data Cleaning}\label{sec:clean}}
 
 The final data set is composed of two separate data sets, each with a different data structure. Cleaning and manipulation are needed for ensuring the consistency of format for combination. The desired structure of the final data consists of observations, each uniquely identified by the date-time and location serving as the index and key, with records of all parameters.
 
-The environmental parameter data set is in long format, with each observation consisting of a single record of one parameter. In total, there are 7,461,261 records from 10 locations with 14 parameters in the data set. Preliminary inspection finds that 4,654 records (0.06\% of total) have a missing time-stamp and 60,312 records (0.81\%) have missing value. Besides, 104,332 records are found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters except for temperature are only sensible if positive. Thus, 104,257 records of insensible negative values are removed. Of the 7,292,038 time-and-numerically sensible records, 239,374 (3.28\%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is small, the first-appearing records of duplicates are kept. The cleaned data set consists of 7,171,831 (96.12\%) valid records with 719,640 records (10.03\%) of implicit time gaps.
+The environmental parameter data set is in long format, with each observation consisting of a single record of one parameter. In total, there are 7,461,261 records from 10 locations with 14 parameters in the data set. Preliminary inspection finds that 4,654 records (0.06\% of total) have a missing time-stamp and 60,312 records (0.81\%) have missing value. Besides, 104,332 records are found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters except for temperature are only sensible if positive \autocite{airunit}. Thus, 104,257 records of insensible negative values are removed. Of the 7,292,038 time-and-numerically sensible records, 239,374 (3.28\%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is small, the first-appearing records of duplicates are kept. The cleaned data set consists of 7,171,831 (96.12\%) valid records with 719,640 records (10.03\%) of implicit time gaps.
 
 The parameter wind direction is from a differently structured data set, with each observation consisting of wind direction records of all locations uniquely identified by a date-time stamp. Of the seven locations of interest (locations also in the environmental data set), the data set includes 940,632 records with 207,436 (22.05\%) missing values but no implicit time gaps. It is worth noting that 39,193 records (4.17\%) have an inconsistent format for their time-stamp.
 
-The final data set consists of 1,138,535 observations and 18 variables (date-time as the index, location as the key, 15 original parameters and one derived parameter) from Jun 1, 2003, to Apr 30, 2021. The time range is different for each location, with Customs St as short as since Jan 1, 2020. Due to structural change of data, 9,173,003 records (53.71\%) have missing values.
+The clean data set consists of 1,138,535 observations and 18 variables (date-time as the index, location as the key, 15 original parameters and one derived parameter) from Jun 1, 2003, to Apr 30, 2021. The time range is different for each location, with Customs St as short as since Jan 1, 2020. After accounting for all implicit time gaps, 9,173,003 records have missing values, implying a real missing rate of 53.71\%. It is noteworthy that extreme values from input error are more frequent in the earlier years. The final data set is subsetted from the year 2016.
 
 \appendix
 
