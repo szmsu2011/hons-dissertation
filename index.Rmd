@@ -1,5 +1,5 @@
 ---
-title: 'Time Series Visualisation for Auckland Air Quality'
+title: 'Data Storytelling Dashboard for Exploring Auckland Air Quality'
 author: 'ZHAOMING SU'
 degrees: 'Bachelor of Science (Honours) in Statistics'
 supervisor: 'Dr. Earo Wang'
