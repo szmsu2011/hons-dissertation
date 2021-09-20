@@ -1,0 +1,11 @@
+# Design layout and philosophy {#ch:design}
+
+- Overview of AQI
+  - Spatial
+  - Temporal (AQI and its constituent)
+    - Calendar
+    - Drill-down line plot
+- Data enrichment
+  - Explore relationship AQI with wind speed and direction
+  - Meteorological data
+- Trend analysis
