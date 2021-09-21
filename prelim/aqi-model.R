@@ -1,7 +1,7 @@
 source(textConnection(readLines("../akl-air-quality/data/prep.R")[seq_len(20)]))
 
 ## Break full data into locations
-data <- map(unique(data[["location"]]), function(loc) {
+data_raw <- map(unique(data[["location"]]), function(loc) {
   data %>%
     filter(location == loc) %>%
     select(datetime, rh, temp, ws, wind_dir, aqi)
@@ -9,7 +9,7 @@ data <- map(unique(data[["location"]]), function(loc) {
   set_names(unique(data[["location"]]))
 
 ## Remove starting NAs (row)
-data <- map(data, function(x) {
+data <- map(data_raw, function(x) {
   starting_na <- max(map_dbl(array_branch(x, 2), function(y) {
     which.min(is.na(y)) - 1
   }))
@@ -30,7 +30,7 @@ data <- data[map_lgl(data, function(x) {
 
 ## Fill NA with mean
 data <- map(data, function(x) {
-  mutate(x, across(-c(datetime), function(z) {
+  mutate(x, across(-datetime, function(z) {
     replace_na(z, mean(z, na.rm = TRUE))
   }))
 })
@@ -48,7 +48,7 @@ vector_mean <- function(theta_deg, r = 1, offset_deg = 0, out) {
     sqrt(x^2 + y^2)
   }
 }
-data_raw <- map(data, function(x) {
+data <- map(data, function(x) {
   if ("ws" %in% names(x)) class(x[["ws"]]) <- "ws"
   if ("wind_dir" %in% names(x)) class(x[["wind_dir"]]) <- "wd"
   x %>%
@@ -67,7 +67,7 @@ data_raw <- map(data, function(x) {
 })
 
 ## Categorise wind direction, numerise date and initialise lags
-data <- map(data_raw, function(x) {
+data <- map(data, function(x) {
   (if ("wind_dir" %in% names(x)) {
     mutate(x, wind_dir = cut(wind_dir, seq(0, 360, 30), include.lowest = TRUE))
   } else {
@@ -107,13 +107,64 @@ map(all_fits, function(x) {
 })
 
 ## Interaction with wind direction
-# all_fits <- map(data, function(x) {
-#   formula <- "aqi ~ ." %>%
-#     paste0(ifelse("wind_dir" %in% names(x), " * wind_dir", "")) %>%
-#     as.formula()
-#   dredge(lm(formula, data = x, na.action = na.fail))
-# })
-# write_rds(map(all_fits, function(x) {
-#   anova(get.models(x, 1)[[1]])
-# }), "prelim/intr-anova.rds")
-read_rds("prelim/intr-anova.rds")
+all_fits <- map(data, function(x) {
+  formula <- "aqi ~ (. - lag_1 - lag_2 - lag_3)" %>%
+    paste0(ifelse("wind_dir" %in% names(x), " * wind_dir", "")) %>%
+    paste0(" + .") %>%
+    as.formula()
+  dredge(lm(formula, data = x, na.action = na.fail))
+})
+map(all_fits, function(x) {
+  anova(get.models(x, 1)[[1]])
+})
+
+## Convert 2019-2020 data to cross-sectional
+data <- map(data_raw, function(x) {
+  (if ("wind_dir" %in% names(x)) {
+    mutate(x, wind_dir = cut(wind_dir, seq(0, 360, 30), include.lowest = TRUE))
+  } else {
+    x
+  }) %>%
+    filter(between(year(datetime), 2019, 2020)) %>%
+    mutate(
+      tod = factor(hour(datetime), seq_len(24) - 1),
+      aqi = aqi > 50
+    ) %>%
+    as_tibble() %>%
+    select_if(function(x) !all(is.na(x))) %>%
+    select(-datetime) %>%
+    drop_na()
+})
+data <- data[map_lgl(data, function(x) {
+  all(nrow(x) > 0, "aqi" %in% names(x))
+})]
+
+## Search for Information-Theoretically best fit
+all_fits <- map(data, function(x) {
+  dredge(glm(aqi ~ ., data = x, family = binomial, na.action = na.fail))
+})
+map(all_fits, function(x) {
+  anova(get.models(x, 1)[[1]], test = "Chisq")
+})
+
+## Cross-validate top models
+library(crossval)
+library(pROC)
+model_auc <- function(train.x, train.y, test.x, test.y, all_fit) {
+  pred <- get.models(all_fit, 1)[[1]][["formula"]] %>%
+    update(train.y ~ .) %>%
+    glm(binomial, cbind(train.x, train.y)) %>%
+    predict(test.x, type = "response")
+  roc(
+    response = test.y, predictor = pred,
+    levels = levels(test.y), direction = "<"
+  )[["auc"]]
+}
+map2(all_fits, data, function(x, data) {
+  set.seed(2021)
+  cv <- crossval(
+    model_auc, select(data, -aqi), factor(data[["aqi"]]),
+    K = 10, B = 1, verbose = FALSE, all_fit = x
+  )
+  c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
+})
