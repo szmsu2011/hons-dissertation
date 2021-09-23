@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \author{ZHAOMING SU}
-\title{Time Series Visualisation for Auckland Air Quality}
+\title{Data Storytelling Dashboard for Exploring Auckland Air Quality}
 \degrees{Bachelor of Science (Honours) in Statistics}
 \supervisor{Dr.~Earo Wang}
 \cosupervisor{Prof.~Chris Wild}
@@ -15,7 +15,7 @@
      %pdfsubject={The Subject},
      %pdfkeywords={Some Keywords},
      pdfauthor={ZHAOMING SU},
-     pdftitle={Time Series Visualisation for Auckland Air Quality},
+     pdftitle={Data Storytelling Dashboard for Exploring Auckland Air Quality},
      pdfproducer={Bookdown with LaTeX}
 }
 
@@ -224,54 +224,88 @@ The \texttt{knitLatex} package is useful for generating tables from R output. Ot
 \end{itemize}
 
 \hypertarget{ch:data}{%
-\chapter{The Auckland Environmental Data}\label{ch:data}}
+\chapter{Auckland air quality data}\label{ch:data}}
 
-\hypertarget{sec:intro}{%
-\section{Introduction}\label{sec:intro}}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
-The data, provided by \textcite{aklenvdata}, includes data on 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Parameters consist of air quality index (AQI), 10 pollutant levels and four other meteorological variables, reported in hourly resolution, with various starting dates (since as early as 2003 in Takapuna) until April 2021. All time-stamps are in New Zealand Standard Time (UTC+12) to avoid duplicated index upon boundaries of daylight saving.
+Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI \autocite{aqi}. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage \autocite{aqitarget}. Over 10 stations in Auckland monitor a subset of the standard-listed pollutants in an hourly interval.
 
+It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by \textcite{aklenvdata}, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), 10 pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
+
+Only six of the standard-listed air pollutants are monitored and available in the data, and each station independently monitors a subset of the six pollutants. As such, the calculation of AQI, based on available data, may be simplified to
+
+\begin{equation}\label{eq:aqicon} AQI = 100 \times \textrm{max}\{\frac{PM_{2.5}}{25}, \frac{PM_{10}}{50}, \frac{NO_{2}}{200}, \frac{SO_{2}}{350}, \frac{CO}{10}, \frac{O_{3}}{150}\} \end{equation}
+
+\begin{table}[ht]
 \begin{center}
-\begin{longtable}{lll}
+\begin{tabular}{lll}
 \toprule
 Parameter & Unit & Note \\
 \midrule
-\endhead
-\caption{Parameters available in the data.}\\
-\bottomrule
-\endfoot
-AQI &  & Air Quality Index \\
+AQI &  & Air quality index \\
 BC(370) & ngm\textsuperscript{-3} & Black carbon at 370nm wavelength \\
 BC(880) & ngm\textsuperscript{-3} & Black carbon at 880nm wavelength \\
+CO\textsuperscript{*} & mgm\textsuperscript{-3} & Carbon monoxide concentration \\
 NO & \textmu gm\textsuperscript{-3} & Nitrogen monoxide concentration \\
-NO\textsubscript{2} & \textmu gm\textsuperscript{-3} & Nitrogen dioxide concentration \\
+NO\textsubscript{2}\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Nitrogen dioxide concentration \\
 NOx & \textmu gm\textsuperscript{-3} & Nitrogen oxides concentration \\
-PM2.5 & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <2.5\textmu m \\
-PM10 & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <10\textmu m \\
-SO\textsubscript{2} & \textmu gm\textsuperscript{-3} & Sulphur dioxide concentration \\
-O\textsubscript{3} & \textmu gm\textsuperscript{-3} & Ozone concentration \\
-CO & mgm\textsuperscript{-3} & Carbon monoxide concentration \\
+O\textsubscript{3}\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Ozone concentration \\
+PM2.5\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <2.5\textmu m \\
+PM10\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <10\textmu m \\
+SO\textsubscript{2}\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Sulphur dioxide concentration \\
 Relative Humidity & \% &  \\
 Temperature & $^{\circ}$C &  \\
 Wind Speed & ms\textsuperscript{-1} &  \\
 Wind Direction & $^{\circ}$ &  \\
-AQI Level of Concern &  & Derived from AQI \\
-\label{tab:datasummary}
-\end{longtable}
+\bottomrule
+\end{tabular}
+\caption{Parameters available in raw data.\\\textsuperscript{*} AQI-related ambient air pollutants}
+\label{tab:raw-dataset}
 \end{center}
+\end{table}
 
-\hypertarget{sec:clean}{%
-\section{Data Cleaning}\label{sec:clean}}
+It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \ref{sec:data-extreme-value} are more frequent in earlier years. The final data set is subsetted from the year 2016.
 
-The final data set is composed of two separate data sets, each with a different data structure. Cleaning and manipulation are needed for ensuring the consistency of format for combination. The desired structure of the final data consists of observations, each uniquely identified by the date-time and location serving as the index and key, with records of all parameters.
+\hypertarget{data-quality-and-cleaning}{%
+\section{Data quality and cleaning}\label{data-quality-and-cleaning}}
 
-The environmental parameter data set is in long format, with each observation consisting of a single record of one parameter. In total, there are 7,461,261 records from 10 locations with 14 parameters in the data set. Preliminary inspection finds that 4,654 records (0.06\% of total) have a missing time-stamp and 60,312 records (0.81\%) have missing value. Besides, 104,332 records are found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters except for temperature are only sensible if positive \autocite{airunit}. Thus, 104,257 records of insensible negative values are removed. Of the 7,292,038 time-and-numerically sensible records, 239,374 (3.28\%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is small, the first-appearing records of duplicates are kept. The cleaned data set consists of 7,171,831 (96.12\%) valid records with 719,640 records (10.03\%) of implicit time gaps.
+The raw data consists of two separate data sets, each with a different data structure. Cleaning and manipulation are needed to ensure that the two data sets are consistent in structure and free from error. The raw data sets are individually inspected and cleaned before combination. This section outlines the issues found and methods to address them.
 
-The parameter wind direction is from a differently structured data set, with each observation consisting of wind direction records of all locations uniquely identified by a date-time stamp. Of the seven locations of interest (locations also in the environmental data set), the data set includes 940,632 records with 207,436 (22.05\%) missing values but no implicit time gaps. It is worth noting that 39,193 records (4.17\%) have an inconsistent format for their time-stamp.
+\hypertarget{sec:data-extreme-value}{%
+\subsection{Abnormal and missing values}\label{sec:data-extreme-value}}
 
-The clean data set consists of 1,138,535 observations and 18 variables (date-time as the index, location as the key, 15 original parameters and one derived parameter) from Jun 1, 2003, to Apr 30, 2021. The time range is different for each location, with Customs St as short as since Jan 1, 2020. After accounting for all implicit time gaps, 9,173,003 records have missing values, implying a real missing rate of 53.71\%. It is noteworthy that extreme values from input error are more frequent in the earlier years. The final data set is subsetted from the year 2016.
+Abnormal or missing values arise from instrumental or input errors. Upon inspection, 104,332 records were found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters, except for temperature, are only sensible if positive as of Table \ref{tab:raw-dataset}. Therefore, 104,257 records of insensible negative values are removed. Besides, conspicuously anomalous records of AQI are found in data, including consecutive hours of \textgreater1,000 AQI in Takapuna and numerous AQI values being inconsistent with Formula \ref{eq:aqicon} based on available pollutants in the same data set. The anomalous records are nonetheless kept as-is for further verification.
 
-\begin{center}\includegraphics[width=1\linewidth]{img/missing} \end{center}
+In addition, preliminary inspection finds that 0.81\% of records are explicitly missing. Yet after filling the implicit time gaps in the data, 53.71\% of records are implied to be missing.
+
+\hypertarget{date-and-time}{%
+\subsection{Date and time}\label{date-and-time}}
+
+A consistent format in date and time is crucial to the accuracy of temporal data. Observations with inconsistent time format are present in the data, where some are recorded in \texttt{hh:mm:ss} whilst others in \texttt{hh:mm}. The inconsistency in the time format is correctable due to the hourly nature of the data. 0.06\% of records with missing time are removed.
+
+The time zone of New Zealand changes by +1 during daylight saving. To avoid duplicated index upon boundaries of daylight saving upon data visualisation, all time-stamps are presented in NZST (UTC+12). On the other hand, the date and time in the cleaned data file are stored as a single variable, with its format in compliance with ISO 8601 \autocite{iso8601,readr}.
+
+\hypertarget{duplicate-records}{%
+\subsection{Duplicate records}\label{duplicate-records}}
+
+Temporal data should not present duplicate records. Of the 7,292,038 valid records, 239,374 (3.28\%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is reasonably small, the first-appearing records of each duplicate are kept.
+
+\hypertarget{structural-difference-in-raw-data-sets}{%
+\subsection{Structural difference in raw data sets}\label{structural-difference-in-raw-data-sets}}
+
+The primary data set, which records all parameters except for wind direction, is in long format, with each observation consisting of a single record of one parameter for one station at a given hour. Nevertheless, each observation of the wind direction data set consists of wind direction records of all stations at a given hour. Each data set is pivoted to the structure such that each observation is uniquely identified by the date-time and station with records of all parameters before combination to ensure structural consistency.
+
+\hypertarget{data-enrichment}{%
+\section{Data enrichment}\label{data-enrichment}}
+
+\begin{itemize}
+\tightlist
+\item
+  Categorisation of AQI
+\item
+  Categorisation of wind direction
+\end{itemize}
 
 \hypertarget{ch:design}{%
 \chapter{Design layout and philosophy}\label{ch:design}}
@@ -310,8 +344,8 @@ The clean data set consists of 1,138,535 observations and 18 variables (date-tim
   Trend analysis
 \end{itemize}
 
-\hypertarget{linked-interactive-graphics-chlinking}{%
-\chapter{Linked interactive graphics \{ch:linking\}}\label{linked-interactive-graphics-chlinking}}
+\hypertarget{ch:linking}{%
+\chapter{Linked interactive graphics}\label{ch:linking}}
 
 \begin{itemize}
 \tightlist
