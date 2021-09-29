@@ -190,37 +190,78 @@ The \texttt{knitLatex} package is useful for generating tables from R output. Ot
 \hypertarget{ch:litreview}{%
 \chapter{Background and related works}\label{ch:litreview}}
 
+\hypertarget{tidy-time-series-data-wrangling-toolbox}{%
+\section{Tidy time series data-wrangling toolbox}\label{tidy-time-series-data-wrangling-toolbox}}
+
+The \textbf{tsibble} package offers a data infrastructure for wrangling time series data \autocite{tsibble}. A time series data set consists of one or more sequences indexed by time, often with a regular interval. As such, data-wrangling processes of time series data need to account for the special requirements of time series data analysis, including the explicit identification of time gaps and a method of handling multiple time series in a single data set for identifying duplicate records.
+
+Analyses of fixed-interval time series require the data to be free from missing value, especially when the series is self-dependent. Whilst the explicit missing values can be easily handled by the substitution with interpolated values, the implicit gaps with missing index values are often neglected. In the case of multiple time series, locations of implicit time gaps may be different in each sequence; filling the gaps with traditional loops can be time-consuming and inefficient. \textbf{tsibble} identifies implicit time gaps with the \emph{index} and \emph{key} variables, such that each variable in the tsibble object is uniquely identified by the index and the interaction of all keys. As such, each time series is uniquely identified by the keys, allowing efficient identification of implicit time gaps, which is achieved by \textbf{tsibble} with a range of \texttt{*\_gaps()} functions.
+
+Duplicates exist in different forms in cross-sectional and time series data. Typically, duplicates are identical observations exhibited as rows in a data frame, yet such definition is inadequate in identifying duplicates in time series data. There exists only one true value at any given point in time for each time series, meaning that there may be duplicate values that are non-identical observations with identical key-index pairs yet different in values. Instead of searching merely for duplicate rows, \textbf{tsibble} checks for duplicate key-index pairs. To avoid negligence, the creation of tsibble will fail upon detected duplicates.
+
 \hypertarget{time-series-graphics-toolbox}{%
 \section{Time series graphics toolbox}\label{time-series-graphics-toolbox}}
 
-\begin{itemize}
-\tightlist
-\item
-  Calendar plot
-\item
-  Seasonal plot
-\item
-  Line plot and ACF (FPP)
-\end{itemize}
+\hypertarget{interactive-calendar-plots}{%
+\subsection{Interactive calendar plots}\label{interactive-calendar-plots}}
+
+Calendar-formatted graphics is one of the most natural methods in depicting daily time series. Arranged as calendars, discovering anomalies and the date of their occurrence is intuitive and visually efficient. The semantics of calendar-formatted graphics can be summarised using the grammar of graphics \autocite{grammar} as mapping the time series variables to a range of graphical primitives, including colour, sized objects and texts, to layers on the calendar coordinate.
+
+The implementation of the methods may use the \textbf{echarts4r} package \autocite{echarts4r}, which offers wrapper functions for creating interactive graphics with ``Echarts JavaScript'' \autocite{echarts} on R. The purpose of the interactivity is to allow further exploration upon spotting unexpected values on specific dates using drill-down (Section \ref{sec:drill-down}). The construction of graphics in \textbf{echarts4r} follows similar semantics to \textbf{ggplot2} \autocite{ggplot2}, such that the graphical primitives are built in layers with function calls linked by \textbf{dplyr} pipe \autocite{dplyr}.
+
+\hypertarget{time-and-seasonal-plots}{%
+\subsection{Time and seasonal plots}\label{time-and-seasonal-plots}}
+
+A time plot is the most elementary visual method for exploring unaggregated time series data, such that the sequence is plotted against the time index by positions along common x-y-scales on the Cartesian coordinate \autocite{fpp3}. Prominent time series features, such as trends, seasons, cycles, noise, clustering and oscillations, can be quickly spotted.
+
+Based on time plots, \textcite{feasts} introduced the seasonal plot as a method of visualising seasonal patterns in the \textbf{feasts} package. Instead of plotting against the time index, each complete seasonal period is plotted against the x-scale as separate lines of time series, with each period optionally labelled and coloured using an n-gradient colour scale. The seasonal plot is helpful in visually judging the existence of specified seasonal patterns, usually hourly or annual.
+
+\hypertarget{sec:ts-plot}{%
+\subsection{Time series bar plots}\label{sec:ts-plot}}
+
+In most scenarios, visualising time series relies on connecting points of observations with lines, curves or splines \autocite{dataviz-ts}. Nevertheless, line and path plot present time series variation with alignment to a gridded scale on either the Cartesian or polar coordinate. Such alignments can be visually challenging if the plot is fitted into a part of a small multiple \autocite{tufte}, such as the cells of an interactive table (Section \ref{sec:html-table}), in which bar plot or filled area plot is a more suitable method for visualising time series. If the series is long relative to the x-scale, bar plots are visually indistinguishable from area plots.
 
 \hypertarget{html-widgets-for-interactive-graphics}{%
 \section{HTML widgets for interactive graphics}\label{html-widgets-for-interactive-graphics}}
 
-\begin{itemize}
-\tightlist
-\item
-  shiny, plotly, echarts4r, leaflet and reactable
-\end{itemize}
+\hypertarget{developing-web-applications-with-r}{%
+\subsection{Developing web applications with R}\label{developing-web-applications-with-r}}
 
-\hypertarget{environmental-visual-analysis}{%
-\section{Environmental visual analysis}\label{environmental-visual-analysis}}
+The \textbf{shiny} package \autocite{shiny} provides a framework for developing web applications with \textbf{R} code \autocite{R2021}, both user and developer-friendly. It enables \textbf{R} users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
+
+Reactive programming is the core of computation logic behind \textbf{shiny} \autocite{mshiny}, greatly simplifies the design of workflow, focusing only on evaluating the changes of values over time. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
+
+The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
+
+\hypertarget{interactive-graphics-with-echarts-javascript-in-r}{%
+\subsection{Interactive graphics with Echarts JavaScript in R}\label{interactive-graphics-with-echarts-javascript-in-r}}
+
+The \textbf{echarts4r} package \autocite{echarts4r}, the implementation of Echarts JavaScript in \textbf{R} \autocite{echarts}, offers access to a powerful open-source JavaScript library for interactive graphics. The creation of Echarts graphics with \textbf{echarts4r} adapts the pipe workflow with \textbf{dplyr} \texttt{\%\textgreater{}\%} \autocite{dplyr,magrittr}. The wrapper functions of \textbf{echarts4r} enable the configuration of graphic options and parameters without the need of understanding JavaScript syntax.
+
+The creation of echarts4r objects follows the layer-to-layer approach, by which each function either (re-)initiates a chart, adds a single layer of graphical primitive or configures the options. It follows that the number of \textbf{echarts4r} function calls needed will be at least the number of graphic primitives to be mapped. In the case of mapping multiple time series as in seasonal plots (Section \ref{sec:ts-plot}) with \textbf{echarts4r}, loops may be needed.
+
+The underlying data passed to Echarts is treated slightly differently from the tidy data \autocite{tidy} underpinning \textbf{ggplot2}: each row represents an observation, and each column represents a variable. \textbf{echarts4r} converts the data frame into a JSON object upon initialisation, with each variable treated as a \emph{serie}. Such a difference implies a different logic for mapping the variables to graphical primitives, especially when mapping unordered categorical data.
+
+It is worth noting that the mapping logic of Echarts in some circumstances is inconsistent with the conventional data organisation of tsibble upon plotting multivariate time series. The latter uniquely maps each observation to a single data point on the plot in a one-to-one relationship between the variables and graphical primitives, yet Echarts maps each cell value to a separate graphical primitive such that each time series is plotted with an x-y pair of two \emph{serie} instead of grouping the observations with tsibble keys. Thus, it is often necessary to ``widen'' the data frame, breaking the time series into separate columns of variables named by the tsibble keys, achievable with the \textbf{tidyr} package \autocite{tidyr}.
+
+\hypertarget{sec:drill-down}{%
+\subsection{Drill-down in interactive graphics}\label{sec:drill-down}}
+
+\hypertarget{sec:html-table}{%
+\subsection{Interactive data tables}\label{sec:html-table}}
+
+\hypertarget{interactive-maps}{%
+\subsection{Interactive maps}\label{interactive-maps}}
+
+\hypertarget{visual-analysis-for-air-quality-data}{%
+\section{Visual analysis for air quality data}\label{visual-analysis-for-air-quality-data}}
 
 \begin{itemize}
 \tightlist
 \item
   Wind rose and pollution rose
 \item
-  Trend estimate
+  Trend estimate fit plot and ACF
 \end{itemize}
 
 \hypertarget{ch:data}{%

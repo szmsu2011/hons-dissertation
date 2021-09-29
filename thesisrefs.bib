@@ -21,7 +21,7 @@
   title = {The Auckland Environmental Data},
   author = {{Auckland Regional Council}},
   address = {Auckland, New Zealand},
-  url = {https://environmentauckland.org.nz/Data/DataSet/},
+  url = {https://environmentauckland.org.nz/Data/DataSet},
   year = {2021},
   note = {Accessed: 2021-05-25},
 }
@@ -41,13 +41,100 @@
   url = {https://CRAN.R-project.org/package=readr},
 }
 
-%%%%%%%%%%%%%%%%%%%% temp %%%%%%%%%%%%%%%%%%%%
+@article{tsibble,
+  author = {Earo Wang and Dianne Cook and Rob J Hyndman},
+  title = {A new tidy data structure to support exploration and modeling of temporal data},
+  journal = {Journal of Computational and Graphical Statistics},
+  volume = {29},
+  number = {3},
+  pages = {466-478},
+  year = {2020},
+  publisher = {Taylor & Francis},
+  doi = {10.1080/10618600.2019.1695624},
+  url = {https://doi.org/10.1080/10618600.2019.1695624},
+}
 
-@book{hyndman2021fpp3,
-  title = {Forecasting: Principles and Practice (3rd Edition)},
-  author = {Rob J Hyndman and George Athanasopoulos},
+@book{grammar,
+  title = {The Grammar of Graphics (Statistics and Computing)},
+  author = {Leland Wilkinson},
+  year = {2005},
+  publisher = {Springer Science \& Business Media, Inc.},
+  address = {New York, NY},
+  edition = {2},
+}
+
+@manual{echarts4r,
+  title = {echarts4r: Create Interactive Graphs with 'Echarts JavaScript' Version 4},
+  author = {John Coene},
+  year = {2020},
+  note = {R package version 0.3.3},
+  url = {https://CRAN.R-project.org/package=echarts4r},
+}
+
+@manual{echarts,
+  title = {Apache ECharts: An Open Source JavaScript Visualization Library},
+  author = {{The Apache Software Foundation}},
+  year = {2020},
+  url = {https://echarts.apache.org/handbook},
+}
+
+@book{ggplot2,
+  author = {Hadley Wickham},
+  title = {ggplot2: Elegant Graphics for Data Analysis},
+  publisher = {Springer-Verlag New York},
+  year = {2016},
+  isbn = {978-3-319-24277-4},
+  url = {https://ggplot2.tidyverse.org},
+}
+
+@manual{dplyr,
+  title = {dplyr: A Grammar of Data Manipulation},
+  author = {Hadley Wickham and Romain François and Lionel Henry and Kirill Müller},
+  year = {2020},
+  note = {R package version 1.0.1},
+  url = {https://CRAN.R-project.org/package=dplyr},
+}
+
+@book{fpp3,
+  title = {Forecasting: Principles and Practice},
+  author = {Rob Hyndman},
   year = {2021},
-  publisher = {OTexts\textsuperscript{TM}},
+  publisher = {Monash University},
+  address = {Melbourne, Victoria, Australia},
+  edition = {3},
+  url = {https://otexts.com/fpp3/time-plots.html},
+  chapter = {2.2},
+}
+
+@manual{feasts,
+  title = {feasts: Feature Extraction and Statistics for Time Series},
+  author = {Mitchell O'Hara-Wild and Rob Hyndman and Earo Wang},
+  year = {2021},
+  note = {R package version 0.1.7},
+  url = {https://CRAN.R-project.org/package=feasts},
+}
+
+@book{dataviz-ts,
+  title = {Fundamentals of Data Visualization},
+  author = {Claus O. Wilke},
+  year = {2021},
+  url = {https://clauswilke.com/dataviz/time-series.html},
+  chapter = {13},
+}
+
+@book{tufte,
+  title = {The Visual Display of Quantitative Information},
+  author = {Edward R. Tufte},
+  year = {1983},
+  publisher = {Graphics Press},
+}
+
+@manual{shiny,
+  title = {shiny: Web Application Framework for R},
+  author = {Winston Chang and Joe Cheng and JJ Allaire and Carson Sievert and Barret Schloerke and Yihui Xie and Jeff Allen and Jonathan McPherson and Alan Dipert and Barbara Borges},
+  year = {2021},
+  note = {R package version 1.6.0},
+  url = {https://CRAN.R-project.org/package=shiny},
 }
 
 @manual{R2021,
@@ -57,6 +144,48 @@
   address = {Vienna, Austria},
   year = {2021},
   url = {https://www.R-project.org/},
+}
+
+@book{mshiny,
+  title = {Mastering Shiny},
+  author = {Hadley Wickham},
+  year = {2021},
+  url = {https://mastering-shiny.org/reactive-motivation.html},
+  chapter = {13},
+}
+
+@manual{magrittr,
+  title = {magrittr: A Forward-Pipe Operator for R},
+  author = {Stefan Milton Bache and Hadley Wickham},
+  year = {2014},
+  note = {R package version 1.5},
+  url = {https://CRAN.R-project.org/package=magrittr},
+}
+
+@book{tidy,
+  title = {R for Data Science},
+  author = {Hadley Wickham and Garrett Grolemund},
+  year = {2021},
+  url = {https://r4ds.had.co.nz/tibbles.html},
+  chapter = {12},
+}
+
+@manual{tidyr,
+  title = {tidyr: Tidy Messy Data},
+  author = {Hadley Wickham},
+  year = {2020},
+  note = {R package version 1.1.2},
+  url = {https://CRAN.R-project.org/package=tidyr},
+}
+
+
+%%%%%%%%%%%%%%%%%%%% temp %%%%%%%%%%%%%%%%%%%%
+
+@book{hyndman2021fpp3,
+  title = {Forecasting: Principles and Practice (3rd Edition)},
+  author = {Rob J Hyndman and George Athanasopoulos},
+  year = {2021},
+  publisher = {OTexts\textsuperscript{TM}},
 }
 
 @article{wickham2019tidyverse,
@@ -79,14 +208,6 @@
   year = {2020},
   note = {R package version 3.0.3},
   url = {https://CRAN.R-project.org/package=tibble},
-}
-
-@manual{wickham2020tidyr,
-  title = {tidyr: Tidy Messy Data},
-  author = {Hadley Wickham},
-  year = {2020},
-  note = {R package version 1.1.2},
-  url = {https://CRAN.R-project.org/package=tidyr},
 }
 
 @manual{wickham2020dplyr,
@@ -119,19 +240,6 @@
 
 %%%%%%%%%%%%%%%%%%%% tidyverts %%%%%%%%%%%%%%%%%%%%
 
-@article{wang2020,
-  author = {Earo Wang and Dianne Cook and Rob J Hyndman},
-  title = {A new tidy data structure to support exploration and modeling of temporal data},
-  journal = {Journal of Computational and Graphical Statistics},
-  volume = {29},
-  number = {3},
-  pages = {466-478},
-  year = {2020},
-  publisher = {Taylor & Francis},
-  doi = {10.1080/10618600.2019.1695624},
-  url = {https://doi.org/10.1080/10618600.2019.1695624},
-}
-
 @manual{wild2021fable,
   title = {fable: Forecasting Models for Tidy Time Series},
   author = {Mitchell O'Hara-Wild and Rob Hyndman and Earo Wang},
@@ -146,14 +254,6 @@
   year = {2021},
   note = {R package version 0.3.0},
   url = {https://CRAN.R-project.org/package=fabletools},
-}
-
-@manual{wild2021feasts,
-  title = {feasts: Feature Extraction and Statistics for Time Series},
-  author = {Mitchell O'Hara-Wild and Rob Hyndman and Earo Wang},
-  year = {2021},
-  note = {R package version 0.1.7},
-  url = {https://CRAN.R-project.org/package=feasts},
 }
 
 
@@ -185,14 +285,6 @@
   year = {2016},
   isbn = {978-3-319-24277-4},
   url = {https://ggplot2.tidyverse.org},
-}
-
-@manual{coene2020,
-  title = {echarts4r: Create Interactive Graphs with 'Echarts JavaScript' Version 4},
-  author = {John Coene},
-  year = {2020},
-  note = {R package version 0.3.3},
-  url = {https://CRAN.R-project.org/package=echarts4r},
 }
 
 @manual{garnier2018,
