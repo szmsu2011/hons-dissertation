@@ -168,3 +168,39 @@ map2(all_fits, data, function(x, data) {
   )
   c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
 })
+
+## Full cross-sectional fit with interaction
+source(textConnection(readLines("../akl-air-quality/data/prep.R")[seq_len(20)]))
+
+data <- data %>%
+  select(datetime, rh, temp, ws, wind_dir, aqi) %>%
+  filter(between(year(datetime), 2019, 2020)) %>%
+  mutate(
+    location = fct_inorder(location),
+    wind_dir = cut(wind_dir, seq(0, 360, 90), include.lowest = TRUE),
+    tod = factor(hour(datetime), seq_len(24) - 1),
+    aqi = aqi > 50
+  ) %>%
+  as_tibble() %>%
+  select_if(function(x) !all(is.na(x))) %>%
+  select(-datetime) %>%
+  drop_na()
+
+full_fit <- glm(aqi ~ . + ws * wind_dir * location, binomial, data)
+anova(full_fit, test = "Chisq")
+model_auc <- function(train.x, train.y, test.x, test.y, full_fit) {
+  pred <- "train.y ~ . + ws * wind_dir * location" %>%
+    as.formula() %>%
+    glm(binomial, cbind(train.x, train.y)) %>%
+    predict(test.x, type = "response")
+  roc(
+    response = test.y, predictor = pred,
+    levels = levels(test.y), direction = "<"
+  )[["auc"]]
+}
+set.seed(2021)
+cv <- crossval(
+  model_auc, select(data, -aqi), factor(data[["aqi"]]),
+  K = 2, B = 1, verbose = FALSE, full_fit = full_fit
+)
+c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
