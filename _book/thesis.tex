@@ -54,58 +54,11 @@ I certify that I have made all reasonable efforts to secure copyright permission
 
 \newpage
 
-\emph{(Standard thesis)}
+\hypertarget{declaration}{%
+\chapter*{Declaration}\label{declaration}}
+\addcontentsline{toc}{chapter}{Declaration}
 
-This thesis is an original work of my research and contains no material which has been accepted for the award of any other degree or diploma at any university or equivalent institution and that, to the best of my knowledge and belief, this thesis contains no material previously published or written by another person, except where due reference is made in the text of the thesis.
-
-\emph{(Thesis including published works declaration)}
-
-I hereby declare that this thesis contains no material which has been accepted for the award of any other degree or diploma at any university or equivalent institution and that, to the best of my knowledge and belief, this thesis contains no material previously published or written by another person, except where due reference is made in the text of the thesis.
-
-This thesis includes (insert number) original papers published in peer reviewed journals and (insert number) submitted publications. The core theme of the thesis is (insert theme). The ideas, development and writing up of all the papers in the thesis were the principal responsibility of myself, the student, working within the (insert name of academic unit) under the supervision of (insert name of supervisor).
-
-(The inclusion of co-authors reflects the fact that the work came from active collaboration between researchers and acknowledges input into team-based research.) Remove this paragraph for theses with sole-authored work
-
-In the case of (insert chapter numbers) my contribution to the work involved the following:
-
-I have / have not renumbered sections of submitted or published papers in order to generate a consistent presentation within the thesis.
-
-\begin{table}
-\centering\footnotesize\tabcolsep=0.12cm
-\begin{tabular}{|p{1.2cm}|p{2cm}|p{1.8cm}|p{3.4cm}|p{3.5cm}|p{1.5cm}|}
-\hline
-\RaggedRight\textbf{Thesis chapter}  & 
-\RaggedRight\textbf{Publication title}  & 
-\RaggedRight\textbf{Status (published, in press, accepted or returned for revision)}  &  
-\RaggedRight\textbf{Nature and \% of student contribution} & 
-\RaggedRight\textbf{Co-author name(s), nature and \% of co-author’s contribution} &  \RaggedRight\textbf{Co-author(s), Monash student Y/N} \\ 
-\hline
-2 & xx & xx  & xx & xx & \multicolumn{1}{c|}{N}   \\
-\hline
-3 & xx & xx  & xx & xx  & \multicolumn{1}{c|}{N}   \\
-\hline
-4 & xx & xx  & xx & xx & \multicolumn{1}{c|}{N}    \\
-\hline
-5 & xx & xx  & xx & xx & \multicolumn{1}{c|}{N}   \\
-\hline
-\end{tabular}
-\end{table}
-
-\textbf{Student name:} \authorname
-
-\textbf{Student signature:}
-
-\textbf{Date:}
-
-\hypertarget{preface}{%
-\chapter*{Preface}\label{preface}}
-\addcontentsline{toc}{chapter}{Preface}
-
-The material in Chapter \ref{ch:intro} has been submitted to the journal \emph{Journal of Impossible Results} for possible publication.
-
-The contribution in Chapter \ref{ch:litreview} of this thesis was presented in the International Symposium on Nonsense held in Dublin, Ireland, in July 2015.
-
-\clearpage\pagenumbering{arabic}\setcounter{page}{0}
+This dissertation is an original work of my research and contains no material which has been accepted for the award of any other degree or diploma at any university or equivalent institution and that, to the best of my knowledge and belief, this dissertation contains no material previously published or written by another person, except where due reference is made in the text of the dissertation.
 
 \hypertarget{ch:intro}{%
 \chapter{Introduction (Template Demo)}\label{ch:intro}}
@@ -195,31 +148,48 @@ The \texttt{knitLatex} package is useful for generating tables from R output. Ot
 
 The \textbf{tsibble} package offers a data infrastructure for wrangling time series data \autocite{tsibble}. A time series data set consists of one or more sequences indexed by time, often with a regular interval. As such, data-wrangling processes of time series data need to account for the special requirements of time series data analysis, including the explicit identification of time gaps and a method of handling multiple time series in a single data set for identifying duplicate records.
 
-Analyses of fixed-interval time series require the data to be free from missing value, especially when the series is self-dependent. Whilst the explicit missing values can be easily handled by the substitution with interpolated values, the implicit gaps with missing index values are often neglected. In the case of multiple time series, locations of implicit time gaps may be different in each sequence; filling the gaps with traditional loops can be time-consuming and inefficient. \textbf{tsibble} identifies implicit time gaps with the \emph{index} and \emph{key} variables, such that each variable in the tsibble object is uniquely identified by the index and the interaction of all keys. As such, each time series is uniquely identified by the keys, allowing efficient identification of implicit time gaps, which is achieved by \textbf{tsibble} with a range of \texttt{*\_gaps()} functions.
+Analyses of fixed-interval time series require the data to be free from missing value, especially when the series is self-dependent. Whilst the explicit missing values can be easily handled by the substitution with interpolated values, the implicit gaps with missing index values are often neglected. In the case of multiple time series, locations of implicit time gaps may be different in each sequence; filling the gaps with traditional loops can be time-consuming and inefficient. \textbf{tsibble} identifies implicit time gaps with the \emph{index} and \emph{key} variables, such that each variable in the tsibble object is uniquely identified by the index and the interaction of all keys. As such, each time series is uniquely identified by the keys, allowing efficient identification of implicit time gaps, which is achieved by \textbf{tsibble} with a range of wrangling verbs.
 
 Duplicates exist in different forms in cross-sectional and time series data. Typically, duplicates are identical observations exhibited as rows in a data frame, yet such definition is inadequate in identifying duplicates in time series data. There exists only one true value at any given point in time for each time series, meaning that there may be duplicate values that are non-identical observations with identical key-index pairs yet different in values. Instead of searching merely for duplicate rows, \textbf{tsibble} checks for duplicate key-index pairs. To avoid negligence, the creation of tsibble will fail upon detected duplicates.
 
 \hypertarget{time-series-graphics-toolbox}{%
 \section{Time series graphics toolbox}\label{time-series-graphics-toolbox}}
 
-\hypertarget{interactive-calendar-plots}{%
-\subsection{Interactive calendar plots}\label{interactive-calendar-plots}}
+\hypertarget{calendar-graphics}{%
+\subsection{Calendar graphics}\label{calendar-graphics}}
 
-Calendar-formatted graphics is one of the most natural methods in depicting daily time series. Arranged as calendars, discovering anomalies and the date of their occurrence is intuitive and visually efficient. The semantics of calendar-formatted graphics can be summarised using the grammar of graphics \autocite{grammar} as mapping the time series variables to a range of graphical primitives, including colour, sized objects and texts, to layers on the calendar coordinate.
+Calendars are the systematic partition of time from the observed solar-lunar phenomena and cultural custom, which is usable as graphics for temporal representations of societal activities and natural events. Calendar graphics are the method for the aggregated visualisation of time series data at sub-daily intervals, depicting the temporal dimension of time series data as the spatial layout in the calendar grid. The motivation of utilising calendars for data visualisations arises from the convenience of displaying observations in association with exact dates.
 
-The implementation of the methods may use the \textbf{echarts4r} package \autocite{echarts4r}, which offers wrapper functions for creating interactive graphics with ``Echarts JavaScript'' \autocite{echarts} on R. The purpose of the interactivity is to allow further exploration upon spotting unexpected values on specific dates using drill-down (Section \ref{sec:drill-down}). The construction of graphics in \textbf{echarts4r} follows similar semantics to \textbf{ggplot2} \autocite{ggplot2}, such that the graphical primitives are built in layers with function calls linked by \textbf{dplyr} pipe \autocite{dplyr}.
+Air quality data are conventionally collected at hourly intervals, from which a time series plot becomes overcrowded, impeding the visual detections of abnormalities. \textcite{calmap} depicted a method of non-cartesian heatmaps on a calendar coordinate for visualising air pollution data. Prior to the paper, \textcite{calmapi} used calendar heatmaps to analyse the correlation of particulate matter temporally. Calendar graphics highlight the abnormalities and allow the association of the detected abnormalities to events with dates, providing insights and directions for analyses.
 
-\hypertarget{time-and-seasonal-plots}{%
-\subsection{Time and seasonal plots}\label{time-and-seasonal-plots}}
+Calendar graphics is an application of trellis displays \autocite{trellis}, which spatially modularise the temporal dimension into conditional groups of small multiples \autocite{tufte} using calendar period (i.e., month and year) as an integrated and aligned plot. The expanded layout of the temporal dimension on a plane eases the cognitive load \autocite{tufte} in temporally locating the date of the events and extracting the date components, contrary to conventional time series plots.
 
-A time plot is the most elementary visual method for exploring unaggregated time series data, such that the sequence is plotted against the time index by positions along common x-y-scales on the Cartesian coordinate \autocite{fpp3}. Prominent time series features, such as trends, seasons, cycles, noise, clustering and oscillations, can be quickly spotted.
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/cal-demo} \caption{A demonstration of a basic calendar heatmap with \textbf{Echarts.js} \autocite{echarts} faceted (unaligned) by \texttt{year\ \textasciitilde{}\ month}. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.}\label{fig:cal-demo}
+\end{figure}
 
-Based on time plots, \textcite{feasts} introduced the seasonal plot as a method of visualising seasonal patterns in the \textbf{feasts} package. Instead of plotting against the time index, each complete seasonal period is plotted against the x-scale as separate lines of time series, with each period optionally labelled and coloured using an n-gradient colour scale. The seasonal plot is helpful in visually judging the existence of specified seasonal patterns, usually hourly or annual.
 
-\hypertarget{sec:ts-plot}{%
-\subsection{Time series bar plots}\label{sec:ts-plot}}
 
-In most scenarios, visualising time series relies on connecting points of observations with lines, curves or splines \autocite{dataviz-ts}. Nevertheless, line and path plot present time series variation with alignment to a gridded scale on either the Cartesian or polar coordinate. Such alignments can be visually challenging if the plot is fitted into a part of a small multiple \autocite{tufte}, such as the cells of an interactive table (Section \ref{sec:html-table}), in which bar plot or filled area plot is a more suitable method for visualising time series. If the series is long relative to the x-scale, bar plots are visually indistinguishable from area plots.
+\hypertarget{time-series-plots}{%
+\subsection{Time series plots}\label{time-series-plots}}
+
+In most scenarios, visualising time series relies on connecting points of observations with lines, curves or splines \autocite{dataviz-ts}, such that the sequences are plotted against the time index by positions along common xy-scales on the Cartesian coordinate \autocite{fpp3}. Connected time plots are the most elementary visual method for spotting extrinsic features in time series, including trends, seasons, cycles, clustering and oscillations.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/ctp-demo-1} \caption{A demonstration of a basic line plot with the \textbf{ggplot2} package \autocite{ggplot2} for the weekly economy passenger load on Ansett Airlines \autocite{fpp3d}. Visual analysis shows weak trend and cycle and abnormal zero values to be investigated. The presence of clustering also indicates a positive temporal dependence in the time series. It is nonetheless uneasy to align any observation to a date accurately.}\label{fig:ctp-demo}
+\end{figure}
+
+
+
+Based on connected time plots, \textcite{feasts} proposed the seasonal plot as a method of visualising seasonal patterns in the \textbf{feasts} package. The method conditionally subsets the complete time series into partitions of seasonal periods, each to be plotted in a homogeneous time plot and distinguished using a gradient colour scale for longitudinal comparison between periods.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/stp-demo-1} \caption{A \textbf{ggplot2}-based seasonal time series plot with the \textbf{feasts} package \autocite{feasts} for the monthly anti-diabetic drug sales in Australia \autocite{fpp3d}. The plot allows for both visualisation of intra-seasonal patterns and inter-seasonal variations shown as a positive trend in drug sales from year to year.}\label{fig:stp-demo}
+\end{figure}
+
+
+
+Nevertheless, interpreting connected time plots relies on the visual alignment of positions to the xy-scales in the Cartesian coordinates. Such visual alignments can be challenging upon the absence of explicit gridlines and axes, such as when the plot is fitted as a part of trellis displays \autocite{trellis}, in which the trend and scale of variations become ambiguous. As such, it is common to fill the area under the curve to emphasise the temporal variation in the plot \autocite{dataviz-ts}.
 
 \hypertarget{html-widgets-for-interactive-graphics}{%
 \section{HTML widgets for interactive graphics}\label{html-widgets-for-interactive-graphics}}
@@ -233,12 +203,12 @@ Reactive programming is the core of computation logic behind \textbf{shiny} \aut
 
 The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
-\hypertarget{interactive-graphics-with-echarts-javascript-in-r}{%
-\subsection{Interactive graphics with Echarts JavaScript in R}\label{interactive-graphics-with-echarts-javascript-in-r}}
+\hypertarget{sec:int-graphics}{%
+\subsection{Interactive graphics with Echarts JavaScript in R}\label{sec:int-graphics}}
 
 The \textbf{echarts4r} package \autocite{echarts4r}, the implementation of Echarts JavaScript in \textbf{R} \autocite{echarts}, offers access to a powerful open-source JavaScript library for interactive graphics. The creation of Echarts graphics with \textbf{echarts4r} adapts the pipe workflow with \textbf{dplyr} \texttt{\%\textgreater{}\%} \autocite{dplyr,magrittr}. The wrapper functions of \textbf{echarts4r} enable the configuration of graphic options and parameters without the need of understanding JavaScript syntax.
 
-The creation of echarts4r objects follows the layer-to-layer approach, by which each function either (re-)initiates a chart, adds a single layer of graphical primitive or configures the options. It follows that the number of \textbf{echarts4r} function calls needed will be at least the number of graphic primitives to be mapped. In the case of mapping multiple time series as in seasonal plots (Section \ref{sec:ts-plot}) with \textbf{echarts4r}, loops may be needed.
+The creation of echarts4r objects follows the layer-to-layer approach, by which each function either (re-)initiates a chart, adds a single layer of graphical primitive or configures the options. It follows that the number of \textbf{echarts4r} function calls needed will be at least the number of graphic primitives to be mapped. In the case of mapping multiple time series as in seasonal plots (Section ref(sec:ts-plot)) with \textbf{echarts4r}, loops may be needed.
 
 The underlying data passed to Echarts is treated slightly differently from the tidy data \autocite{tidy} underpinning \textbf{ggplot2}: each row represents an observation, and each column represents a variable. \textbf{echarts4r} converts the data frame into a JSON object upon initialisation, with each variable treated as a \emph{serie}. Such a difference implies a different logic for mapping the variables to graphical primitives, especially when mapping unordered categorical data.
 
@@ -247,8 +217,8 @@ It is worth noting that the mapping logic of Echarts in some circumstances is in
 \hypertarget{sec:drill-down}{%
 \subsection{Drill-down in interactive graphics}\label{sec:drill-down}}
 
-\hypertarget{sec:html-table}{%
-\subsection{Interactive data tables}\label{sec:html-table}}
+\hypertarget{interactive-data-tables}{%
+\subsection{Interactive data tables}\label{interactive-data-tables}}
 
 \hypertarget{interactive-maps}{%
 \subsection{Interactive maps}\label{interactive-maps}}
