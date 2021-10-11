@@ -60,6 +60,8 @@ I certify that I have made all reasonable efforts to secure copyright permission
 
 This dissertation is an original work of my research and contains no material which has been accepted for the award of any other degree or diploma at any university or equivalent institution and that, to the best of my knowledge and belief, this dissertation contains no material previously published or written by another person, except where due reference is made in the text of the dissertation.
 
+\clearpage\pagenumbering{arabic}\setcounter{page}{0}
+
 \hypertarget{ch:intro}{%
 \chapter{Introduction (Template Demo)}\label{ch:intro}}
 
@@ -143,6 +145,10 @@ The \texttt{knitLatex} package is useful for generating tables from R output. Ot
 \hypertarget{ch:litreview}{%
 \chapter{Background and related works}\label{ch:litreview}}
 
+Modern information design has been continuously fostering effective tools of organising and displaying information since \textcite{tufte} proposed the landmarking principles of graphical displays in \emph{The Visual Display of Quantitative Information}. Following the disruptive advancement of information and computing technology, infographics designers are faced with unprecedented methods of data display, including interactive and animated graphics.
+
+As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this section will briefly outline the available toolboxes for time series data wrangling and visualisation using \textbf{R} \autocite{R2021}.
+
 \hypertarget{tidy-time-series-data-wrangling-toolbox}{%
 \section{Tidy time series data-wrangling toolbox}\label{tidy-time-series-data-wrangling-toolbox}}
 
@@ -165,7 +171,7 @@ Air quality data are conventionally collected at hourly intervals, from which a 
 Calendar graphics is an application of trellis displays \autocite{trellis}, which spatially modularise the temporal dimension into conditional groups of small multiples \autocite{tufte} using calendar period (i.e., month and year) as an integrated and aligned plot. The expanded layout of the temporal dimension on a plane eases the cognitive load \autocite{tufte} in temporally locating the date of the events and extracting the date components, contrary to conventional time series plots.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/cal-demo} \caption{A demonstration of a basic calendar heatmap with \textbf{Echarts.js} \autocite{echarts} faceted (unaligned) by \texttt{year\ \textasciitilde{}\ month}. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.}\label{fig:cal-demo}
+\includegraphics[width=1\linewidth]{figures/cal-demo} \caption{A demonstration of a basic calendar heatmap with \textbf{Echarts.js} \autocite{echarts} via \textbf{echarts4r} \autocite{echarts4r} faceted (unaligned) by \texttt{year\ \textasciitilde{}\ month}. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.}\label{fig:cal-demo}
 \end{figure}
 
 
@@ -194,8 +200,8 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 \hypertarget{html-widgets-for-interactive-graphics}{%
 \section{HTML widgets for interactive graphics}\label{html-widgets-for-interactive-graphics}}
 
-\hypertarget{developing-web-applications-with-r}{%
-\subsection{Developing web applications with R}\label{developing-web-applications-with-r}}
+\hypertarget{sec:shiny}{%
+\subsection{Developing web applications with R}\label{sec:shiny}}
 
 The \textbf{shiny} package \autocite{shiny} provides a framework for developing web applications with \textbf{R} code \autocite{R2021}, both user and developer-friendly. It enables \textbf{R} users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
@@ -204,35 +210,32 @@ Reactive programming is the core of computation logic behind \textbf{shiny} \aut
 The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
 \hypertarget{sec:int-graphics}{%
-\subsection{Interactive graphics with Echarts JavaScript in R}\label{sec:int-graphics}}
+\subsection{Interactive graphics}\label{sec:int-graphics}}
 
-The \textbf{echarts4r} package \autocite{echarts4r}, the implementation of Echarts JavaScript in \textbf{R} \autocite{echarts}, offers access to a powerful open-source JavaScript library for interactive graphics. The creation of Echarts graphics with \textbf{echarts4r} adapts the pipe workflow with \textbf{dplyr} \texttt{\%\textgreater{}\%} \autocite{dplyr,magrittr}. The wrapper functions of \textbf{echarts4r} enable the configuration of graphic options and parameters without the need of understanding JavaScript syntax.
+In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid overloading viewers' cognitive load, numerous methods, such as trellis displays \autocite{trellis}, are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics \autocite{intg}. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots \autocite{intg}.
 
-The creation of echarts4r objects follows the layer-to-layer approach, by which each function either (re-)initiates a chart, adds a single layer of graphical primitive or configures the options. It follows that the number of \textbf{echarts4r} function calls needed will be at least the number of graphic primitives to be mapped. In the case of mapping multiple time series as in seasonal plots (Section ref(sec:ts-plot)) with \textbf{echarts4r}, loops may be needed.
+The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by \textcite{tt} in \emph{Windows NT 3.51}, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down \autocite{plotly} and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
-The underlying data passed to Echarts is treated slightly differently from the tidy data \autocite{tidy} underpinning \textbf{ggplot2}: each row represents an observation, and each column represents a variable. \textbf{echarts4r} converts the data frame into a JSON object upon initialisation, with each variable treated as a \emph{serie}. Such a difference implies a different logic for mapping the variables to graphical primitives, especially when mapping unordered categorical data.
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/tt-demo} \caption{A demonstration of tooltips with \textbf{Echarts.js} \autocite{echarts} via \textbf{echarts4r} \autocite{echarts4r}. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.}\label{fig:tt-demo}
+\end{figure}
 
-It is worth noting that the mapping logic of Echarts in some circumstances is inconsistent with the conventional data organisation of tsibble upon plotting multivariate time series. The latter uniquely maps each observation to a single data point on the plot in a one-to-one relationship between the variables and graphical primitives, yet Echarts maps each cell value to a separate graphical primitive such that each time series is plotted with an x-y pair of two \emph{serie} instead of grouping the observations with tsibble keys. Thus, it is often necessary to ``widen'' the data frame, breaking the time series into separate columns of variables named by the tsibble keys, achievable with the \textbf{tidyr} package \autocite{tidyr}.
 
-\hypertarget{sec:drill-down}{%
-\subsection{Drill-down in interactive graphics}\label{sec:drill-down}}
 
-\hypertarget{interactive-data-tables}{%
-\subsection{Interactive data tables}\label{interactive-data-tables}}
+Linked views of multiple graphics are a powerful method for deconstructing high-dimensional data, achieved via either client or server-side linking \autocite{plotly}. The client-side linking employs internal graphical queries without callbacks to the application server, with examples including internal connections (e.g., brush and linked filters) in \textbf{plotly} \autocite{plotly} and \textbf{echarts4r} \autocite{echarts4r}. Alternatively, server-side linkings involve queries to the server environment via callbacks (Section \ref{sec:shiny}), mainly for intermodular linking of different types of plots.
 
-\hypertarget{interactive-maps}{%
-\subsection{Interactive maps}\label{interactive-maps}}
+A special application of server-side linking is to facilitate selection control in interactive maps. In addition to the positioning and navigational functions of interactive maps, they are a native geographical user interface for click or hover-and-show inputs and outputs.
 
 \hypertarget{visual-analysis-for-air-quality-data}{%
 \section{Visual analysis for air quality data}\label{visual-analysis-for-air-quality-data}}
 
-\begin{itemize}
-\tightlist
-\item
-  Wind rose and pollution rose
-\item
-  Trend estimate fit plot and ACF
-\end{itemize}
+Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
+
+\hypertarget{wind-roses}{%
+\subsection{Wind roses}\label{wind-roses}}
+
+\hypertarget{trend-estimate-and-autocorrelation-plots}{%
+\subsection{Trend estimate and autocorrelation plots}\label{trend-estimate-and-autocorrelation-plots}}
 
 \hypertarget{ch:data}{%
 \chapter{Auckland air quality data}\label{ch:data}}
@@ -240,9 +243,9 @@ It is worth noting that the mapping logic of Echarts in some circumstances is in
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI \autocite{aqi}. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage \autocite{aqitarget}. Over 10 stations in Auckland monitor a subset of the standard-listed pollutants in an hourly interval.
+Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI \autocite{aqi}. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage \autocite{aqitarget}. Over ten stations in Auckland monitor a subset of the listed pollutants in an hourly interval.
 
-It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by \textcite{aklenvdata}, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), 10 pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
+It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by \textcite{aklenvdata}, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), ten pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
 
 Only six of the standard-listed air pollutants are monitored and available in the data, and each station independently monitors a subset of the six pollutants. As such, the calculation of AQI, based on available data, may be simplified to
 
@@ -276,7 +279,7 @@ Wind Direction & $^{\circ}$ &  \\
 \end{center}
 \end{table}
 
-It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \ref{sec:data-extreme-value} are more frequent in earlier years. The final data set is subsetted from the year 2016.
+It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \ref{sec:data-extreme-value} are more frequent in earlier years. The final data set is thus taken from the year 2016.
 
 \hypertarget{data-quality-and-cleaning}{%
 \section{Data quality and cleaning}\label{data-quality-and-cleaning}}

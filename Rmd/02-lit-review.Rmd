@@ -6,6 +6,10 @@ library(fpp3)
 
 # Background and related works {#ch:litreview}
 
+Modern information design has been continuously fostering effective tools of organising and displaying information since @tufte proposed the landmarking principles of graphical displays in *The Visual Display of Quantitative Information*. Following the disruptive advancement of information and computing technology, infographics designers are faced with unprecedented methods of data display, including interactive and animated graphics.
+
+As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this section will briefly outline the available toolboxes for time series data wrangling and visualisation using **R** [@R2021].
+
 ## Tidy time series data-wrangling toolbox
 
 The **tsibble** package offers a data infrastructure for wrangling time series data [@tsibble]. A time series data set consists of one or more sequences indexed by time, often with a regular interval. As such, data-wrangling processes of time series data need to account for the special requirements of time series data analysis, including the explicit identification of time gaps and a method of handling multiple time series in a single data set for identifying duplicate records.
@@ -28,7 +32,7 @@ Calendar graphics is an application of trellis displays [@trellis], which spatia
 include_graphics("figures/cal-demo.png")
 ```
 
-(ref:cal-demo-cap) A demonstration of a basic calendar heatmap with **Echarts.js** [@echarts] faceted (unaligned) by `year ~ month`. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.
+(ref:cal-demo-cap) A demonstration of a basic calendar heatmap with **Echarts.js** [@echarts] via **echarts4r** [@echarts4r] faceted (unaligned) by `year ~ month`. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.
 
 ### Time series plots
 
@@ -71,7 +75,7 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 
 ## HTML widgets for interactive graphics
 
-### Developing web applications with R
+### Developing web applications with R {#sec:shiny}
 
 The **shiny** package [@shiny] provides a framework for developing web applications with **R** code [@R2021], both user and developer-friendly. It enables **R** users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
@@ -79,23 +83,26 @@ Reactive programming is the core of computation logic behind **shiny** [@mshiny]
 
 The user interface of **shiny** applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
-### Interactive graphics with Echarts JavaScript in R {#sec:int-graphics}
+### Interactive graphics {#sec:int-graphics}
 
-The **echarts4r** package [@echarts4r], the implementation of Echarts JavaScript in **R** [@echarts], offers access to a powerful open-source JavaScript library for interactive graphics. The creation of Echarts graphics with **echarts4r** adapts the pipe workflow with **dplyr** `%>%` [@dplyr;@magrittr]. The wrapper functions of **echarts4r** enable the configuration of graphic options and parameters without the need of understanding JavaScript syntax.
+In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid overloading viewers' cognitive load, numerous methods, such as trellis displays [@trellis], are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics [@intg]. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots [@intg].
 
-The creation of echarts4r objects follows the layer-to-layer approach, by which each function either (re-)initiates a chart, adds a single layer of graphical primitive or configures the options. It follows that the number of **echarts4r** function calls needed will be at least the number of graphic primitives to be mapped. In the case of mapping multiple time series as in seasonal plots (Section ref(sec:ts-plot)) with **echarts4r**, loops may be needed.
+The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by @tt in *Windows NT 3.51*, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down [@plotly] and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
-The underlying data passed to Echarts is treated slightly differently from the tidy data [@tidy] underpinning **ggplot2**: each row represents an observation, and each column represents a variable. **echarts4r** converts the data frame into a JSON object upon initialisation, with each variable treated as a *serie*. Such a difference implies a different logic for mapping the variables to graphical primitives, especially when mapping unordered categorical data.
+```{r tt-demo, fig.width = 7, out.width = "100%", fig.cap = "(ref:tt-demo-cap)"}
+include_graphics("figures/tt-demo.png")
+```
 
-It is worth noting that the mapping logic of Echarts in some circumstances is inconsistent with the conventional data organisation of tsibble upon plotting multivariate time series. The latter uniquely maps each observation to a single data point on the plot in a one-to-one relationship between the variables and graphical primitives, yet Echarts maps each cell value to a separate graphical primitive such that each time series is plotted with an x-y pair of two *serie* instead of grouping the observations with tsibble keys. Thus, it is often necessary to "widen" the data frame, breaking the time series into separate columns of variables named by the tsibble keys, achievable with the **tidyr** package [@tidyr].
+(ref:tt-demo-cap) A demonstration of tooltips with **Echarts.js** [@echarts] via **echarts4r** [@echarts4r]. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.
 
-### Drill-down in interactive graphics {#sec:drill-down}
+Linked views of multiple graphics are a powerful method for deconstructing high-dimensional data, achieved via either client or server-side linking [@plotly]. The client-side linking employs internal graphical queries without callbacks to the application server, with examples including internal connections (e.g., brush and linked filters) in **plotly** [@plotly] and **echarts4r** [@echarts4r]. Alternatively, server-side linkings involve queries to the server environment via callbacks (Section \@ref(sec:shiny)), mainly for intermodular linking of different types of plots.
 
-### Interactive data tables
-
-### Interactive maps
+A special application of server-side linking is to facilitate selection control in interactive maps. In addition to the positioning and navigational functions of interactive maps, they are a native geographical user interface for click or hover-and-show inputs and outputs.
 
 ## Visual analysis for air quality data
 
-- Wind rose and pollution rose
-- Trend estimate fit plot and ACF
+Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
+
+### Wind roses
+
+### Trend estimate and autocorrelation plots
