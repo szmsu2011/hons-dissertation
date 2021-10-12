@@ -201,7 +201,7 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 \section{HTML widgets for interactive graphics}\label{html-widgets-for-interactive-graphics}}
 
 \hypertarget{sec:shiny}{%
-\subsection{Developing web applications with R}\label{sec:shiny}}
+\subsection{Development of web applications with R}\label{sec:shiny}}
 
 The \textbf{shiny} package \autocite{shiny} provides a framework for developing web applications with \textbf{R} code \autocite{R2021}, both user and developer-friendly. It enables \textbf{R} users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
@@ -212,7 +212,7 @@ The user interface of \textbf{shiny} applications provides the front-end inputs 
 \hypertarget{sec:int-graphics}{%
 \subsection{Interactive graphics}\label{sec:int-graphics}}
 
-In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid overloading viewers' cognitive load, numerous methods, such as trellis displays \autocite{trellis}, are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics \autocite{intg}. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots \autocite{intg}.
+In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid excessive cognitive load to viewers, numerous methods, such as trellis displays \autocite{trellis}, are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics \autocite{intg}. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots \autocite{intg}.
 
 The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by \textcite{tt} in \emph{Windows NT 3.51}, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down \autocite{plotly} and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
@@ -226,16 +226,32 @@ Linked views of multiple graphics are a powerful method for deconstructing high-
 
 A special application of server-side linking is to facilitate selection control in interactive maps. In addition to the positioning and navigational functions of interactive maps, they are a native geographical user interface for click or hover-and-show inputs and outputs.
 
-\hypertarget{visual-analysis-for-air-quality-data}{%
-\section{Visual analysis for air quality data}\label{visual-analysis-for-air-quality-data}}
+\hypertarget{visual-analysis-for-temporal-air-quality-data}{%
+\section{Visual analysis for temporal air quality data}\label{visual-analysis-for-temporal-air-quality-data}}
 
 Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
 
 \hypertarget{wind-roses}{%
 \subsection{Wind roses}\label{wind-roses}}
 
-\hypertarget{trend-estimate-and-autocorrelation-plots}{%
-\subsection{Trend estimate and autocorrelation plots}\label{trend-estimate-and-autocorrelation-plots}}
+Wind speed and direction are critical meteorological parameters that affect the concentration of ambient air pollutants by altering their transportation, diffusion and accumulation \autocite{wind}. The visual evaluation of wind as vectors requires specialised graphics capable of depicting the directional nature of wind. In conjunction with the requirement for visual association analysis between wind and air pollution, a temporal-proportion-based wind rose plot is proposed and implemented on the \textbf{openair} package \autocite{openair}, which is an application of the stacked polar bar plots. Variations of temporal-proportion wind rose plots include contour wind roses \autocite{cwr} and standard vector-deviation wind roses \autocite{vdwr}. A temporal-proportion wind rose can be extended to pollution rose, replacing the mapping of wind speed to pollutants.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/wr-demo-1} \caption{A demonstration of a pollution rose with \textbf{openair} \autocite{openair}, which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NOx (colour).}\label{fig:wr-demo}
+\end{figure}
+
+
+
+\hypertarget{autocorrelation-plots}{%
+\subsection{Autocorrelation plots}\label{autocorrelation-plots}}
+
+Trend analysis of ambient air pollutant concentrations is a critical component of the air quality management strategy \autocite{aqi}, which is commonly carried out preliminarily with linear models. Nonetheless, mutual independence of the residuals is the core assumption of all linear models; as such, the temporal dependence of air quality data between successive observations needs to be captured \autocite{lm}. The autocorrelation plots visually provide preliminary insights into the type of correlation structure present in the series prior to analysis \autocite{acf}. The autocorrelation plots are also a tool for model diagnostics and evaluation.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/acf-demo-1} \caption{A \textbf{ggplot2}-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the \textbf{feasts} package \autocite{feasts} for Australian beer production \autocite{fpp3d}. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of \(\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}\).}\label{fig:acf-demo}
+\end{figure}
+
+
 
 \hypertarget{ch:data}{%
 \chapter{Auckland air quality data}\label{ch:data}}

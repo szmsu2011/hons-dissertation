@@ -2,6 +2,9 @@
 library(knitr)
 opts_chunk$set(echo = FALSE, message = FALSE, cache = TRUE)
 library(fpp3)
+library(openair)
+library(patchwork)
+library(feasts)
 ```
 
 # Background and related works {#ch:litreview}
@@ -75,7 +78,7 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 
 ## HTML widgets for interactive graphics
 
-### Developing web applications with R {#sec:shiny}
+### Development of web applications with R {#sec:shiny}
 
 The **shiny** package [@shiny] provides a framework for developing web applications with **R** code [@R2021], both user and developer-friendly. It enables **R** users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
@@ -85,7 +88,7 @@ The user interface of **shiny** applications provides the front-end inputs and o
 
 ### Interactive graphics {#sec:int-graphics}
 
-In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid overloading viewers' cognitive load, numerous methods, such as trellis displays [@trellis], are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics [@intg]. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots [@intg].
+In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid excessive cognitive load to viewers, numerous methods, such as trellis displays [@trellis], are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics [@intg]. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots [@intg].
 
 The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by @tt in *Windows NT 3.51*, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down [@plotly] and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
@@ -99,10 +102,35 @@ Linked views of multiple graphics are a powerful method for deconstructing high-
 
 A special application of server-side linking is to facilitate selection control in interactive maps. In addition to the positioning and navigational functions of interactive maps, they are a native geographical user interface for click or hover-and-show inputs and outputs.
 
-## Visual analysis for air quality data
+## Visual analysis for temporal air quality data
 
 Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
 
 ### Wind roses
 
-### Trend estimate and autocorrelation plots
+Wind speed and direction are critical meteorological parameters that affect the concentration of ambient air pollutants by altering their transportation, diffusion and accumulation [@wind]. The visual evaluation of wind as vectors requires specialised graphics capable of depicting the directional nature of wind. In conjunction with the requirement for visual association analysis between wind and air pollution, a temporal-proportion-based wind rose plot is proposed and implemented on the **openair** package [@openair], which is an application of the stacked polar bar plots. Variations of temporal-proportion wind rose plots include contour wind roses [@cwr] and standard vector-deviation wind roses [@vdwr]. A temporal-proportion wind rose can be extended to pollution rose, replacing the mapping of wind speed to pollutants.
+
+```{r wr-demo, fig.width = 7, out.width = "100%", fig.cap = "(ref:wr-demo-cap)"}
+pollutionRose(openair::mydata, pollutant = "nox")
+```
+
+(ref:wr-demo-cap) A demonstration of a pollution rose with **openair** [@openair], which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NO<sub>x</sub> (colour).
+
+### Autocorrelation plots
+
+Trend analysis of ambient air pollutant concentrations is a critical component of the air quality management strategy [@aqi], which is commonly carried out preliminarily with linear models. Nonetheless, mutual independence of the residuals is the core assumption of all linear models; as such, the temporal dependence of air quality data between successive observations needs to be captured [@lm]. The autocorrelation plots visually provide preliminary insights into the type of correlation structure present in the series prior to analysis [@acf]. The autocorrelation plots are also a tool for model diagnostics and evaluation.
+
+```{r acf-demo, fig.width = 8, out.width = "100%", fig.cap = "(ref:acf-demo-cap)"}
+(aus_production %>%
+  filter(year(Quarter) >= 2000) %>%
+  ACF(Beer) %>%
+  autoplot()) +
+  (aus_production %>%
+    filter(year(Quarter) >= 2000) %>%
+    PACF(Beer) %>%
+    autoplot()) +
+  plot_annotation(title = "Australian beer production") &
+  theme_bw()
+```
+
+(ref:acf-demo-cap) A **ggplot2**-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the **feasts** package [@feasts] for Australian beer production [@fpp3d]. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of $\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}$.
