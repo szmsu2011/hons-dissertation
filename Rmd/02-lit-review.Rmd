@@ -106,7 +106,7 @@ A special application of server-side linking is to facilitate selection control 
 
 Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
 
-### Wind roses
+### Wind roses {#sec:wind-rose}
 
 Wind speed and direction are critical meteorological parameters that affect the concentration of ambient air pollutants by altering their transportation, diffusion and accumulation [@wind]. The visual evaluation of wind as vectors requires specialised graphics capable of depicting the directional nature of wind. In conjunction with the requirement for visual association analysis between wind and air pollution, a temporal-proportion-based wind rose plot is proposed and implemented on the **openair** package [@openair], which is an application of the stacked polar bar plots. Variations of temporal-proportion wind rose plots include contour wind roses [@cwr] and standard vector-deviation wind roses [@vdwr]. A temporal-proportion wind rose can be extended to pollution rose, replacing the mapping of wind speed to pollutants.
 

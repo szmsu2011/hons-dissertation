@@ -231,8 +231,8 @@ A special application of server-side linking is to facilitate selection control 
 
 Temporal air quality data requires domain-specific graphic tools for exploratory visual analysis. This section covers examples of visualising air quality in meteorological and temporal aspects.
 
-\hypertarget{wind-roses}{%
-\subsection{Wind roses}\label{wind-roses}}
+\hypertarget{sec:wind-rose}{%
+\subsection{Wind roses}\label{sec:wind-rose}}
 
 Wind speed and direction are critical meteorological parameters that affect the concentration of ambient air pollutants by altering their transportation, diffusion and accumulation \autocite{wind}. The visual evaluation of wind as vectors requires specialised graphics capable of depicting the directional nature of wind. In conjunction with the requirement for visual association analysis between wind and air pollution, a temporal-proportion-based wind rose plot is proposed and implemented on the \textbf{openair} package \autocite{openair}, which is an application of the stacked polar bar plots. Variations of temporal-proportion wind rose plots include contour wind roses \autocite{cwr} and standard vector-deviation wind roses \autocite{vdwr}. A temporal-proportion wind rose can be extended to pollution rose, replacing the mapping of wind speed to pollutants.
 
@@ -329,13 +329,33 @@ The primary data set, which records all parameters except for wind direction, is
 \hypertarget{data-enrichment}{%
 \section{Data enrichment}\label{data-enrichment}}
 
-\begin{itemize}
-\tightlist
-\item
-  Categorisation of AQI
-\item
-  Categorisation of wind direction
-\end{itemize}
+\hypertarget{categorisation-of-air-quality-index}{%
+\subsection{Categorisation of air quality index}\label{categorisation-of-air-quality-index}}
+
+The value of the air quality index derived from relevant pollutants is numerically non-intuitive and does not provide perceptual implications to the state of air quality per se, which leads to the proposal of standard classification by evaluating potentially imposed health risk \autocite{aqidef}. Notwithstanding the absence of an officially promulgated standard for the classification of air quality index in New Zealand \autocite{nzaqrg}, variations of the United States standards of reporting air quality index \autocite{usaqrs} are generally accepted worldwide. The health risk warnings-driven categorisation of the air quality index delivers an immediate message about the current status of air quality and asserts behavioural influence to the public with colours \autocite{colwarn}.
+
+\hypertarget{categorisation-of-wind-direction}{%
+\subsection{Categorisation of wind direction}\label{categorisation-of-wind-direction}}
+
+The implementation of the wind rose method of visualising meteorological wind data outlined in Section \ref{sec:wind-rose} is made interactable by \textbf{echarts4r} \autocite{echarts4r} without any direct call to the \textbf{openair} package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the \texttt{windRose()} function in \textbf{openair} \autocite{openair}, as part of the data preparation process. The process of correcting directional bias by default in \textbf{openair} is excluded as the variable is unrounded \autocite{cdbias}.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+AQI Level of Concern & Value of Index & Colour (Hexadecimal Code) \\
+\midrule
+Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green (\#00E400) \\
+Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow (\#FFFF00) \\
+Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange (\#FF7E00) \\
+Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red (\#FF0000) \\
+Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple (\#8F3F97) \\
+Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon (\#7E0023) \\
+\bottomrule
+\end{tabular}
+\caption{The United States definition of AQI categories and colours (\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.}
+\end{center}
+\end{table}
 
 \hypertarget{ch:design}{%
 \chapter{Design layout and philosophy}\label{ch:design}}

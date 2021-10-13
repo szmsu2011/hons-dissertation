@@ -1,11 +1,14 @@
-# Auckland air quality data {#ch:data}
+```{r setup-data, include = FALSE}
+library(knitLatex)
+```
 
+# Auckland air quality data {#ch:data}
 
 ## Introduction
 
-Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI [@aqi]. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage [@aqitarget]. Over 10 stations in Auckland monitor a subset of the standard-listed pollutants in an hourly interval.
+Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI [@aqi]. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage [@aqitarget]. Over ten stations in Auckland monitor a subset of the listed pollutants in an hourly interval.
 
-It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by @aklenvdata, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), 10 pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
+It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by @aklenvdata, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), ten pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
 
 Only six of the standard-listed air pollutants are monitored and available in the data, and each station independently monitors a subset of the six pollutants. As such, the calculation of AQI, based on available data, may be simplified to
 
@@ -13,7 +16,7 @@ Only six of the standard-listed air pollutants are monitored and available in th
 
 ```{r data, results = "asis"}
 data <- data.frame(
-  "Parameter" = c(
+  Parameter = c(
     "AQI", "BC(370)", "BC(880)", "CO\\textsuperscript{*}", "NO",
     "NO\\textsubscript{2}\\textsuperscript{*}", "NOx",
     "O\\textsubscript{3}\\textsuperscript{*}", "PM2.5\\textsuperscript{*}",
@@ -46,7 +49,7 @@ data <- data.frame(
   )
 )
 
-knitLatex::xTab(
+xTab(
   format(data, nsmall = 1, digits = 1),
   caption.bottom = "Parameters available in raw data.\\\\\\textsuperscript{*} AQI-related ambient air pollutants",
   booktabs = TRUE,
@@ -54,7 +57,7 @@ knitLatex::xTab(
 )
 ```
 
-It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \@ref(sec:data-extreme-value) are more frequent in earlier years. The final data set is subsetted from the year 2016.
+It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \@ref(sec:data-extreme-value) are more frequent in earlier years. The final data set is thus taken from the year 2016.
 
 ## Data quality and cleaning
 
@@ -82,5 +85,38 @@ The primary data set, which records all parameters except for wind direction, is
 
 ## Data enrichment
 
-- Categorisation of AQI
-- Categorisation of wind direction
+### Categorisation of air quality index
+
+The value of the air quality index derived from relevant pollutants is numerically non-intuitive and does not provide perceptual implications to the state of air quality per se, which leads to the proposal of standard classification by evaluating potentially imposed health risk [@aqidef]. Notwithstanding the absence of an officially promulgated standard for the classification of air quality index in New Zealand [@nzaqrg], variations of the United States standards of reporting air quality index [@usaqrs] are generally accepted worldwide. The health risk warnings-driven categorisation of the air quality index delivers an immediate message about the current status of air quality and asserts behavioural influence to the public with colours [@colwarn].
+
+### Categorisation of wind direction
+
+The implementation of the wind rose method of visualising meteorological wind data outlined in Section \@ref(sec:wind-rose) is made interactable by **echarts4r** [@echarts4r] without any direct call to the **openair** package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the `windRose()` function in **openair** [@openair], as part of the data preparation process. The process of correcting directional bias by default in **openair** is excluded as the variable is unrounded [@cdbias].
+
+```{r aqi-cat, results = "asis"}
+aqi_cat_pal <- data.frame(
+  "AQI Level of Concern" = c(
+    "Good", "Moderate", "Unhealthy for Sensitive Groups",
+    "Unhealthy", "Very Unhealthy", "Hazardous"
+  ),
+  "Value of Index" = c(
+    "0 to 50", "51 to 100", "101 to 150",
+    "151 to 200", "201 to 300", "301 and higher"
+  ),
+  "Colour (Hexadecimal Code)" = c(
+    "\\colorbox[rgb]{0,.89,0}{\\textcolor[rgb]{0,.89,0}{**}} Green (\\#00E400)",
+    "\\colorbox[rgb]{1,1,0}{\\textcolor[rgb]{1,1,0}{**}} Yellow (\\#FFFF00)",
+    "\\colorbox[rgb]{1,.49,0}{\\textcolor[rgb]{1,.49,0}{**}} Orange (\\#FF7E00)",
+    "\\colorbox[rgb]{1,0,0}{\\textcolor[rgb]{1,0,0}{**}} Red (\\#FF0000)",
+    "\\colorbox[rgb]{.56,.25,.59}{\\textcolor[rgb]{.56,.25,.59}{**}} Purple (\\#8F3F97)",
+    "\\colorbox[rgb]{.49,0,.14}{\\textcolor[rgb]{.49,0,.14}{**}} Maroon (\\#7E0023)"
+  ),
+  check.names = FALSE
+)
+
+xTab(
+  format(aqi_cat_pal, nsmall = 1, digits = 1),
+  caption.bottom = "The United States definition of AQI categories and colours (\\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.",
+  booktabs = TRUE
+)
+```
