@@ -1,5 +1,149 @@
 # Linked interactive graphics {#ch:linking}
 
-- Introduction
-- Implementation of interactive linking
-- Modularisation of Shiny App
+## Introduction
+
+## Modularisation of shiny application
+
+### Module environment
+
+```r
+module_ui <- function(id) {
+  ns <- NS(id)
+
+  tagList(xxxOutput(ns(outputId), ...))
+}
+
+module_mod <- function(id, state) {
+  module <- function(input, output, session) {
+    ... ...
+  }
+
+  moduleServer(id, module)
+}
+```
+
+Module calls in server:
+
+```r
+app_server <- function(input, output, session) {
+  ... ...
+  module_mod(id, app_state)
+  ... ...
+}
+```
+
+Module calls in UI:
+
+```r
+app_ui <- dashboardPage(
+  header,
+  sidebar,
+  body = dashboardBody(
+    ... ...
+      module_ui(id)
+    ... ...
+  )
+)
+```
+
+### Event observation and handling
+
+```r
+... ... ## Within main server or module
+  observeEvent(eventExpr, handlerExpr, ...)
+... ...
+```
+
+### Module communication
+
+Calling the `reactivevalues` object `app_state`:
+
+```r
+module_mod <- function(id, state = app_state) {
+  module <- function(input, output, session) {
+    ... ...
+    observeEvent(eventExpr, {
+      state[[app_state_name]] <- ... ...
+    })
+    ... ...
+  }
+
+  moduleServer(id, module)
+}
+```
+
+## Implementation of interactive linking
+
+### Reactive data caching
+
+Initialisation of web application with Queen Street data:
+
+```r
+initial_app_state <- list(
+  data = append_data(NULL, "queen_street"),
+  map_onclick = "Queen Street"
+)
+
+app_server <- function(input, output, session) {
+  app_state <- eval_tidy(new_quosure(expr(
+    reactiveValues(!!!initial_app_state)
+  )))
+  ... ...
+}
+```
+
+Reactive input processing and caching:
+
+```r
+app_server <- function(input, output, session) {
+  ... ...
+  observeEvent(input[[inputId]], {
+    ... ...
+    updateXxxInput(session, inputId, ...) ## If needed
+    app_state[[variable_name]] <- input[[inputId]]
+  })
+  ... ...
+}
+```
+
+Reactive loading of data sets:
+
+```r
+append_data <- function(data, loc) {
+  read_csv(...) %>%
+    ... ... ## Wrangling
+}
+
+app_server <- function(input, output, session) {
+  ... ...
+  observeEvent(app_state[["map_onclick"]], {
+    ... ...
+    if (!loc %in% app_state[["data"]][["location"]]) {
+      app_state[["data"]] <- append_data(app_state[["data"]], loc)
+    }
+    ... ...
+  })
+  ... ...
+}
+```
+
+### Reactive graphics caching
+
+Calling the `shiny::bindCache()` function:
+
+```r
+module_mod <- function(id, state = app_state) {
+  module <- function(input, output, session) {
+    ... ...
+    output[[outputId]] <- renderXxx(expr, ...) %>%
+      bindCache(...)
+    ... ...
+  }
+
+  moduleServer(id, module)
+}
+```
+
+### Client-side interactive linking
+
+### Server-side interactive linking

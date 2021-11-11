@@ -35,7 +35,7 @@ Calendar graphics is an application of trellis displays [@trellis], which spatia
 include_graphics("figures/cal-demo.png")
 ```
 
-(ref:cal-demo-cap) A demonstration of a basic calendar heatmap with **Echarts.js** [@echarts] via **echarts4r** [@echarts4r] faceted (unaligned) by `year ~ month`. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.
+(ref:cal-demo-cap) Calendar heatmap. Produced with **Echarts.js** [@echarts] via **echarts4r** [@echarts4r] faceted (unaligned) by `year ~ month`. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.
 
 ### Time series plots
 
@@ -54,7 +54,7 @@ ansett %>%
   )
 ```
 
-(ref:ctp-demo-cap) A demonstration of a basic line plot with the **ggplot2** package [@ggplot2] for the weekly economy passenger load on Ansett Airlines [@fpp3d]. Visual analysis shows weak trend and cycle and abnormal zero values to be investigated. The presence of clustering also indicates a positive temporal dependence in the time series. It is nonetheless uneasy to align any observation to a date accurately.
+(ref:ctp-demo-cap) Line plot. Produced with the **ggplot2** package [@ggplot2] for the weekly economy passenger load on Ansett Airlines [@fpp3d]. Visual analysis shows weak trend and cycle and abnormal zero values to be investigated. The presence of clustering also indicates a positive temporal dependence in the time series. It is nonetheless uneasy to align any observation to a date accurately.
 
 Based on connected time plots, @feasts proposed the seasonal plot as a method of visualising seasonal patterns in the **feasts** package. The method conditionally subsets the complete time series into partitions of seasonal periods, each to be plotted in a homogeneous time plot and distinguished using a gradient colour scale for longitudinal comparison between periods.
 
@@ -72,7 +72,7 @@ PBS %>%
   )
 ```
 
-(ref:stp-demo-cap) A **ggplot2**-based seasonal time series plot with the **feasts** package [@feasts] for the monthly anti-diabetic drug sales in Australia [@fpp3d]. The plot allows for both visualisation of intra-seasonal patterns and inter-seasonal variations shown as a positive trend in drug sales from year to year.
+(ref:stp-demo-cap) **ggplot2**-based seasonal time series plot. Produced with the **feasts** package for the monthly anti-diabetic drug sales in Australia [@fpp3d]. The plot allows for both visualisation of intra-seasonal patterns and inter-seasonal variations shown as a positive trend in drug sales from year to year.
 
 Nevertheless, interpreting connected time plots relies on the visual alignment of positions to the xy-scales in the Cartesian coordinates. Such visual alignments can be challenging upon the absence of explicit gridlines and axes, such as when the plot is fitted as a part of trellis displays [@trellis], in which the trend and scale of variations become ambiguous. As such, it is common to fill the area under the curve to emphasise the temporal variation in the plot [@dataviz-ts].
 
@@ -82,7 +82,7 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 
 The **shiny** package [@shiny] provides a framework for developing web applications with **R** code [@R2021], both user and developer-friendly. It enables **R** users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
-Reactive programming is the core of computation logic behind **shiny** [@mshiny], greatly simplifies the design of workflow, focusing only on evaluating the changes of values over time. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
+Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind **shiny** [@mshiny], significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
 
 The user interface of **shiny** applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
@@ -96,7 +96,7 @@ The selective presentation of information in interactive graphics is mainly achi
 include_graphics("figures/tt-demo.png")
 ```
 
-(ref:tt-demo-cap) A demonstration of tooltips with **Echarts.js** [@echarts] via **echarts4r** [@echarts4r]. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.
+(ref:tt-demo-cap) A demonstration of tooltips with **Echarts.js** via **echarts4r**. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.
 
 Linked views of multiple graphics are a powerful method for deconstructing high-dimensional data, achieved via either client or server-side linking [@plotly]. The client-side linking employs internal graphical queries without callbacks to the application server, with examples including internal connections (e.g., brush and linked filters) in **plotly** [@plotly] and **echarts4r** [@echarts4r]. Alternatively, server-side linkings involve queries to the server environment via callbacks (Section \@ref(sec:shiny)), mainly for intermodular linking of different types of plots.
 
@@ -114,7 +114,7 @@ Wind speed and direction are critical meteorological parameters that affect the 
 pollutionRose(openair::mydata, pollutant = "nox")
 ```
 
-(ref:wr-demo-cap) A demonstration of a pollution rose with **openair** [@openair], which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NO<sub>x</sub> (colour).
+(ref:wr-demo-cap) Pollution rose. Produced with **openair** [@openair], which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NO<sub>x</sub> (colour).
 
 ### Autocorrelation plots
 
@@ -133,4 +133,4 @@ Trend analysis of ambient air pollutant concentrations is a critical component o
   theme_bw()
 ```
 
-(ref:acf-demo-cap) A **ggplot2**-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the **feasts** package [@feasts] for Australian beer production [@fpp3d]. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of $\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}$.
+(ref:acf-demo-cap) A **ggplot2**-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the **feasts** package for Australian beer production [@fpp3d]. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of $\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}$.

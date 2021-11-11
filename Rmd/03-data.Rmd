@@ -8,7 +8,7 @@ library(knitLatex)
 
 Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI [@aqi]. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage [@aqitarget]. Over ten stations in Auckland monitor a subset of the listed pollutants in an hourly interval.
 
-It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by @aklenvdata, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), ten pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
+It is of interest to visually explore the variation and relationships of AQI and its constituent pollutants over time. The data, provided by @aklenvdata, includes 11 air pollution parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. The available parameters consist of air quality index (AQI) and ten pollutants as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
 
 Only six of the standard-listed air pollutants are monitored and available in the data, and each station independently monitors a subset of the six pollutants. As such, the calculation of AQI, based on available data, may be simplified to
 
@@ -20,18 +20,13 @@ data <- data.frame(
     "AQI", "BC(370)", "BC(880)", "CO\\textsuperscript{*}", "NO",
     "NO\\textsubscript{2}\\textsuperscript{*}", "NOx",
     "O\\textsubscript{3}\\textsuperscript{*}", "PM2.5\\textsuperscript{*}",
-    "PM10\\textsuperscript{*}", "SO\\textsubscript{2}\\textsuperscript{*}",
-    "Relative Humidity", "Temperature", "Wind Speed", "Wind Direction"
+    "PM10\\textsuperscript{*}", "SO\\textsubscript{2}\\textsuperscript{*}"
   ),
   Unit = c(
     "",
     rep("ngm\\textsuperscript{-3}", 2),
     "mgm\\textsuperscript{-3}",
-    rep("\\textmu gm\\textsuperscript{-3}", 7),
-    "\\%",
-    "$^{\\circ}$C",
-    "ms\\textsuperscript{-1}",
-    "$^{\\circ}$"
+    rep("\\textmu gm\\textsuperscript{-3}", 7)
   ),
   Note = c(
     "Air quality index",
@@ -44,54 +39,50 @@ data <- data.frame(
     "Ozone concentration",
     "Particulate matter with diameter <2.5\\textmu m",
     "Particulate matter with diameter <10\\textmu m",
-    "Sulphur dioxide concentration",
-    rep("", 4)
+    "Sulphur dioxide concentration"
   )
 )
 
 xTab(
   format(data, nsmall = 1, digits = 1),
-  caption.bottom = "Parameters available in raw data.\\\\\\textsuperscript{*} AQI-related ambient air pollutants",
+  caption.bottom = "Parameters available in the raw data.\\\\\\textsuperscript{*} AQI-related ambient air pollutants",
   booktabs = TRUE,
   label = "tab:raw-dataset"
 )
 ```
 
-It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \@ref(sec:data-extreme-value) are more frequent in earlier years. The final data set is thus taken from the year 2016.
-
-## Data quality and cleaning
-
-The raw data consists of two separate data sets, each with a different data structure. Cleaning and manipulation are needed to ensure that the two data sets are consistent in structure and free from error. The raw data sets are individually inspected and cleaned before combination. This section outlines the issues found and methods to address them.
-
-### Abnormal and missing values {#sec:data-extreme-value}
-
-Abnormal or missing values arise from instrumental or input errors. Upon inspection, 104,332 records were found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters, except for temperature, are only sensible if positive as of Table \ref{tab:raw-dataset}. Therefore, 104,257 records of insensible negative values are removed. Besides, conspicuously anomalous records of AQI are found in data, including consecutive hours of >1,000 AQI in Takapuna and numerous AQI values being inconsistent with Formula \ref{eq:aqicon} based on available pollutants in the same data set. The anomalous records are nonetheless kept as-is for further verification.
-
-In addition, preliminary inspection finds that 0.81% of records are explicitly missing. Yet after filling the implicit time gaps in the data, 53.71% of records are implied to be missing.
-
-### Date and time
-
-A consistent format in date and time is crucial to the accuracy of temporal data. Observations with inconsistent time format are present in the data, where some are recorded in `hh:mm:ss` whilst others in `hh:mm`. The inconsistency in the time format is correctable due to the hourly nature of the data. 0.06% of records with missing time are removed.
-
-The time zone of New Zealand changes by +1 during daylight saving. To avoid duplicated index upon boundaries of daylight saving upon data visualisation, all time-stamps are presented in NZST (UTC+12). On the other hand, the date and time in the cleaned data file are stored as a single variable, with its format in compliance with ISO 8601 [@iso8601;@readr].
-
-### Duplicate records
-
-Temporal data should not present duplicate records. Of the 7,292,038 valid records, 239,374 (3.28%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is reasonably small, the first-appearing records of each duplicate are kept.
-
-### Structural difference in raw data sets
-
-The primary data set, which records all parameters except for wind direction, is in long format, with each observation consisting of a single record of one parameter for one station at a given hour. Nevertheless, each observation of the wind direction data set consists of wind direction records of all stations at a given hour. Each data set is pivoted to the structure such that each observation is uniquely identified by the date-time and station with records of all parameters before combination to ensure structural consistency.
+It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \@ref(sec:data-extreme-value) are more frequent in earlier years. The final data set is thus taken since the year 2016.
 
 ## Data enrichment
+
+### Supplementary meteorological data
+
+The air quality index is presumably affected by various environmental and meteorological factors, such as wind as per Section \@ref(sec:wind-rose), which are included as supplementary variables.
+
+```{r met-data, results = "asis"}
+met_data <- data.frame(
+  Variable = c(
+    "Relative Humidity", "Temperature", "Wind Speed", "Wind Direction"
+  ),
+  Unit = c(
+    "\\%",
+    "$^{\\circ}$C",
+    "ms\\textsuperscript{-1}",
+    "$^{\\circ}$"
+  )
+)
+
+xTab(
+  format(met_data, nsmall = 1, digits = 1),
+  caption.bottom = "Supplementary meteorological variables.",
+  booktabs = TRUE,
+  label = "tab:met-dataset"
+)
+```
 
 ### Categorisation of air quality index
 
 The value of the air quality index derived from relevant pollutants is numerically non-intuitive and does not provide perceptual implications to the state of air quality per se, which leads to the proposal of standard classification by evaluating potentially imposed health risk [@aqidef]. Notwithstanding the absence of an officially promulgated standard for the classification of air quality index in New Zealand [@nzaqrg], variations of the United States standards of reporting air quality index [@usaqrs] are generally accepted worldwide. The health risk warnings-driven categorisation of the air quality index delivers an immediate message about the current status of air quality and asserts behavioural influence to the public with colours [@colwarn].
-
-### Categorisation of wind direction
-
-The implementation of the wind rose method of visualising meteorological wind data outlined in Section \@ref(sec:wind-rose) is made interactable by **echarts4r** [@echarts4r] without any direct call to the **openair** package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the `windRose()` function in **openair** [@openair], as part of the data preparation process. The process of correcting directional bias by default in **openair** is excluded as the variable is unrounded [@cdbias].
 
 ```{r aqi-cat, results = "asis"}
 aqi_cat_pal <- data.frame(
@@ -120,3 +111,31 @@ xTab(
   booktabs = TRUE
 )
 ```
+
+### Categorisation of wind direction
+
+The implementation of the wind rose method of visualising meteorological wind data outlined in Section \@ref(sec:wind-rose) is made interactable by **echarts4r** [@echarts4r] without any direct call to the **openair** package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the `windRose()` function in **openair** [@openair], as part of the data preparation process. The process of correcting directional bias by default in **openair** is excluded as the variable is unrounded [@cdbias].
+
+## Data quality and cleaning
+
+The raw data consists of two separate data sets, each with a different data structure. Cleaning and manipulation are needed to ensure that the two data sets are consistent in structure and free from error. The raw data sets are individually inspected and cleaned before combination. This section outlines the issues found and methods to address them.
+
+### Abnormal and missing values {#sec:data-extreme-value}
+
+Abnormal or missing values arise from instrumental or input errors. Upon inspection, 104,332 records were found to have a negative value. Nevertheless, all pollutants are reported in units in the form of mass per unit volume, and other parameters, except for temperature, are only sensible if positive as of Table \ref{tab:raw-dataset}. Therefore, 104,257 records of insensible negative values are removed. Besides, conspicuously anomalous records of AQI are found in data, including consecutive hours of >1,000 AQI in Takapuna and numerous AQI values being inconsistent with Formula \ref{eq:aqicon} based on available pollutants in the same data set. The anomalous records are nonetheless kept as-is for further verification.
+
+In addition, preliminary inspection finds that 0.81% of records are explicitly missing. Yet after filling the implicit time gaps in the data, 53.71% of records are implied to be missing.
+
+### Date and time
+
+A consistent format in date and time is crucial to the accuracy of temporal data. Observations with inconsistent time format are present in the data, where some are recorded in `hh:mm:ss` whilst others in `hh:mm`. The inconsistency in the time format is correctable due to the hourly nature of the data. 0.06% of records with missing time are removed.
+
+The time zone of New Zealand changes by +1 during daylight saving. To avoid duplicated index upon boundaries of daylight saving upon data visualisation, all time-stamps are presented in NZST (UTC+12). On the other hand, the date and time in the cleaned data file are stored as a single variable, with its format in compliance with ISO 8601 [@iso8601;@readr].
+
+### Duplicate records
+
+Temporal data should not present duplicate records. Of the 7,292,038 valid records, 239,374 (3.28%) are duplicate with 120,207 redundant records. Further checking reveals that 230,822 of the duplicates have inconsistent values. However, as the scale of the inconsistency of most duplicate records is reasonably small, the first-appearing records of each duplicate are kept.
+
+### Structural difference in raw data sets
+
+The primary data set, which records all parameters except for wind direction, is in long format, with each observation consisting of a single record of one parameter for one station at a given hour. Nevertheless, each observation of the wind direction data set consists of wind direction records of all stations at a given hour. Each data set is pivoted to the structure such that each observation is uniquely identified by the date-time and station with records of all parameters before combination to ensure structural consistency.

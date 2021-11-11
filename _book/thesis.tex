@@ -171,7 +171,7 @@ Air quality data are conventionally collected at hourly intervals, from which a 
 Calendar graphics is an application of trellis displays \autocite{trellis}, which spatially modularise the temporal dimension into conditional groups of small multiples \autocite{tufte} using calendar period (i.e., month and year) as an integrated and aligned plot. The expanded layout of the temporal dimension on a plane eases the cognitive load \autocite{tufte} in temporally locating the date of the events and extracting the date components, contrary to conventional time series plots.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/cal-demo} \caption{A demonstration of a basic calendar heatmap with \textbf{Echarts.js} \autocite{echarts} via \textbf{echarts4r} \autocite{echarts4r} faceted (unaligned) by \texttt{year\ \textasciitilde{}\ month}. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.}\label{fig:cal-demo}
+\includegraphics[width=1\linewidth]{figures/cal-demo} \caption{Calendar heatmap. Produced with \textbf{Echarts.js} \autocite{echarts} via \textbf{echarts4r} \autocite{echarts4r} faceted (unaligned) by \texttt{year\ \textasciitilde{}\ month}. Each tile corresponds to the value of an observed day or aggregated sub-daily observations, whose exact date and day of the week are easily identifiable.}\label{fig:cal-demo}
 \end{figure}
 
 
@@ -182,7 +182,7 @@ Calendar graphics is an application of trellis displays \autocite{trellis}, whic
 In most scenarios, visualising time series relies on connecting points of observations with lines, curves or splines \autocite{dataviz-ts}, such that the sequences are plotted against the time index by positions along common xy-scales on the Cartesian coordinate \autocite{fpp3}. Connected time plots are the most elementary visual method for spotting extrinsic features in time series, including trends, seasons, cycles, clustering and oscillations.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/ctp-demo-1} \caption{A demonstration of a basic line plot with the \textbf{ggplot2} package \autocite{ggplot2} for the weekly economy passenger load on Ansett Airlines \autocite{fpp3d}. Visual analysis shows weak trend and cycle and abnormal zero values to be investigated. The presence of clustering also indicates a positive temporal dependence in the time series. It is nonetheless uneasy to align any observation to a date accurately.}\label{fig:ctp-demo}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/ctp-demo-1} \caption{Line plot. Produced with the \textbf{ggplot2} package \autocite{ggplot2} for the weekly economy passenger load on Ansett Airlines \autocite{fpp3d}. Visual analysis shows weak trend and cycle and abnormal zero values to be investigated. The presence of clustering also indicates a positive temporal dependence in the time series. It is nonetheless uneasy to align any observation to a date accurately.}\label{fig:ctp-demo}
 \end{figure}
 
 
@@ -190,7 +190,7 @@ In most scenarios, visualising time series relies on connecting points of observ
 Based on connected time plots, \textcite{feasts} proposed the seasonal plot as a method of visualising seasonal patterns in the \textbf{feasts} package. The method conditionally subsets the complete time series into partitions of seasonal periods, each to be plotted in a homogeneous time plot and distinguished using a gradient colour scale for longitudinal comparison between periods.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/stp-demo-1} \caption{A \textbf{ggplot2}-based seasonal time series plot with the \textbf{feasts} package \autocite{feasts} for the monthly anti-diabetic drug sales in Australia \autocite{fpp3d}. The plot allows for both visualisation of intra-seasonal patterns and inter-seasonal variations shown as a positive trend in drug sales from year to year.}\label{fig:stp-demo}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/stp-demo-1} \caption{\textbf{ggplot2}-based seasonal time series plot. Produced with the \textbf{feasts} package for the monthly anti-diabetic drug sales in Australia \autocite{fpp3d}. The plot allows for both visualisation of intra-seasonal patterns and inter-seasonal variations shown as a positive trend in drug sales from year to year.}\label{fig:stp-demo}
 \end{figure}
 
 
@@ -205,7 +205,7 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 
 The \textbf{shiny} package \autocite{shiny} provides a framework for developing web applications with \textbf{R} code \autocite{R2021}, both user and developer-friendly. It enables \textbf{R} users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
-Reactive programming is the core of computation logic behind \textbf{shiny} \autocite{mshiny}, greatly simplifies the design of workflow, focusing only on evaluating the changes of values over time. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
+Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind \textbf{shiny} \autocite{mshiny}, significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
 
 The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
@@ -217,7 +217,7 @@ In the technological age flooded with data, it is usually tempting to fit all th
 The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by \textcite{tt} in \emph{Windows NT 3.51}, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down \autocite{plotly} and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/tt-demo} \caption{A demonstration of tooltips with \textbf{Echarts.js} \autocite{echarts} via \textbf{echarts4r} \autocite{echarts4r}. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.}\label{fig:tt-demo}
+\includegraphics[width=1\linewidth]{figures/tt-demo} \caption{A demonstration of tooltips with \textbf{Echarts.js} via \textbf{echarts4r}. A tag with informative messages including the date and observed AQI value is shown upon cursor hover-over the data point.}\label{fig:tt-demo}
 \end{figure}
 
 
@@ -237,7 +237,7 @@ Temporal air quality data requires domain-specific graphic tools for exploratory
 Wind speed and direction are critical meteorological parameters that affect the concentration of ambient air pollutants by altering their transportation, diffusion and accumulation \autocite{wind}. The visual evaluation of wind as vectors requires specialised graphics capable of depicting the directional nature of wind. In conjunction with the requirement for visual association analysis between wind and air pollution, a temporal-proportion-based wind rose plot is proposed and implemented on the \textbf{openair} package \autocite{openair}, which is an application of the stacked polar bar plots. Variations of temporal-proportion wind rose plots include contour wind roses \autocite{cwr} and standard vector-deviation wind roses \autocite{vdwr}. A temporal-proportion wind rose can be extended to pollution rose, replacing the mapping of wind speed to pollutants.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/wr-demo-1} \caption{A demonstration of a pollution rose with \textbf{openair} \autocite{openair}, which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NOx (colour).}\label{fig:wr-demo}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/wr-demo-1} \caption{Pollution rose. Produced with \textbf{openair} \autocite{openair}, which depicts the proportion of time (radius of the segmental arches) the wind is bounded from each direction (angle) observing the levels of NOx (colour).}\label{fig:wr-demo}
 \end{figure}
 
 
@@ -248,7 +248,7 @@ Wind speed and direction are critical meteorological parameters that affect the 
 Trend analysis of ambient air pollutant concentrations is a critical component of the air quality management strategy \autocite{aqi}, which is commonly carried out preliminarily with linear models. Nonetheless, mutual independence of the residuals is the core assumption of all linear models; as such, the temporal dependence of air quality data between successive observations needs to be captured \autocite{lm}. The autocorrelation plots visually provide preliminary insights into the type of correlation structure present in the series prior to analysis \autocite{acf}. The autocorrelation plots are also a tool for model diagnostics and evaluation.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/acf-demo-1} \caption{A \textbf{ggplot2}-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the \textbf{feasts} package \autocite{feasts} for Australian beer production \autocite{fpp3d}. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of \(\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}\).}\label{fig:acf-demo}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/acf-demo-1} \caption{A \textbf{ggplot2}-based autocorrelation plot (left) and partial autocorrelation plot (right) of quarterly lags with the \textbf{feasts} package for Australian beer production \autocite{fpp3d}. The sample (partial) autocorrelation function of each lag is compared to a significance threshold of \(\pm \frac{\phi^{-1} (1 - \frac{\alpha}{2})}{\sqrt{n}}\).}\label{fig:acf-demo}
 \end{figure}
 
 
@@ -261,7 +261,7 @@ Trend analysis of ambient air pollutant concentrations is a critical component o
 
 Air quality index (AQI) is a critical indicator of overall air quality by measuring key air pollutant concentrations at a given time. The constitution of AQI consists of ambient air pollutants listed in the National Environmental Standards for Ambient Air Quality which defines the threshold target for calculating AQI \autocite{aqi}. The national standard defines AQI as the maximum ambient air pollutant measurement ratio to the national target as a percentage \autocite{aqitarget}. Over ten stations in Auckland monitor a subset of the listed pollutants in an hourly interval.
 
-It is of interest to explore the variation and relationships of AQI and its constituent pollutants with other environmental and meteorological parameters over time. The data, provided by \textcite{aklenvdata}, includes 14 parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. Available parameters consist of air quality index (AQI), ten pollutant levels and four other meteorological variables as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
+It is of interest to visually explore the variation and relationships of AQI and its constituent pollutants over time. The data, provided by \textcite{aklenvdata}, includes 11 air pollution parameters from 10 monitoring stations in Auckland from as North as Takapuna to as South as Patumahoe. The available parameters consist of air quality index (AQI) and ten pollutants as per Table \ref{tab:raw-dataset}, with various starting dates (since as early as 2003 in Takapuna) until April 2021.
 
 Only six of the standard-listed air pollutants are monitored and available in the data, and each station independently monitors a subset of the six pollutants. As such, the calculation of AQI, based on available data, may be simplified to
 
@@ -284,18 +284,67 @@ O\textsubscript{3}\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Ozone c
 PM2.5\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <2.5\textmu m \\
 PM10\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Particulate matter with diameter <10\textmu m \\
 SO\textsubscript{2}\textsuperscript{*} & \textmu gm\textsuperscript{-3} & Sulphur dioxide concentration \\
-Relative Humidity & \% &  \\
-Temperature & $^{\circ}$C &  \\
-Wind Speed & ms\textsuperscript{-1} &  \\
-Wind Direction & $^{\circ}$ &  \\
 \bottomrule
 \end{tabular}
-\caption{Parameters available in raw data.\\\textsuperscript{*} AQI-related ambient air pollutants}
+\caption{Parameters available in the raw data.\\\textsuperscript{*} AQI-related ambient air pollutants}
 \label{tab:raw-dataset}
 \end{center}
 \end{table}
 
-It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \ref{sec:data-extreme-value} are more frequent in earlier years. The final data set is thus taken from the year 2016.
+It is noteworthy that the availability of air quality parameters in each monitoring station varies from year to year. Besides, the extreme values addressed in Section \ref{sec:data-extreme-value} are more frequent in earlier years. The final data set is thus taken since the year 2016.
+
+\hypertarget{data-enrichment}{%
+\section{Data enrichment}\label{data-enrichment}}
+
+\hypertarget{supplementary-meteorological-data}{%
+\subsection{Supplementary meteorological data}\label{supplementary-meteorological-data}}
+
+The air quality index is presumably affected by various environmental and meteorological factors, such as wind as per Section \ref{sec:wind-rose}, which are included as supplementary variables.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Variable & Unit \\
+\midrule
+Relative Humidity & \% \\
+Temperature & $^{\circ}$C \\
+Wind Speed & ms\textsuperscript{-1} \\
+Wind Direction & $^{\circ}$ \\
+\bottomrule
+\end{tabular}
+\caption{Supplementary meteorological variables.}
+\label{tab:met-dataset}
+\end{center}
+\end{table}
+
+\hypertarget{categorisation-of-air-quality-index}{%
+\subsection{Categorisation of air quality index}\label{categorisation-of-air-quality-index}}
+
+The value of the air quality index derived from relevant pollutants is numerically non-intuitive and does not provide perceptual implications to the state of air quality per se, which leads to the proposal of standard classification by evaluating potentially imposed health risk \autocite{aqidef}. Notwithstanding the absence of an officially promulgated standard for the classification of air quality index in New Zealand \autocite{nzaqrg}, variations of the United States standards of reporting air quality index \autocite{usaqrs} are generally accepted worldwide. The health risk warnings-driven categorisation of the air quality index delivers an immediate message about the current status of air quality and asserts behavioural influence to the public with colours \autocite{colwarn}.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+AQI Level of Concern & Value of Index & Colour (Hexadecimal Code) \\
+\midrule
+Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green (\#00E400) \\
+Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow (\#FFFF00) \\
+Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange (\#FF7E00) \\
+Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red (\#FF0000) \\
+Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple (\#8F3F97) \\
+Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon (\#7E0023) \\
+\bottomrule
+\end{tabular}
+\caption{The United States definition of AQI categories and colours (\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.}
+\end{center}
+\end{table}
+
+\hypertarget{categorisation-of-wind-direction}{%
+\subsection{Categorisation of wind direction}\label{categorisation-of-wind-direction}}
+
+The implementation of the wind rose method of visualising meteorological wind data outlined in Section \ref{sec:wind-rose} is made interactable by \textbf{echarts4r} \autocite{echarts4r} without any direct call to the \textbf{openair} package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the \texttt{windRose()} function in \textbf{openair} \autocite{openair}, as part of the data preparation process. The process of correcting directional bias by default in \textbf{openair} is excluded as the variable is unrounded \autocite{cdbias}.
 
 \hypertarget{data-quality-and-cleaning}{%
 \section{Data quality and cleaning}\label{data-quality-and-cleaning}}
@@ -325,37 +374,6 @@ Temporal data should not present duplicate records. Of the 7,292,038 valid recor
 \subsection{Structural difference in raw data sets}\label{structural-difference-in-raw-data-sets}}
 
 The primary data set, which records all parameters except for wind direction, is in long format, with each observation consisting of a single record of one parameter for one station at a given hour. Nevertheless, each observation of the wind direction data set consists of wind direction records of all stations at a given hour. Each data set is pivoted to the structure such that each observation is uniquely identified by the date-time and station with records of all parameters before combination to ensure structural consistency.
-
-\hypertarget{data-enrichment}{%
-\section{Data enrichment}\label{data-enrichment}}
-
-\hypertarget{categorisation-of-air-quality-index}{%
-\subsection{Categorisation of air quality index}\label{categorisation-of-air-quality-index}}
-
-The value of the air quality index derived from relevant pollutants is numerically non-intuitive and does not provide perceptual implications to the state of air quality per se, which leads to the proposal of standard classification by evaluating potentially imposed health risk \autocite{aqidef}. Notwithstanding the absence of an officially promulgated standard for the classification of air quality index in New Zealand \autocite{nzaqrg}, variations of the United States standards of reporting air quality index \autocite{usaqrs} are generally accepted worldwide. The health risk warnings-driven categorisation of the air quality index delivers an immediate message about the current status of air quality and asserts behavioural influence to the public with colours \autocite{colwarn}.
-
-\hypertarget{categorisation-of-wind-direction}{%
-\subsection{Categorisation of wind direction}\label{categorisation-of-wind-direction}}
-
-The implementation of the wind rose method of visualising meteorological wind data outlined in Section \ref{sec:wind-rose} is made interactable by \textbf{echarts4r} \autocite{echarts4r} without any direct call to the \textbf{openair} package. Thus, the wind direction variable is converted into a 12-level factor of equal 30-degree intervals, the default option for the \texttt{windRose()} function in \textbf{openair} \autocite{openair}, as part of the data preparation process. The process of correcting directional bias by default in \textbf{openair} is excluded as the variable is unrounded \autocite{cdbias}.
-
-\begin{table}[ht]
-\begin{center}
-\begin{tabular}{lll}
-\toprule
-AQI Level of Concern & Value of Index & Colour (Hexadecimal Code) \\
-\midrule
-Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green (\#00E400) \\
-Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow (\#FFFF00) \\
-Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange (\#FF7E00) \\
-Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red (\#FF0000) \\
-Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple (\#8F3F97) \\
-Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon (\#7E0023) \\
-\bottomrule
-\end{tabular}
-\caption{The United States definition of AQI categories and colours (\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.}
-\end{center}
-\end{table}
 
 \hypertarget{ch:design}{%
 \chapter{Design layout and philosophy}\label{ch:design}}
@@ -394,24 +412,217 @@ Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14
   Trend analysis
 \end{itemize}
 
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/aqi-tab} \end{figure}
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/met-tab} \end{figure}
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/wind-tab} \end{figure}
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/ts-tab} \end{figure}
+
 \hypertarget{ch:linking}{%
 \chapter{Linked interactive graphics}\label{ch:linking}}
 
-\begin{itemize}
-\tightlist
-\item
-  Introduction
-\item
-  Implementation of interactive linking
-\item
-  Modularisation of Shiny App
-\end{itemize}
+\hypertarget{introduction-1}{%
+\section{Introduction}\label{introduction-1}}
+
+\hypertarget{modularisation-of-shiny-application}{%
+\section{Modularisation of shiny application}\label{modularisation-of-shiny-application}}
+
+\hypertarget{module-environment}{%
+\subsection{Module environment}\label{module-environment}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{module_ui <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id) \{}
+\NormalTok{  ns <-}\StringTok{ }\KeywordTok{NS}\NormalTok{(id)}
+
+  \KeywordTok{tagList}\NormalTok{(}\KeywordTok{xxxOutput}\NormalTok{(}\KeywordTok{ns}\NormalTok{(outputId), ...))}
+\NormalTok{\}}
+
+\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, state) \{}
+\NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{    ... ...}
+\NormalTok{  \}}
+
+  \KeywordTok{moduleServer}\NormalTok{(id, module)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Module calls in server:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{  ... ...}
+  \KeywordTok{module_mod}\NormalTok{(id, app_state)}
+\NormalTok{  ... ...}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Module calls in UI:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{app_ui <-}\StringTok{ }\KeywordTok{dashboardPage}\NormalTok{(}
+\NormalTok{  header,}
+\NormalTok{  sidebar,}
+  \DataTypeTok{body =} \KeywordTok{dashboardBody}\NormalTok{(}
+\NormalTok{    ... ...}
+      \KeywordTok{module_ui}\NormalTok{(id)}
+\NormalTok{    ... ...}
+\NormalTok{  )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{event-observation-and-handling}{%
+\subsection{Event observation and handling}\label{event-observation-and-handling}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{... ... }\CommentTok{## Within main server or module}
+  \KeywordTok{observeEvent}\NormalTok{(eventExpr, handlerExpr, ...)}
+\NormalTok{... ...}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{module-communication}{%
+\subsection{Module communication}\label{module-communication}}
+
+Calling the \texttt{reactivevalues} object \texttt{app\_state}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{    ... ...}
+    \KeywordTok{observeEvent}\NormalTok{(eventExpr, \{}
+\NormalTok{      state[[app_state_name]] <-}\StringTok{ }\NormalTok{... ...}
+\NormalTok{    \})}
+\NormalTok{    ... ...}
+\NormalTok{  \}}
+
+  \KeywordTok{moduleServer}\NormalTok{(id, module)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{implementation-of-interactive-linking}{%
+\section{Implementation of interactive linking}\label{implementation-of-interactive-linking}}
+
+\hypertarget{reactive-data-caching}{%
+\subsection{Reactive data caching}\label{reactive-data-caching}}
+
+Initialisation of web application with Queen Street data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{initial_app_state <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+  \DataTypeTok{data =} \KeywordTok{append_data}\NormalTok{(}\OtherTok{NULL}\NormalTok{, }\StringTok{"queen_street"}\NormalTok{),}
+  \DataTypeTok{map_onclick =} \StringTok{"Queen Street"}
+\NormalTok{)}
+
+\NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{  app_state <-}\StringTok{ }\KeywordTok{eval_tidy}\NormalTok{(}\KeywordTok{new_quosure}\NormalTok{(}\KeywordTok{expr}\NormalTok{(}
+    \KeywordTok{reactiveValues}\NormalTok{(}\OperatorTok{!!!}\NormalTok{initial_app_state)}
+\NormalTok{  )))}
+\NormalTok{  ... ...}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Reactive input processing and caching:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{  ... ...}
+  \KeywordTok{observeEvent}\NormalTok{(input[[inputId]], \{}
+\NormalTok{    ... ...}
+    \KeywordTok{updateXxxInput}\NormalTok{(session, inputId, ...) }\CommentTok{## If needed}
+\NormalTok{    app_state[[variable_name]] <-}\StringTok{ }\NormalTok{input[[inputId]]}
+\NormalTok{  \})}
+\NormalTok{  ... ...}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Reactive loading of data sets:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{append_data <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, loc) \{}
+  \KeywordTok{read_csv}\NormalTok{(...) }\OperatorTok{%>%}
+\StringTok{    }\NormalTok{... ... }\CommentTok{## Wrangling}
+\NormalTok{\}}
+
+\NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{  ... ...}
+  \KeywordTok{observeEvent}\NormalTok{(app_state[[}\StringTok{"map_onclick"}\NormalTok{]], \{}
+\NormalTok{    ... ...}
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{loc }\OperatorTok{%in%}\StringTok{ }\NormalTok{app_state[[}\StringTok{"data"}\NormalTok{]][[}\StringTok{"location"}\NormalTok{]]) \{}
+\NormalTok{      app_state[[}\StringTok{"data"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{append_data}\NormalTok{(app_state[[}\StringTok{"data"}\NormalTok{]], loc)}
+\NormalTok{    \}}
+\NormalTok{    ... ...}
+\NormalTok{  \})}
+\NormalTok{  ... ...}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{reactive-graphics-caching}{%
+\subsection{Reactive graphics caching}\label{reactive-graphics-caching}}
+
+Calling the \texttt{shiny::bindCache()} function:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+\NormalTok{    ... ...}
+\NormalTok{    output[[outputId]] <-}\StringTok{ }\KeywordTok{renderXxx}\NormalTok{(expr, ...) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{bindCache}\NormalTok{(...)}
+\NormalTok{    ... ...}
+\NormalTok{  \}}
+
+  \KeywordTok{moduleServer}\NormalTok{(id, module)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{client-side-interactive-linking}{%
+\subsection{Client-side interactive linking}\label{client-side-interactive-linking}}
+
+\hypertarget{server-side-interactive-linking}{%
+\subsection{Server-side interactive linking}\label{server-side-interactive-linking}}
 
 \hypertarget{ch:model}{%
 \chapter{Modelling}\label{ch:model}}
 
 \hypertarget{ch:conclusion}{%
 \chapter{Conclusion and future works}\label{ch:conclusion}}
+
+\hypertarget{future-work}{%
+\section{Future work}\label{future-work}}
+
+\hypertarget{statistical-modelling}{%
+\subsection{Statistical modelling}\label{statistical-modelling}}
+
+\hypertarget{aspect-ratio-adaptation}{%
+\subsection{Aspect ratio adaptation}\label{aspect-ratio-adaptation}}
+
+\hypertarget{connection-to-dynamic-database}{%
+\subsection{Connection to dynamic database}\label{connection-to-dynamic-database}}
+
+\hypertarget{graphics-performance}{%
+\subsection{Graphics performance}\label{graphics-performance}}
+
+\hypertarget{final-words}{%
+\section{Final words}\label{final-words}}
 
 \appendix
 

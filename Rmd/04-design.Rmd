@@ -1,3 +1,8 @@
+```{r setup-design, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE, cache = TRUE)
+```
+
 # Design layout and philosophy {#ch:design}
 
 - Overview of AQI
@@ -9,3 +14,16 @@
   - Explore relationship AQI with wind speed and direction
   - Meteorological data
 - Trend analysis
+
+```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+include_graphics("figures/aqi-tab.png")
+```
+```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+include_graphics("figures/met-tab.png")
+```
+```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+include_graphics("figures/wind-tab.png")
+```
+```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+include_graphics("figures/ts-tab.png")
+```

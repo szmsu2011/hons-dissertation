@@ -1,1 +1,13 @@
 # Conclusion and future works {#ch:conclusion}
+
+## Future work
+
+### Statistical modelling
+
+### Aspect ratio adaptation
+
+### Connection to dynamic database
+
+### Graphics performance
+
+## Final words
