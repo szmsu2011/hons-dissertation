@@ -422,102 +422,123 @@ The primary data set, which records all parameters except for wind direction, is
 \includegraphics[width=1\linewidth]{figures/ts-tab} \end{figure}
 
 \hypertarget{ch:linking}{%
-\chapter{Linked interactive graphics}\label{ch:linking}}
+\chapter{Shiny linking and reactivity}\label{ch:linking}}
 
 \hypertarget{introduction-1}{%
 \section{Introduction}\label{introduction-1}}
 
+(Introduction).
+
+This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitoring stations with an interactive map in the modularised shiny application.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/app-structure} \caption{The structure of the modularised shiny application.}\label{fig:unnamed-chunk-6}
+\end{figure}
+
+
+
 \hypertarget{modularisation-of-shiny-application}{%
 \section{Modularisation of shiny application}\label{modularisation-of-shiny-application}}
+
+The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. The modules are black boxes that are isolated and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
 
 \hypertarget{module-environment}{%
 \subsection{Module environment}\label{module-environment}}
 
+Each of the shiny modules consists of its independent UI and server, much similar to a miniature ``shiny environment'', called within the application UI and server.
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{module_ui <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id) \{}
+\NormalTok{map_aqi_ui <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id) \{}
 \NormalTok{  ns <-}\StringTok{ }\KeywordTok{NS}\NormalTok{(id)}
-
-  \KeywordTok{tagList}\NormalTok{(}\KeywordTok{xxxOutput}\NormalTok{(}\KeywordTok{ns}\NormalTok{(outputId), ...))}
+  \KeywordTok{tagList}\NormalTok{(}\KeywordTok{leafletOutput}\NormalTok{(}\KeywordTok{ns}\NormalTok{(}\StringTok{"map_aqi"}\NormalTok{), }\DataTypeTok{height =} \StringTok{"1190px"}\NormalTok{))}
 \NormalTok{\}}
 
-\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, state) \{}
+\NormalTok{map_aqi_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, state) \{}
 \NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{    ... ...}
+\NormalTok{    output[[}\StringTok{"map_aqi"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{renderLeaflet}\NormalTok{(...)}
+    \CommentTok{## Reactivity and event handling}
 \NormalTok{  \}}
-
   \KeywordTok{moduleServer}\NormalTok{(id, module)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-Module calls in server:
+The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and called by a caller-defined \texttt{id} for both the module UI and server, which allows for the reuse of modules under different \texttt{id}. The namespace is called by a module-specific function, defined by the \texttt{NS(id)}, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output \texttt{id} of \texttt{"map\_aqi"} is called dependently via the module-specific namespace function \texttt{ns()}.
+
+Once defined, the modules are called in the application UI and server.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{  ... ...}
-  \KeywordTok{module_mod}\NormalTok{(id, app_state)}
-\NormalTok{  ... ...}
+  \CommentTok{## Application Initialisation}
+  \CommentTok{## Other shiny module servers}
+  \KeywordTok{map_aqi_mod}\NormalTok{(}\StringTok{"map_aqi"}\NormalTok{, app_state)}
+  \CommentTok{## Reactivity and event handling}
 \NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
-Module calls in UI:
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{app_ui <-}\StringTok{ }\KeywordTok{dashboardPage}\NormalTok{(}
 \NormalTok{  header,}
 \NormalTok{  sidebar,}
   \DataTypeTok{body =} \KeywordTok{dashboardBody}\NormalTok{(}
-\NormalTok{    ... ...}
-      \KeywordTok{module_ui}\NormalTok{(id)}
-\NormalTok{    ... ...}
+    \KeywordTok{tabItem}\NormalTok{(tabName,}
+      \KeywordTok{fluidRow}\NormalTok{(}\KeywordTok{column}\NormalTok{(}\KeywordTok{map_aqi_ui}\NormalTok{(}\StringTok{"map_aqi"}\NormalTok{))),}
+      \CommentTok{## Other modular UI}
+\NormalTok{    ),}
+    \CommentTok{## Other tabs}
 \NormalTok{  )}
 \NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{event-observation-and-handling}{%
-\subsection{Event observation and handling}\label{event-observation-and-handling}}
+\hypertarget{sec:shiny-event}{%
+\subsection{Event observation and handling}\label{sec:shiny-event}}
+
+The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the \textbf{shiny} \texttt{observeEvent()} function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{... ... }\CommentTok{## Within main server or module}
-  \KeywordTok{observeEvent}\NormalTok{(eventExpr, handlerExpr, ...)}
-\NormalTok{... ...}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{module-communication}{%
-\subsection{Module communication}\label{module-communication}}
-
-Calling the \texttt{reactivevalues} object \texttt{app\_state}:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{map_aqi_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, state) \{}
 \NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{    ... ...}
-    \KeywordTok{observeEvent}\NormalTok{(eventExpr, \{}
-\NormalTok{      state[[app_state_name]] <-}\StringTok{ }\NormalTok{... ...}
+    \CommentTok{## Shiny output}
+    \KeywordTok{observeEvent}\NormalTok{(input[[}\StringTok{"map_aqi_marker_click"}\NormalTok{]], \{}
+\NormalTok{      state[[}\StringTok{"map_onclick"}\NormalTok{]] <-}\StringTok{ }\NormalTok{input[[}\StringTok{"map_aqi_marker_click"}\NormalTok{]][[}\StringTok{"id"}\NormalTok{]]}
 \NormalTok{    \})}
-\NormalTok{    ... ...}
 \NormalTok{  \}}
-
   \KeywordTok{moduleServer}\NormalTok{(id, module)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{implementation-of-interactive-linking}{%
-\section{Implementation of interactive linking}\label{implementation-of-interactive-linking}}
+Contextually, the interactive-map module monitors user clicks on the map items defined by the \emph{event expression}. The JavaScript-based interactive web map rendered by the \textbf{leaflet} package \autocite{leaflet} automatically generates callback inputs to the shiny session whose change is treated as an event upon user map clicks, which triggers the evaluation of the \emph{handler expression}. Other than callback events generated from interactive graphics, observable events include direct user inputs from the main UI.
 
-\hypertarget{reactive-data-caching}{%
-\subsection{Reactive data caching}\label{reactive-data-caching}}
+\hypertarget{module-communication}{%
+\subsection{Module communication}\label{module-communication}}
 
-Initialisation of web application with Queen Street data:
+The communication between the namespace-isolated modules is facilitated with a \textbf{shiny} reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the \emph{one version of truth} at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a \texttt{list} object (Section \ref{sec:shiny-event}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{aqi_heatmap_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+    \CommentTok{## Use app_state by calling state[[app_state_name]]}
+    \CommentTok{## Update app_state by calling state[[app_state_name]] <-}
+    \CommentTok{## Shiny output}
+\NormalTok{  \}}
+  \KeywordTok{moduleServer}\NormalTok{(id, module)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+The reactive object \texttt{app\_state} is stored in the application server and called upon the evaluation of all module server functions as an argument, and the update of which in any module is global for all others. Thus, the information of the user map clicks can be shared instantaneously for the graphics modules.
+
+\hypertarget{reactive-caching}{%
+\section{Reactive caching}\label{reactive-caching}}
+
+\hypertarget{data-caching}{%
+\subsection{Data caching}\label{data-caching}}
+
+Exhaustive loading of the data with over 1 million observations incurs an undesirably long initialisation time upon application launch. As the application interface displays interactive graphics with data from only one location at a time, the initialisation upon application launch loads only the data of the default initial location (i.e., Queen Street, which is changeable). Upon detecting the user selection of a location with unloaded data, the data is updated by appending the corresponding data set to the cached data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -530,65 +551,63 @@ Initialisation of web application with Queen Street data:
 \NormalTok{  app_state <-}\StringTok{ }\KeywordTok{eval_tidy}\NormalTok{(}\KeywordTok{new_quosure}\NormalTok{(}\KeywordTok{expr}\NormalTok{(}
     \KeywordTok{reactiveValues}\NormalTok{(}\OperatorTok{!!!}\NormalTok{initial_app_state)}
 \NormalTok{  )))}
-\NormalTok{  ... ...}
+  \CommentTok{## Shiny module servers}
+  \CommentTok{## Reactivity and event handling}
 \NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
-Reactive input processing and caching:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{  ... ...}
-  \KeywordTok{observeEvent}\NormalTok{(input[[inputId]], \{}
-\NormalTok{    ... ...}
-    \KeywordTok{updateXxxInput}\NormalTok{(session, inputId, ...) }\CommentTok{## If needed}
-\NormalTok{    app_state[[variable_name]] <-}\StringTok{ }\NormalTok{input[[inputId]]}
-\NormalTok{  \})}
-\NormalTok{  ... ...}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-Reactive loading of data sets:
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{append_data <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, loc) \{}
-  \KeywordTok{read_csv}\NormalTok{(...) }\OperatorTok{%>%}
-\StringTok{    }\NormalTok{... ... }\CommentTok{## Wrangling}
+  \KeywordTok{paste0}\NormalTok{(}\StringTok{"data/"}\NormalTok{, }\KeywordTok{gsub}\NormalTok{(}\StringTok{"_"}\NormalTok{, }\StringTok{"-"}\NormalTok{, loc), }\StringTok{".csv"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{read_csv}\NormalTok{(...) }\OperatorTok{%>%}
+\StringTok{    }\CommentTok{## Wrangling}
+\StringTok{    }\KeywordTok{bind_rows}\NormalTok{(data)}
 \NormalTok{\}}
 
 \NormalTok{app_server <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{  ... ...}
+  \CommentTok{## Application Initialisation}
+  \CommentTok{## Shiny module servers}
   \KeywordTok{observeEvent}\NormalTok{(app_state[[}\StringTok{"map_onclick"}\NormalTok{]], \{}
-\NormalTok{    ... ...}
     \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{loc }\OperatorTok{%in%}\StringTok{ }\NormalTok{app_state[[}\StringTok{"data"}\NormalTok{]][[}\StringTok{"location"}\NormalTok{]]) \{}
 \NormalTok{      app_state[[}\StringTok{"data"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{append_data}\NormalTok{(app_state[[}\StringTok{"data"}\NormalTok{]], loc)}
 \NormalTok{    \}}
-\NormalTok{    ... ...}
+    \CommentTok{## Data processing}
+    \CommentTok{## Update shiny inputs}
 \NormalTok{  \})}
-\NormalTok{  ... ...}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{reactive-graphics-caching}{%
-\subsection{Reactive graphics caching}\label{reactive-graphics-caching}}
-
-Calling the \texttt{shiny::bindCache()} function:
+To prevent the graphics from rendering before the required data is loaded, an availability check of the data from the specified location is performed before the evaluation continues.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{module_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{aqi_heatmap_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
 \NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
-\NormalTok{    ... ...}
-\NormalTok{    output[[outputId]] <-}\StringTok{ }\KeywordTok{renderXxx}\NormalTok{(expr, ...) }\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{bindCache}\NormalTok{(...)}
-\NormalTok{    ... ...}
+    \CommentTok{## Data processing}
+\NormalTok{    output[[}\StringTok{"aqi_heatmap"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{renderEcharts4r}\NormalTok{(\{}
+\NormalTok{      loc <-}\StringTok{ }\KeywordTok{make_clean_names}\NormalTok{(state[[}\StringTok{"map_onclick"}\NormalTok{]])}
+      \KeywordTok{req}\NormalTok{(loc }\OperatorTok{%in%}\StringTok{ }\NormalTok{state[[}\StringTok{"data"}\NormalTok{]][[}\StringTok{"location"}\NormalTok{]])}
+      \CommentTok{## Render shiny output}
+\NormalTok{    \})}
 \NormalTok{  \}}
+  \KeywordTok{moduleServer}\NormalTok{(id, module)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
+\hypertarget{graphics-caching}{%
+\subsection{Graphics caching}\label{graphics-caching}}
+
+Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the \textbf{shiny} \texttt{bindCache()} function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{aqi_heatmap_mod <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(id, }\DataTypeTok{state =}\NormalTok{ app_state) \{}
+\NormalTok{  module <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+    \CommentTok{## Reactivity and event handling}
+    \CommentTok{## Data processing}
+\NormalTok{    output[[}\StringTok{"aqi_heatmap"}\NormalTok{]] <-}\StringTok{ }\KeywordTok{renderEcharts4r}\NormalTok{(expr) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{bindCache}\NormalTok{(...)}
+\NormalTok{  \}}
   \KeywordTok{moduleServer}\NormalTok{(id, module)}
 \NormalTok{\}}
 \end{Highlighting}
@@ -596,9 +615,6 @@ Calling the \texttt{shiny::bindCache()} function:
 
 \hypertarget{client-side-interactive-linking}{%
 \subsection{Client-side interactive linking}\label{client-side-interactive-linking}}
-
-\hypertarget{server-side-interactive-linking}{%
-\subsection{Server-side interactive linking}\label{server-side-interactive-linking}}
 
 \hypertarget{ch:model}{%
 \chapter{Modelling}\label{ch:model}}

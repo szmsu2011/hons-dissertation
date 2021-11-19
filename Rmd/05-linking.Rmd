@@ -1,82 +1,105 @@
-# Linked interactive graphics {#ch:linking}
+# Shiny linking and reactivity {#ch:linking}
 
 ## Introduction
 
+(Introduction).
+
+This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitoring stations with an interactive map in the modularised shiny application.
+
+```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:app-structure)"}
+include_graphics("figures/app-structure.pdf")
+```
+
+(ref:app-structure) The structure of the modularised shiny application.
+
 ## Modularisation of shiny application
+
+The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. The modules are black boxes that are isolated and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
 
 ### Module environment
 
-```r
-module_ui <- function(id) {
-  ns <- NS(id)
+Each of the shiny modules consists of its independent UI and server, much similar to a miniature "shiny environment", called within the application UI and server.
 
-  tagList(xxxOutput(ns(outputId), ...))
+```r
+map_aqi_ui <- function(id) {
+  ns <- NS(id)
+  tagList(leafletOutput(ns("map_aqi"), height = "1190px"))
 }
 
-module_mod <- function(id, state) {
+map_aqi_mod <- function(id, state) {
   module <- function(input, output, session) {
-    ... ...
+    output[["map_aqi"]] <- renderLeaflet(...)
+    ## Reactivity and event handling
   }
-
   moduleServer(id, module)
 }
 ```
 
-Module calls in server:
+The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and called by a caller-defined `id` for both the module UI and server, which allows for the reuse of modules under different `id`. The namespace is called by a module-specific function, defined by the `NS(id)`, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output `id` of `"map_aqi"` is called dependently via the module-specific namespace function `ns()`.
+
+Once defined, the modules are called in the application UI and server.
 
 ```r
 app_server <- function(input, output, session) {
-  ... ...
-  module_mod(id, app_state)
-  ... ...
+  ## Application Initialisation
+  ## Other shiny module servers
+  map_aqi_mod("map_aqi", app_state)
+  ## Reactivity and event handling
 }
-```
 
-Module calls in UI:
-
-```r
 app_ui <- dashboardPage(
   header,
   sidebar,
   body = dashboardBody(
-    ... ...
-      module_ui(id)
-    ... ...
+    tabItem(tabName,
+      fluidRow(column(map_aqi_ui("map_aqi"))),
+      ## Other modular UI
+    ),
+    ## Other tabs
   )
 )
 ```
 
-### Event observation and handling
+### Event observation and handling {#sec:shiny-event}
+
+The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the **shiny** `observeEvent()` function.
 
 ```r
-... ... ## Within main server or module
-  observeEvent(eventExpr, handlerExpr, ...)
-... ...
-```
-
-### Module communication
-
-Calling the `reactivevalues` object `app_state`:
-
-```r
-module_mod <- function(id, state = app_state) {
+map_aqi_mod <- function(id, state) {
   module <- function(input, output, session) {
-    ... ...
-    observeEvent(eventExpr, {
-      state[[app_state_name]] <- ... ...
+    ## Shiny output
+    observeEvent(input[["map_aqi_marker_click"]], {
+      state[["map_onclick"]] <- input[["map_aqi_marker_click"]][["id"]]
     })
-    ... ...
   }
-
   moduleServer(id, module)
 }
 ```
 
-## Implementation of interactive linking
+Contextually, the interactive-map module monitors user clicks on the map items defined by the *event expression*. The JavaScript-based interactive web map rendered by the **leaflet** package [@leaflet] automatically generates callback inputs to the shiny session whose change is treated as an event upon user map clicks, which triggers the evaluation of the *handler expression*. Other than callback events generated from interactive graphics, observable events include direct user inputs from the main UI.
 
-### Reactive data caching
+### Module communication
 
-Initialisation of web application with Queen Street data:
+The communication between the namespace-isolated modules is facilitated with a **shiny** reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the *one version of truth* at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a `list` object (Section \@ref(sec:shiny-event)).
+
+```r
+aqi_heatmap_mod <- function(id, state = app_state) {
+  module <- function(input, output, session) {
+    ## Use app_state by calling state[[app_state_name]]
+    ## Update app_state by calling state[[app_state_name]] <-
+    ## Shiny output
+  }
+  moduleServer(id, module)
+}
+```
+
+The reactive object `app_state` is stored in the application server and called upon the evaluation of all module server functions as an argument, and the update of which in any module is global for all others. Thus, the information of the user map clicks can be shared instantaneously for the graphics modules.
+
+## Reactive caching
+
+### Data caching
+
+Exhaustive loading of the data with over 1 million observations incurs an undesirably long initialisation time upon application launch. As the application interface displays interactive graphics with data from only one location at a time, the initialisation upon application launch loads only the data of the default initial location (i.e., Queen Street, which is changeable). Upon detecting the user selection of a location with unloaded data, the data is updated by appending the corresponding data set to the cached data.
 
 ```r
 initial_app_state <- list(
@@ -88,62 +111,59 @@ app_server <- function(input, output, session) {
   app_state <- eval_tidy(new_quosure(expr(
     reactiveValues(!!!initial_app_state)
   )))
-  ... ...
+  ## Shiny module servers
+  ## Reactivity and event handling
 }
-```
 
-Reactive input processing and caching:
-
-```r
-app_server <- function(input, output, session) {
-  ... ...
-  observeEvent(input[[inputId]], {
-    ... ...
-    updateXxxInput(session, inputId, ...) ## If needed
-    app_state[[variable_name]] <- input[[inputId]]
-  })
-  ... ...
-}
-```
-
-Reactive loading of data sets:
-
-```r
 append_data <- function(data, loc) {
-  read_csv(...) %>%
-    ... ... ## Wrangling
+  paste0("data/", gsub("_", "-", loc), ".csv") %>%
+    read_csv(...) %>%
+    ## Wrangling
+    bind_rows(data)
 }
 
 app_server <- function(input, output, session) {
-  ... ...
+  ## Application Initialisation
+  ## Shiny module servers
   observeEvent(app_state[["map_onclick"]], {
-    ... ...
     if (!loc %in% app_state[["data"]][["location"]]) {
       app_state[["data"]] <- append_data(app_state[["data"]], loc)
     }
-    ... ...
+    ## Data processing
+    ## Update shiny inputs
   })
-  ... ...
+}
+```
+To prevent the graphics from rendering before the required data is loaded, an availability check of the data from the specified location is performed before the evaluation continues.
+
+```r
+aqi_heatmap_mod <- function(id, state = app_state) {
+  module <- function(input, output, session) {
+    ## Data processing
+    output[["aqi_heatmap"]] <- renderEcharts4r({
+      loc <- make_clean_names(state[["map_onclick"]])
+      req(loc %in% state[["data"]][["location"]])
+      ## Render shiny output
+    })
+  }
+  moduleServer(id, module)
 }
 ```
 
-### Reactive graphics caching
+### Graphics caching
 
-Calling the `shiny::bindCache()` function:
+Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the **shiny** `bindCache()` function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
 
 ```r
-module_mod <- function(id, state = app_state) {
+aqi_heatmap_mod <- function(id, state = app_state) {
   module <- function(input, output, session) {
-    ... ...
-    output[[outputId]] <- renderXxx(expr, ...) %>%
+    ## Reactivity and event handling
+    ## Data processing
+    output[["aqi_heatmap"]] <- renderEcharts4r(expr) %>%
       bindCache(...)
-    ... ...
   }
-
   moduleServer(id, module)
 }
 ```
 
 ### Client-side interactive linking
-
-### Server-side interactive linking
