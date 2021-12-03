@@ -2,15 +2,15 @@
 
 ## Introduction
 
-(Introduction).
-
-This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitoring stations with an interactive map in the modularised shiny application.
+The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The section outlines the utilisation of reactivity for the linking in the modularised application.
 
 ```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:app-structure)"}
 include_graphics("figures/app-structure.pdf")
 ```
 
 (ref:app-structure) The structure of the modularised shiny application.
+
+This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
 
 ## Modularisation of shiny application
 
@@ -167,3 +167,5 @@ aqi_heatmap_mod <- function(id, state = app_state) {
 ```
 
 ### Client-side interactive linking
+
+In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with **echarts4r** [@echarts4r]. Client-side interactive linking calls the query with internal function `e_connect()`, which links a set of `echarts4r` objects mutually rendered in the same **shiny** application. The linking is established with the mutual keys (i.e., `x` argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
