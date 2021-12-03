@@ -5,25 +5,62 @@ opts_chunk$set(echo = FALSE, message = FALSE, cache = TRUE)
 
 # Design layout and philosophy {#ch:design}
 
-- Overview of AQI
-  - Spatial
-  - Temporal (AQI and its constituent)
-    - Calendar
-    - Drill-down line plot
-- Data enrichment
-  - Explore relationship AQI with wind speed and direction
-  - Meteorological data
-- Trend analysis
+## Introduction
 
-```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+The ambient air quality data possesses spatial and temporal properties, whose variation is affected by the proliferation of pollutants over time. Spatially, it is of interest to compare and contrast the ambient air pollutant levels in different locations in Auckland to explore the geographical effect on AQI, possibly due to transportation or meteorological factors. As such, the visualisations throughout the application is in the context of the user-selected location. On the other hand, the variation of AQI in Auckland has been stable since first monitored, and its expectation is consistently in the *healthy* category. Thence, the primary objective of visualising Auckland air quality data is to locate the anomalies temporally and investigate the causes of the unusually high AQI levels. As such, this application provides a coarse-to-granular approach to exploring Auckland air quality data.
+
+## Overviewing AQI
+
+```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:aqi-tab)"}
 include_graphics("figures/aqi-tab.png")
 ```
-```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+
+(ref:aqi-tab) The Air Quality tab provides an overview of the air quality status in Queen Street for 2019. The left calendar heatmap shows two days of extremely high AQI level in the fourth week of October 2019 (which was caused by the fire in New Zealand International Convention Centre). In addition, the right calendar heatmap shows the daily primary constituent of ambient air pollutants from the calculation of AQI.
+
+### Spatial visualisation
+
+Maps intuitively depict the spatial properties of air quality data. The generation and transportation of air pollutants are dependent on the interactions of numerous geographical and meteorological factors, including traffic activities, industrial density and wind. Thus, maps are the optimal solution for spatially presenting all the aforementioned factors, as well as displaying the relative direction between multiple locations. Maps also provide a geographical interface for users to select the locations of interest. Clicks on the interactive map update all the visualisations in the application globally to the selected location.
+
+### Temporal visualisation
+
+Calendar heatmaps offer a daily-aggregated visualisation of AQI data for both anomaly detections and the exploration of its constituents with colour-coding. Through the daily aggregation of AQI levels with the maxima, the user is able to spot days with unusually high AQI levels efficiently (blocks with colours other than green or yellow). The calendar coordinate of heatmaps also enables the users to temporally locate the date components (e.g., the day of the week) of the incident accurately, which is a feature a time series plot does not possess. Alternatively, the coloured block of the calendar heatmaps is utilised for displaying the daily primary constituent of ambient air pollutants from AQI with tooltips.
+
+The layout orientation of the calendar heatmaps is set as vertical to conform to the browsing habit of most users. Most users of digital devices nowadays are heavily influenced by the increasing usage time of smartphones, such that they are getting used to viewing information displayed from top-to-bottom, from the act of scrolling down for more information. Coincidentally, the orientation of the distribution of the monitor stations of ambient air pollutants in Auckland is north-southern. As such, both the maps and calendar heatmaps are laid out in a vertical, top-down orientation.
+
+```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:cal-drill-down)"}
+include_graphics("figures/cal-drill-down.png")
+```
+
+(ref:cal-drill-down) The drill-down hourly time series plot for Queen Street AQI on October 23, 2019, along with the AQI thresholds and hourly quantiles. AQI levels on the day were consistently higher than normal and are in the Very Unhealthy category. Note that the fire in New Zealand International Convention Centre actually broke out on October 22, 2019. The delay in rising AQI was caused by some of the constituent pollutants of AQI being reported at a 24-hour moving average [@aqitarget].
+
+Users may wish to explore the variation of the AQI level of the anomalous days in more granular details to investigate if the extreme AQI values are consistent for hours or arise from instrumental errors. The drill-down methodology allows users to click on the day-representing calendar blocks to request more information, from which a popup time series plot serves as a supplementary visualisation of the hourly AQI variation on the day of interest, as well as the plot for the daily primary AQI constituent.
+
+## Data enrichment
+
+### Meteorological analysis of air quality
+
+```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:met-tab)"}
 include_graphics("figures/met-tab.png")
 ```
-```{r fig.width = 7, out.width = "100%", fig.cap = ""}
+
+(ref:met-tab) The interactive HTML table produced with **reactable** [@reactable] for the air quality and meteorological data from Queen Street in October 2019. The spiked AQI from the fire in New Zealand International Convention Centre is clearly visible.
+
+One may be in the interest of concurrently visualising air quality and meteorological data to explore if they correlate in the form of multiple time series. For consistency, the visualisation is structured via a calendar layout (similar to the *Air Quality* tab). The resulting form from the combination of multiple time series plots and the calendar layouts is an interactive HTML table with sparkline bars [@sparkline], such that the hourly bars from each week of a selected month are in grouped rows with the day of the week grouped in columns, enabling visualisation by day, week and month.
+
+### Exploring the effect of air current on AQI
+
+```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:wind-tab)"}
 include_graphics("figures/wind-tab.png")
 ```
+
+(ref:wind-tab) The monthly wind (pollution) roses depict the proportion of time wind comes from a particular direction grouped by AQI category, suggesting that most of the time in 2019 the wind direction in Queen Street is northbound. Moreover, it is shown that the wind directions are approximately perpendicular to the closest coastline.
+
+The directional nature of wind direction makes its visualisation challenging with conventional methods for visualising time series. On the other hand, standard wind or pollution rose is incapable of depicting the temporal features of time series. Thus, monthly wind roses arranged in a grid is particularly helpful in displaying the temporal variation wind directions and corresponding grouping of the AQI categories.
+
+The layout of the *Wind* tab is made consistent with the spatial-temporal visualisation scheme as per the *Air Quality* tab, allowing the users to relate the wind directions displayed on the wind roses with the geographic and geological features surrounding the selected locations on the interactive map.
+
+## Trend analysis
+
 ```{r fig.width = 7, out.width = "100%", fig.cap = ""}
 include_graphics("figures/ts-tab.png")
 ```

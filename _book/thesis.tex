@@ -205,14 +205,14 @@ Nevertheless, interpreting connected time plots relies on the visual alignment o
 
 The \textbf{shiny} package \autocite{shiny} provides a framework for developing web applications with \textbf{R} code \autocite{R2021}, both user and developer-friendly. It enables \textbf{R} users with no prior knowledge of HTML, CSS and JavaScript to create custom web applications with sophisticated functionality with template UI components and a server powered with reactive programming.
 
-Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind \textbf{shiny} \autocite{mshiny}, significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. The lazy nature of reactivity avoids repeated evaluations of expressions leading to wastage in computational resources. Reactive programming also allows users to define abstract workflows without conceiving the low-level data and programming logic by restricting evaluations to merely reactions to events, including user actions and internal value changes. A single reactive value can be observed and called by several callback functions, which can be shared across different functionalities. As the reactive value always keeps the previous evaluated result, conflicts among functionalities are avoided.
+Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind \textbf{shiny} \autocite{mshiny}, significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. Reactivity is cached such that the reactive values keep the previously evaluated result for each call, as callbacks to them upon event observations update the reactive once and globally, thus consistent for being shared across different functionalities. The cached feature of reactivity allows users in defining abstract workflows without conceiving low-level data and programming logic by restricting the evaluation to merely reactions to events, including user actions and internal value change. Reactivity is also lazy, for no expressions are evaluated until being called, which avoids repeated evaluations of expressions leading to wastage in computational resources.
 
 The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
 
 \hypertarget{sec:int-graphics}{%
 \subsection{Interactive graphics}\label{sec:int-graphics}}
 
-In the technological age flooded with data, it is usually tempting to fit all the information in a single display upon data visualisation. To avoid excessive cognitive load to viewers, numerous methods, such as trellis displays \autocite{trellis}, are proposed to maximise the information density in a dashboard of static graphics. As the available dimensions of a single display are exhausted, the need to further increase the information density motivated the introduction of interactive graphics \autocite{intg}. The primary purpose of utilising graphical interactivity is to provide a coarse-to-granular orientation for data exploration, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Another use case of interactive graphics is to establish dynamic linkings between plots \autocite{intg}.
+It is usually tempting to fit all the information in a single display upon data visualisation. To avoid excessive cognitive load to viewers, the need for selective presentation of information motivated the introduction of interactive graphics \autocite{intg}. The primary purpose of utilising graphical interactivity is to provide a navigated data exploration, either coarse-to-granular or the opposite, such that only the user-chosen details of a broad summary are dynamically shown, reducing the wastage of limited spatial recourses on display. Alternatively, interactive graphics are used to establish dynamic linkings between plots \autocite{intg}.
 
 The selective presentation of information in interactive graphics is mainly achieved by hover-over tooltips and drill-down. Tooltips, initially introduced by \textcite{tt} in \emph{Windows NT 3.51}, refer to tags of brief descriptive messages upon hovering over graphical elements in the context of interactive graphics, temporarily hiding granular details of a coarser summary until user input which allows a top-down approach to preliminary data exploration. Nevertheless, tooltips are dynamic displays that vanish as the cursor moves away. As such, drill-down \autocite{plotly} and click triggered popups are often used as supplements to tooltips in need of stable auxiliary graphics.
 
@@ -329,12 +329,12 @@ The value of the air quality index derived from relevant pollutants is numerical
 \toprule
 AQI Level of Concern & Value of Index & Colour (Hexadecimal Code) \\
 \midrule
-Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green (\#00E400) \\
-Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow (\#FFFF00) \\
-Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange (\#FF7E00) \\
-Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red (\#FF0000) \\
-Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple (\#8F3F97) \\
-Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon (\#7E0023) \\
+Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green {\fontfamily{pcr}\selectfont (\#00E400)} \\
+Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow {\fontfamily{pcr}\selectfont (\#FFFF00)} \\
+Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange {\fontfamily{pcr}\selectfont (\#FF7E00)} \\
+Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red {\fontfamily{pcr}\selectfont (\#FF0000)} \\
+Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple {\fontfamily{pcr}\selectfont (\#8F3F97)} \\
+Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon {\fontfamily{pcr}\selectfont (\#7E0023)} \\
 \bottomrule
 \end{tabular}
 \caption{The United States definition of AQI categories and colours (\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.}
@@ -378,64 +378,88 @@ The primary data set, which records all parameters except for wind direction, is
 \hypertarget{ch:design}{%
 \chapter{Design layout and philosophy}\label{ch:design}}
 
-\begin{itemize}
-\tightlist
-\item
-  Overview of AQI
+\hypertarget{introduction-1}{%
+\section{Introduction}\label{introduction-1}}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Spatial
-  \item
-    Temporal (AQI and its constituent)
+The ambient air quality data possesses spatial and temporal properties, whose variation is affected by the proliferation of pollutants over time. Spatially, it is of interest to compare and contrast the ambient air pollutant levels in different locations in Auckland to explore the geographical effect on AQI, possibly due to transportation or meteorological factors. As such, the visualisations throughout the application is in the context of the user-selected location. On the other hand, the variation of AQI in Auckland has been stable since first monitored, and its expectation is consistently in the \emph{healthy} category. Thence, the primary objective of visualising Auckland air quality data is to locate the anomalies temporally and investigate the causes of the unusually high AQI levels. As such, this application provides a coarse-to-granular approach to exploring Auckland air quality data.
 
-    \begin{itemize}
-    \tightlist
-    \item
-      Calendar
-    \item
-      Drill-down line plot
-    \end{itemize}
-  \end{itemize}
-\item
-  Data enrichment
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Explore relationship AQI with wind speed and direction
-  \item
-    Meteorological data
-  \end{itemize}
-\item
-  Trend analysis
-\end{itemize}
+\hypertarget{overviewing-aqi}{%
+\section{Overviewing AQI}\label{overviewing-aqi}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/aqi-tab} \end{figure}
+\includegraphics[width=1\linewidth]{figures/aqi-tab} \caption{The Air Quality tab provides an overview of the air quality status in Queen Street for 2019. The left calendar heatmap shows two days of extremely high AQI level in the fourth week of October 2019 (which was caused by the fire in New Zealand International Convention Centre). In addition, the right calendar heatmap shows the daily primary constituent of ambient air pollutants from the calculation of AQI.}\label{fig:unnamed-chunk-2}
+\end{figure}
+
+
+
+\hypertarget{spatial-visualisation}{%
+\subsection{Spatial visualisation}\label{spatial-visualisation}}
+
+Maps intuitively depict the spatial properties of air quality data. The generation and transportation of air pollutants are dependent on the interactions of numerous geographical and meteorological factors, including traffic activities, industrial density and wind. Thus, maps are the optimal solution for spatially presenting all the aforementioned factors, as well as displaying the relative direction between multiple locations. Maps also provide a geographical interface for users to select the locations of interest. Clicks on the interactive map update all the visualisations in the application globally to the selected location.
+
+\hypertarget{temporal-visualisation}{%
+\subsection{Temporal visualisation}\label{temporal-visualisation}}
+
+Calendar heatmaps offer a daily-aggregated visualisation of AQI data for both anomaly detections and the exploration of its constituents with colour-coding. Through the daily aggregation of AQI levels with the maxima, the user is able to spot days with unusually high AQI levels efficiently (blocks with colours other than green or yellow). The calendar coordinate of heatmaps also enables the users to temporally locate the date components (e.g., the day of the week) of the incident accurately, which is a feature a time series plot does not possess. Alternatively, the coloured block of the calendar heatmaps is utilised for displaying the daily primary constituent of ambient air pollutants from AQI with tooltips.
+
+The layout orientation of the calendar heatmaps is set as vertical to conform to the browsing habit of most users. Most users of digital devices nowadays are heavily influenced by the increasing usage time of smartphones, such that they are getting used to viewing information displayed from top-to-bottom, from the act of scrolling down for more information. Coincidentally, the orientation of the distribution of the monitor stations of ambient air pollutants in Auckland is north-southern. As such, both the maps and calendar heatmaps are laid out in a vertical, top-down orientation.
+
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/met-tab} \end{figure}
+\includegraphics[width=1\linewidth]{figures/cal-drill-down} \caption{The drill-down hourly time series plot for Queen Street AQI on October 23, 2019, along with the AQI thresholds and hourly quantiles. AQI levels on the day were consistently higher than normal and are in the Very Unhealthy category. Note that the fire in New Zealand International Convention Centre actually broke out on October 22, 2019. The delay in rising AQI was caused by some of the constituent pollutants of AQI being reported at a 24-hour moving average \autocite{aqitarget}.}\label{fig:unnamed-chunk-3}
+\end{figure}
+
+
+
+Users may wish to explore the variation of the AQI level of the anomalous days in more granular details to investigate if the extreme AQI values are consistent for hours or arise from instrumental errors. The drill-down methodology allows users to click on the day-representing calendar blocks to request more information, from which a popup time series plot serves as a supplementary visualisation of the hourly AQI variation on the day of interest, as well as the plot for the daily primary AQI constituent.
+
+\hypertarget{data-enrichment-1}{%
+\section{Data enrichment}\label{data-enrichment-1}}
+
+\hypertarget{meteorological-analysis-of-air-quality}{%
+\subsection{Meteorological analysis of air quality}\label{meteorological-analysis-of-air-quality}}
+
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/wind-tab} \end{figure}
+\includegraphics[width=1\linewidth]{figures/met-tab} \caption{The interactive HTML table produced with \textbf{reactable} \autocite{reactable} for the air quality and meteorological data from Queen Street in October 2019. The spiked AQI from the fire in New Zealand International Convention Centre is clearly visible.}\label{fig:unnamed-chunk-4}
+\end{figure}
+
+
+
+One may be in the interest of concurrently visualising air quality and meteorological data to explore if they correlate in the form of multiple time series. For consistency, the visualisation is structured via a calendar layout (similar to the \emph{Air Quality} tab). The resulting form from the combination of multiple time series plots and the calendar layouts is an interactive HTML table with sparkline bars \autocite{sparkline}, such that the hourly bars from each week of a selected month are in grouped rows with the day of the week grouped in columns, enabling visualisation by day, week and month.
+
+\hypertarget{exploring-the-effect-of-air-current-on-aqi}{%
+\subsection{Exploring the effect of air current on AQI}\label{exploring-the-effect-of-air-current-on-aqi}}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/wind-tab} \caption{The monthly wind (pollution) roses depict the proportion of time wind comes from a particular direction grouped by AQI category, suggesting that most of the time in 2019 the wind direction in Queen Street is northbound. Moreover, it is shown that the wind directions are approximately perpendicular to the closest coastline.}\label{fig:unnamed-chunk-5}
+\end{figure}
+
+
+
+The directional nature of wind direction makes its visualisation challenging with conventional methods for visualising time series. On the other hand, standard wind or pollution rose is incapable of depicting the temporal features of time series. Thus, monthly wind roses arranged in a grid is particularly helpful in displaying the temporal variation wind directions and corresponding grouping of the AQI categories.
+
+The layout of the \emph{Wind} tab is made consistent with the spatial-temporal visualisation scheme as per the \emph{Air Quality} tab, allowing the users to relate the wind directions displayed on the wind roses with the geographic and geological features surrounding the selected locations on the interactive map.
+
+\hypertarget{trend-analysis}{%
+\section{Trend analysis}\label{trend-analysis}}
+
 \begin{figure}
 \includegraphics[width=1\linewidth]{figures/ts-tab} \end{figure}
 
 \hypertarget{ch:linking}{%
 \chapter{Shiny linking and reactivity}\label{ch:linking}}
 
-\hypertarget{introduction-1}{%
-\section{Introduction}\label{introduction-1}}
+\hypertarget{introduction-2}{%
+\section{Introduction}\label{introduction-2}}
 
-(Introduction).
-
-This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitoring stations with an interactive map in the modularised shiny application.
+The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The section outlines the utilisation of reactivity for the linking in the modularised application.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/app-structure} \caption{The structure of the modularised shiny application.}\label{fig:unnamed-chunk-6}
+\includegraphics[width=1\linewidth]{figures/app-structure} \caption{The structure of the modularised shiny application.}\label{fig:unnamed-chunk-7}
 \end{figure}
 
 
+
+This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
 
 \hypertarget{modularisation-of-shiny-application}{%
 \section{Modularisation of shiny application}\label{modularisation-of-shiny-application}}
@@ -615,6 +639,8 @@ Interactive graphics, notwithstanding already optimised for web applications, ma
 
 \hypertarget{client-side-interactive-linking}{%
 \subsection{Client-side interactive linking}\label{client-side-interactive-linking}}
+
+In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with \textbf{echarts4r} \autocite{echarts4r}. Client-side interactive linking calls the query with internal function \texttt{e\_connect()}, which links a set of \texttt{echarts4r} objects mutually rendered in the same \textbf{shiny} application. The linking is established with the mutual keys (i.e., \texttt{x} argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
 
 \hypertarget{ch:model}{%
 \chapter{Modelling}\label{ch:model}}
