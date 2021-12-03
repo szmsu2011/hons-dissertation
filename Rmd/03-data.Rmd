@@ -95,12 +95,12 @@ aqi_cat_pal <- data.frame(
     "151 to 200", "201 to 300", "301 and higher"
   ),
   "Colour (Hexadecimal Code)" = c(
-    "\\colorbox[rgb]{0,.89,0}{\\textcolor[rgb]{0,.89,0}{**}} Green (\\#00E400)",
-    "\\colorbox[rgb]{1,1,0}{\\textcolor[rgb]{1,1,0}{**}} Yellow (\\#FFFF00)",
-    "\\colorbox[rgb]{1,.49,0}{\\textcolor[rgb]{1,.49,0}{**}} Orange (\\#FF7E00)",
-    "\\colorbox[rgb]{1,0,0}{\\textcolor[rgb]{1,0,0}{**}} Red (\\#FF0000)",
-    "\\colorbox[rgb]{.56,.25,.59}{\\textcolor[rgb]{.56,.25,.59}{**}} Purple (\\#8F3F97)",
-    "\\colorbox[rgb]{.49,0,.14}{\\textcolor[rgb]{.49,0,.14}{**}} Maroon (\\#7E0023)"
+    "\\colorbox[rgb]{0,.89,0}{\\textcolor[rgb]{0,.89,0}{**}} Green {\\fontfamily{pcr}\\selectfont (\\#00E400)}",
+    "\\colorbox[rgb]{1,1,0}{\\textcolor[rgb]{1,1,0}{**}} Yellow {\\fontfamily{pcr}\\selectfont (\\#FFFF00)}",
+    "\\colorbox[rgb]{1,.49,0}{\\textcolor[rgb]{1,.49,0}{**}} Orange {\\fontfamily{pcr}\\selectfont (\\#FF7E00)}",
+    "\\colorbox[rgb]{1,0,0}{\\textcolor[rgb]{1,0,0}{**}} Red {\\fontfamily{pcr}\\selectfont (\\#FF0000)}",
+    "\\colorbox[rgb]{.56,.25,.59}{\\textcolor[rgb]{.56,.25,.59}{**}} Purple {\\fontfamily{pcr}\\selectfont (\\#8F3F97)}",
+    "\\colorbox[rgb]{.49,0,.14}{\\textcolor[rgb]{.49,0,.14}{**}} Maroon {\\fontfamily{pcr}\\selectfont (\\#7E0023)}"
   ),
   check.names = FALSE
 )
