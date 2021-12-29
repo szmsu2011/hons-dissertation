@@ -307,10 +307,10 @@ The air quality index is presumably affected by various environmental and meteor
 \toprule
 Variable & Unit \\
 \midrule
-Relative Humidity & \% \\
+Relative humidity & \% \\
 Temperature & $^{\circ}$C \\
-Wind Speed & ms\textsuperscript{-1} \\
-Wind Direction & $^{\circ}$ \\
+Wind speed & ms\textsuperscript{-1} \\
+Wind direction & $^{\circ}$ \\
 \bottomrule
 \end{tabular}
 \caption{Supplementary meteorological variables.}
@@ -331,9 +331,9 @@ AQI Level of Concern & Value of Index & Colour (Hexadecimal Code) \\
 \midrule
 Good & 0 to 50 & \colorbox[rgb]{0,.89,0}{\textcolor[rgb]{0,.89,0}{**}} Green {\fontfamily{pcr}\selectfont (\#00E400)} \\
 Moderate & 51 to 100 & \colorbox[rgb]{1,1,0}{\textcolor[rgb]{1,1,0}{**}} Yellow {\fontfamily{pcr}\selectfont (\#FFFF00)} \\
-Unhealthy for Sensitive Groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange {\fontfamily{pcr}\selectfont (\#FF7E00)} \\
+Unhealthy for sensitive groups & 101 to 150 & \colorbox[rgb]{1,.49,0}{\textcolor[rgb]{1,.49,0}{**}} Orange {\fontfamily{pcr}\selectfont (\#FF7E00)} \\
 Unhealthy & 151 to 200 & \colorbox[rgb]{1,0,0}{\textcolor[rgb]{1,0,0}{**}} Red {\fontfamily{pcr}\selectfont (\#FF0000)} \\
-Very Unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple {\fontfamily{pcr}\selectfont (\#8F3F97)} \\
+Very unhealthy & 201 to 300 & \colorbox[rgb]{.56,.25,.59}{\textcolor[rgb]{.56,.25,.59}{**}} Purple {\fontfamily{pcr}\selectfont (\#8F3F97)} \\
 Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14}{**}} Maroon {\fontfamily{pcr}\selectfont (\#7E0023)} \\
 \bottomrule
 \end{tabular}
@@ -642,9 +642,6 @@ Interactive graphics, notwithstanding already optimised for web applications, ma
 
 In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with \textbf{echarts4r} \autocite{echarts4r}. Client-side interactive linking calls the query with internal function \texttt{e\_connect()}, which links a set of \texttt{echarts4r} objects mutually rendered in the same \textbf{shiny} application. The linking is established with the mutual keys (i.e., \texttt{x} argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
 
-\hypertarget{ch:model}{%
-\chapter{Modelling}\label{ch:model}}
-
 \hypertarget{ch:conclusion}{%
 \chapter{Conclusion and future works}\label{ch:conclusion}}
 
@@ -668,12 +665,149 @@ In some scenarios, graphical database queries can be used to bypass the server t
 
 \appendix
 
-\hypertarget{additional-stuff}{%
-\chapter{Additional stuff}\label{additional-stuff}}
+\hypertarget{ch:model-output}{%
+\chapter{Outputs from data analysis}\label{ch:model-output}}
 
-You might put some computer output here, or maybe additional tables.
+\hypertarget{anova-table-of-the-final-models}{%
+\section{ANOVA table of the final models}\label{anova-table-of-the-final-models}}
 
-Note that line 5 must appear before your first appendix. But other appendices can just start like any other chapter.
+\begin{verbatim}
+$glen_eden
+Analysis of Variance Table
+
+Response: aqi
+                Df Sum Sq Mean Sq  F value    Pr(>F)    
+lag_1            1  46789   46789 791.2044 < 2.2e-16 ***
+lag_3            1   1632    1632  27.6011 1.661e-07 ***
+t                1     64      64   1.0856  0.297574    
+temp             1   1623    1623  27.4384 1.804e-07 ***
+wind_dir        11   1700     155   2.6126  0.002628 ** 
+ws               1    112     112   1.8910  0.169251    
+temp:wind_dir   11   1845     168   2.8357  0.001098 ** 
+wind_dir:ws     11   2383     217   3.6640 3.617e-05 ***
+Residuals     1873 110762      59                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+$henderson
+Analysis of Variance Table
+
+Response: aqi
+              Df Sum Sq Mean Sq   F value    Pr(>F)    
+lag_1          1  47438   47438 1136.2540 < 2.2e-16 ***
+lag_2          1    518     518   12.4138 0.0004363 ***
+lag_3          1    731     731   17.5190 2.975e-05 ***
+rh             1    180     180    4.3166 0.0378780 *  
+t              1    295     295    7.0664 0.0079209 ** 
+temp           1    668     668   16.0044 6.564e-05 ***
+wind_dir      11   1183     108    2.5763 0.0030214 ** 
+ws             1    407     407    9.7464 0.0018241 ** 
+wind_dir:ws   11   2369     215    5.1578 5.016e-08 ***
+Residuals   1883  78614      42                        
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+$patumahoe
+Analysis of Variance Table
+
+Response: aqi
+            Df  Sum Sq Mean Sq F value    Pr(>F)    
+lag_1        1  548186  548186 431.289 < 2.2e-16 ***
+lag_2        1  120972  120972  95.176 < 2.2e-16 ***
+lag_3        1   27496   27496  21.633 3.528e-06 ***
+Residuals 1909 2426416    1271                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+$queen_street
+Analysis of Variance Table
+
+Response: aqi
+              Df Sum Sq Mean Sq  F value    Pr(>F)    
+lag_1          1  50908   50908 810.1483 < 2.2e-16 ***
+lag_2          1   2079    2079  33.0799 1.118e-08 ***
+lag_3          1    189     189   3.0019  0.083422 .  
+wind_dir      11   3831     348   5.5423 1.051e-08 ***
+ws             1     80      80   1.2802  0.258076    
+wind_dir:ws   11   1749     159   2.5301  0.003702 ** 
+Residuals   1218  76536      63                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+$takapuna
+Analysis of Variance Table
+
+Response: aqi
+            Df  Sum Sq Mean Sq  F value    Pr(>F)    
+lag_1        1  802004  802004 310.9659 < 2.2e-16 ***
+lag_2        1  124517  124517  48.2799 5.054e-12 ***
+lag_3        1   30707   30707  11.9061 0.0005717 ***
+t            1   31137   31137  12.0730 0.0005230 ***
+temp         1    8075    8075   3.1310 0.0769755 .  
+ws           1    6004    6004   2.3281 0.1272215    
+Residuals 1906 4915714    2579                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Variable Code & Variable Description \\
+\midrule
+{\fontfamily{pcr}\selectfont aqi} & AQI (response) \\
+{\fontfamily{pcr}\selectfont t} & Date in number of days since the Unix epoch of Jan 1, 1970 \\
+{\fontfamily{pcr}\selectfont lag\_*} & Lagged responses \\
+{\fontfamily{pcr}\selectfont temp} & Temperature in $^{\circ}$C \\
+{\fontfamily{pcr}\selectfont ws} & Wind speed in ms\textsuperscript{-1} \\
+{\fontfamily{pcr}\selectfont wind\_dir} & Wind direction (factor) \\
+{\fontfamily{pcr}\selectfont rh} & Relative humidity in \% \\
+\bottomrule
+\end{tabular}
+\caption{Notes for variable names to the ANOVA tables above.}
+\end{center}
+\end{table} 
+\newpage
+
+\hypertarget{correlation-structure-of-the-data}{%
+\section{Correlation structure of the data}\label{correlation-structure-of-the-data}}
+
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-1}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-2}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-3}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-4}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-5}
+
+\hypertarget{model-diagnostics-for-residual-correlation}{%
+\section{Model diagnostics for residual correlation}\label{model-diagnostics-for-residual-correlation}}
+
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-1}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-2}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-3}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-4}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-5}
+\newpage
+
+\hypertarget{root-mean-squared-error-of-prediction-of-the-models}{%
+\section{Root mean squared error of prediction of the models}\label{root-mean-squared-error-of-prediction-of-the-models}}
+
+\begin{verbatim}
+$glen_eden
+[1] 8.861554
+
+$henderson
+[1] 20.29296
+
+$patumahoe
+[1] 7.496172
+
+$queen_street
+[1] 8.733452
+
+$takapuna
+[1] 8.397135
+\end{verbatim}
 
 \printbibliography[heading=bibintoc]
 

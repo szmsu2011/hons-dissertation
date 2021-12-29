@@ -85,14 +85,14 @@ data <- map(data, function(x) {
 
 ## Full fit
 full_fit <- map(data, function(x) {
-  lm(aqi ~ ., data = x, na.action = na.fail)
+  lm(aqi ~ . - lag_1 - lag_2 - lag_3, data = x, na.action = na.fail)
 })
 op <- par(mfrow = c(1, 2))
-invisible(map(full_fit, function(x) {
-  plot.ts(residuals(x))
-  acf(residuals(x))
+invisible(map(seq_len(5), function(x) {
+  loc <- str_to_title(gsub("_", " ", names(full_fit)[x]))
+  acf(residuals(full_fit[[x]]), main = paste("ACF", loc, sep = ", "))
+  pacf(residuals(full_fit[[x]]), main = paste("PACF", loc, sep = ", "))
 }))
-par(op)
 
 ## Search for Information-Theoretically best fit
 library(MuMIn)
@@ -118,89 +118,125 @@ map(all_fits, function(x) {
   anova(get.models(x, 1)[[1]])
 })
 
-## Convert 2019-2020 data to cross-sectional
-data <- map(data_raw, function(x) {
-  (if ("wind_dir" %in% names(x)) {
-    mutate(x, wind_dir = cut(wind_dir, seq(0, 360, 30), include.lowest = TRUE))
-  } else {
-    x
-  }) %>%
-    filter(between(year(datetime), 2019, 2020)) %>%
-    mutate(
-      tod = factor(hour(datetime), seq_len(24) - 1),
-      aqi = aqi > 50
-    ) %>%
-    as_tibble() %>%
-    select_if(function(x) !all(is.na(x))) %>%
-    select(-datetime) %>%
-    drop_na()
-})
-data <- data[map_lgl(data, function(x) {
-  all(nrow(x) > 0, "aqi" %in% names(x))
-})]
+## Model diagnostics
+invisible(map(seq_len(5), function(x) {
+  loc <- str_to_title(gsub("_", " ", names(all_fits)[x]))
+  fit <- get.models(all_fits[[x]], 1)[[1]]
+  acf(residuals(fit), main = paste("ACF", loc, sep = ", "))
+  pacf(residuals(fit), main = paste("PACF", loc, sep = ", "))
+}))
+par(op)
 
-## Search for Information-Theoretically best fit
-all_fits <- map(data, function(x) {
-  dredge(glm(aqi ~ ., data = x, family = binomial, na.action = na.fail))
-})
-map(all_fits, function(x) {
-  anova(get.models(x, 1)[[1]], test = "Chisq")
-})
-
-## Cross-validate top models
-library(crossval)
-library(pROC)
-model_auc <- function(train.x, train.y, test.x, test.y, all_fit) {
-  pred <- get.models(all_fit, 1)[[1]][["formula"]] %>%
-    update(train.y ~ .) %>%
-    glm(binomial, cbind(train.x, train.y)) %>%
-    predict(test.x, type = "response")
-  roc(
-    response = test.y, predictor = pred,
-    levels = levels(test.y), direction = "<"
-  )[["auc"]]
+## Predictive diagnostics
+get_rmsep <- function(all_fit, loc_data) {
+  fit <- formula(get.models(all_fit, 1)[[1]])
+  sep <- map_dbl(seq(ymd(20180101), ymd(20200301), "day"), function(start_date) {
+    train_data <- filter(loc_data, between(t, start_date, start_date + 364))
+    train_fit <- lm(fit, train_data)
+    test_data <- filter(loc_data, t == start_date + 365)
+    if (nrow(test_data) == 0) {
+      return(NA)
+    }
+    if ("wind_dir" %in% names(loc_data)) {
+      if (!test_data[["wind_dir"]] %in% train_data[["wind_dir"]]) {
+        return(NA)
+      }
+    }
+    pred <- predict(train_fit, test_data %>% select(-aqi))
+    (test_data[["aqi"]][1] - pred)^2
+  })
+  sqrt(mean(sep, na.rm = TRUE))
 }
-map2(all_fits, data, function(x, data) {
-  set.seed(2021)
-  cv <- crossval(
-    model_auc, select(data, -aqi), factor(data[["aqi"]]),
-    K = 10, B = 1, verbose = FALSE, all_fit = x
-  )
-  c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
+map2(all_fits, data, function(x, y) {
+  get_rmsep(x, y)
 })
 
-## Full cross-sectional fit with interaction
-source(textConnection(readLines("../akl-air-quality/data/prep.R")[seq_len(20)]))
 
-data <- data %>%
-  select(datetime, rh, temp, ws, wind_dir, aqi) %>%
-  filter(between(year(datetime), 2019, 2020)) %>%
-  mutate(
-    location = fct_inorder(location),
-    wind_dir = cut(wind_dir, seq(0, 360, 90), include.lowest = TRUE),
-    tod = factor(hour(datetime), seq_len(24) - 1),
-    aqi = aqi > 50
-  ) %>%
-  as_tibble() %>%
-  select_if(function(x) !all(is.na(x))) %>%
-  select(-datetime) %>%
-  drop_na()
 
-full_fit <- glm(aqi ~ . + ws * wind_dir * location, binomial, data)
-anova(full_fit, test = "Chisq")
-model_auc <- function(train.x, train.y, test.x, test.y, full_fit) {
-  pred <- "train.y ~ . + ws * wind_dir * location" %>%
-    as.formula() %>%
-    glm(binomial, cbind(train.x, train.y)) %>%
-    predict(test.x, type = "response")
-  roc(
-    response = test.y, predictor = pred,
-    levels = levels(test.y), direction = "<"
-  )[["auc"]]
-}
-set.seed(2021)
-cv <- crossval(
-  model_auc, select(data, -aqi), factor(data[["aqi"]]),
-  K = 2, B = 1, verbose = FALSE, full_fit = full_fit
-)
-c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
+## Model forfeited
+# ## Convert 2019-2020 data to cross-sectional
+# data <- map(data_raw, function(x) {
+#   (if ("wind_dir" %in% names(x)) {
+#     mutate(x, wind_dir = cut(wind_dir, seq(0, 360, 30), include.lowest = TRUE))
+#   } else {
+#     x
+#   }) %>%
+#     filter(between(year(datetime), 2019, 2020)) %>%
+#     mutate(
+#       tod = factor(hour(datetime), seq_len(24) - 1),
+#       aqi = aqi > 50
+#     ) %>%
+#     as_tibble() %>%
+#     select_if(function(x) !all(is.na(x))) %>%
+#     select(-datetime) %>%
+#     drop_na()
+# })
+# data <- data[map_lgl(data, function(x) {
+#   all(nrow(x) > 0, "aqi" %in% names(x))
+# })]
+#
+# ## Search for Information-Theoretically best fit
+# all_fits <- map(data, function(x) {
+#   dredge(glm(aqi ~ ., data = x, family = binomial, na.action = na.fail))
+# })
+# map(all_fits, function(x) {
+#   anova(get.models(x, 1)[[1]], test = "Chisq")
+# })
+#
+# ## Cross-validate top models
+# library(crossval)
+# library(pROC)
+# model_auc <- function(train.x, train.y, test.x, test.y, all_fit) {
+#   pred <- get.models(all_fit, 1)[[1]][["formula"]] %>%
+#     update(train.y ~ .) %>%
+#     glm(binomial, cbind(train.x, train.y)) %>%
+#     predict(test.x, type = "response")
+#   roc(
+#     response = test.y, predictor = pred,
+#     levels = levels(test.y), direction = "<"
+#   )[["auc"]]
+# }
+# map2(all_fits, data, function(x, data) {
+#   set.seed(2021)
+#   cv <- crossval(
+#     model_auc, select(data, -aqi), factor(data[["aqi"]]),
+#     K = 10, B = 1, verbose = FALSE, all_fit = x
+#   )
+#   c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])
+# })
+#
+# ## Full cross-sectional fit with interaction
+# source(textConnection(readLines("../akl-air-quality/data/prep.R")[seq_len(20)]))
+#
+# data <- data %>%
+#   select(datetime, rh, temp, ws, wind_dir, aqi) %>%
+#   filter(between(year(datetime), 2019, 2020)) %>%
+#   mutate(
+#     location = fct_inorder(location),
+#     wind_dir = cut(wind_dir, seq(0, 360, 90), include.lowest = TRUE),
+#     tod = factor(hour(datetime), seq_len(24) - 1),
+#     aqi = aqi > 50
+#   ) %>%
+#   as_tibble() %>%
+#   select_if(function(x) !all(is.na(x))) %>%
+#   select(-datetime) %>%
+#   drop_na()
+#
+# full_fit <- glm(aqi ~ . + ws * wind_dir * location, binomial, data)
+# anova(full_fit, test = "Chisq")
+# model_auc <- function(train.x, train.y, test.x, test.y, full_fit) {
+#   pred <- "train.y ~ . + ws * wind_dir * location" %>%
+#     as.formula() %>%
+#     glm(binomial, cbind(train.x, train.y)) %>%
+#     predict(test.x, type = "response")
+#   roc(
+#     response = test.y, predictor = pred,
+#     levels = levels(test.y), direction = "<"
+#   )[["auc"]]
+# }
+# set.seed(2021)
+# cv <- crossval(
+#   model_auc, select(data, -aqi), factor(data[["aqi"]]),
+#   K = 2, B = 1, verbose = FALSE, full_fit = full_fit
+# )
+# c(auc_stat = cv[["stat"]], auc_se = cv[["stat.se"]])

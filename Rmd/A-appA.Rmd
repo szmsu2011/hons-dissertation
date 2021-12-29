@@ -1,7 +1,79 @@
 \appendix
 
-# Additional stuff
+# Outputs from data analysis {#ch:model-output}
 
-You might put some computer output here, or maybe additional tables.
+```{r}
+models <- readRDS("prelim/models.rds")
+```
 
-Note that line 5 must appear before your first appendix. But other appendices can just start like any other chapter.
+## ANOVA table of the final models
+
+```{r comment = ""}
+all_fits <- models[[2]]
+map(all_fits, function(x) {
+  anova(get.models(x, 1)[[1]])
+})
+```
+
+```{r results = "asis"}
+var_table <- data.frame(
+  "Variable Code" = c(
+    "{\\fontfamily{pcr}\\selectfont aqi}",
+    "{\\fontfamily{pcr}\\selectfont t}",
+    "{\\fontfamily{pcr}\\selectfont lag\\_*}",
+    "{\\fontfamily{pcr}\\selectfont temp}",
+    "{\\fontfamily{pcr}\\selectfont ws}",
+    "{\\fontfamily{pcr}\\selectfont wind\\_dir}",
+    "{\\fontfamily{pcr}\\selectfont rh}"
+  ),
+  "Variable Description" = c(
+    "AQI (response)",
+    "Date in number of days since the Unix epoch of Jan 1, 1970",
+    "Lagged responses",
+    "Temperature in $^{\\circ}$C",
+    "Wind speed in ms\\textsuperscript{-1}",
+    "Wind direction (factor)",
+    "Relative humidity in \\%"
+  ),
+  check.names = FALSE
+)
+
+xTab(
+  format(var_table, nsmall = 1, digits = 1),
+  caption.bottom = "Notes for variable names to the ANOVA tables above.",
+  booktabs = TRUE
+)
+```
+\newpage
+
+## Correlation structure of the data
+
+```{r fig.width = 7, out.width = "100%"}
+full_fit <- models[[1]]
+op <- par(mfrow = c(1, 2))
+invisible(map(seq_len(5), function(x) {
+  loc <- str_to_title(gsub("_", " ", names(full_fit)[x]))
+  acf(residuals(full_fit[[x]]), main = paste("ACF", loc, sep = ", "))
+  pacf(residuals(full_fit[[x]]), main = paste("PACF", loc, sep = ", "))
+}))
+```
+
+## Model diagnostics for residual correlation
+
+```{r fig.width = 7, out.width = "100%"}
+op <- par(mfrow = c(1, 2))
+invisible(map(seq_len(5), function(x) {
+  loc <- str_to_title(gsub("_", " ", names(all_fits)[x]))
+  fit <- get.models(all_fits[[x]], 1)[[1]]
+  acf(residuals(fit), main = paste("ACF", loc, sep = ", "))
+  pacf(residuals(fit), main = paste("PACF", loc, sep = ", "))
+}))
+par(op)
+```
+\newpage
+
+## Root mean squared error of prediction of the models
+
+```{r comment = ""}
+models[[3]]
+```
