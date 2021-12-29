@@ -62,7 +62,7 @@ The air quality index is presumably affected by various environmental and meteor
 ```{r met-data, results = "asis"}
 met_data <- data.frame(
   Variable = c(
-    "Relative Humidity", "Temperature", "Wind Speed", "Wind Direction"
+    "Relative humidity", "Temperature", "Wind speed", "Wind direction"
   ),
   Unit = c(
     "\\%",
@@ -87,8 +87,8 @@ The value of the air quality index derived from relevant pollutants is numerical
 ```{r aqi-cat, results = "asis"}
 aqi_cat_pal <- data.frame(
   "AQI Level of Concern" = c(
-    "Good", "Moderate", "Unhealthy for Sensitive Groups",
-    "Unhealthy", "Very Unhealthy", "Hazardous"
+    "Good", "Moderate", "Unhealthy for sensitive groups",
+    "Unhealthy", "Very unhealthy", "Hazardous"
   ),
   "Value of Index" = c(
     "0 to 50", "51 to 100", "101 to 150",
