@@ -2,6 +2,6 @@
 
 \textcopyright { } \authorname\ (\number\the\year). 
 
-I certify that I have made all reasonable efforts to secure copyright permissions for third-party content included in this thesis and have not knowingly added copyright content to my work without the owner's permission.
+I certify that I have made all reasonable efforts to secure copyright permissions for third-party content included in this dissertation and have not knowingly added copyright content to my work without the owner's permission.
 
 \newpage
