@@ -204,7 +204,7 @@
         \textsc{\large{\@cosupervisor}}
     \vfill
         A dissertation submitted in partial fulfilment of the requirements for the degree of\\
-        \@degrees, The University of Auckland, \@submitdate.
+        \@degrees, The University of Auckland, 2021.
     \end{center}
     %\hrulefill
     \newpage\mbox{}\thispagestyle{empty}\newpage}}
