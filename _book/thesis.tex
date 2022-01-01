@@ -338,6 +338,7 @@ Hazardous & 301 and higher & \colorbox[rgb]{.49,0,.14}{\textcolor[rgb]{.49,0,.14
 \bottomrule
 \end{tabular}
 \caption{The United States definition of AQI categories and colours (\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.}
+\label{tab:aqi-cat}
 \end{center}
 \end{table}
 
@@ -381,7 +382,7 @@ The primary data set, which records all parameters except for wind direction, is
 \hypertarget{introduction-1}{%
 \section{Introduction}\label{introduction-1}}
 
-The ambient air quality data possesses spatial and temporal properties, whose variation is affected by the proliferation of pollutants over time. Spatially, it is of interest to compare and contrast the ambient air pollutant levels in different locations in Auckland to explore the geographical effect on AQI, possibly due to transportation or meteorological factors. As such, the visualisations throughout the application is in the context of the user-selected location. On the other hand, the variation of AQI in Auckland has been stable since first monitored, and its expectation is consistently in the \emph{healthy} category. Thence, the primary objective of visualising Auckland air quality data is to locate the anomalies temporally and investigate the causes of the unusually high AQI levels. As such, this application provides a coarse-to-granular approach to exploring Auckland air quality data.
+The ambient air quality data possesses spatial and temporal properties, whose variation is affected by the proliferation of pollutants over time. Spatially, it is of interest to compare and contrast the ambient air pollutant levels in different locations in Auckland to explore the geographical effect on AQI, possibly due to transportation or meteorological factors. As such, the visualisations throughout the application is in the context of the user-selected location. On the other hand, the variation of AQI in Auckland has been stable since first monitored, and its expectation is consistently in the \emph{healthy} category. Thence, the primary objective of visualising Auckland air quality data is to locate the anomalies temporally and investigate the causes of the unusually high AQI levels. As such, this application provides a coarse-to-granular approach for exploring Auckland air quality data. This application also provides a preliminary understanding of the variation of the air quality index in Auckland and its link to meteorological factors.
 
 \hypertarget{overviewing-aqi}{%
 \section{Overviewing AQI}\label{overviewing-aqi}}
@@ -439,11 +440,38 @@ The directional nature of wind direction makes its visualisation challenging wit
 
 The layout of the \emph{Wind} tab is made consistent with the spatial-temporal visualisation scheme as per the \emph{Air Quality} tab, allowing the users to relate the wind directions displayed on the wind roses with the geographic and geological features surrounding the selected locations on the interactive map.
 
-\hypertarget{trend-analysis}{%
-\section{Trend analysis}\label{trend-analysis}}
+\hypertarget{data-analysis}{%
+\section{Data analysis}\label{data-analysis}}
+
+\hypertarget{sec:trend-viz}{%
+\subsection{Visual trend analysis}\label{sec:trend-viz}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/ts-tab} \end{figure}
+\includegraphics[width=1\linewidth]{figures/ts-tab} \caption{The time series plot suggested no evidence of a change in AQI value from 2019 to 2020 in Queen Street, after correcting for autocorrelation with AR(2) model, which is given from the ACF and PACF plots of the observed AQI series. The trend is estimated arithmetically (in absolute value), and can also be switched to geometric.}\label{fig:unnamed-chunk-6}
+\end{figure}
+
+
+
+The Auckland Regional Council analyses the trend of air quality index as an evaluation of the efficiency of their air quality management strategy. Time series visualisation provides a preliminary visual insight of the temporal trend and directions for further analysis. A line plot of the observed AQI with the fitted trend series overlaid with appropriate intervals provides an intuitive visual for the change in air quality over a specified period. Due to the stableness of air quality in Auckland for the past number of decades, the long-term direction of temporal variation of air quality index is visually indistinguishable. Thus, the trend (annual change) and the \emph{p}-value of the trend are labelled as textual annotations.
+
+Nevertheless, the correlation structure in the AQI time series biases the trend estimates. The temporal dependence of the series needs to be captured by the trend model. On the other hand, the model for preliminary visual analysis should avoid being over-complicated. A simple autoregressive model up to an order of three (Appendix \ref{ch:model-output}) is implemented along with the trend model.
+
+Interpretation of the long-term variation in the air quality index is more meaningful in percentage than by absolute value due to its unitless nature. In addition that the AQI values are positive, modelling the trend with the geometric mean instead of arithmetic mean is offered as a user-selectable option.
+
+One also may be in the interest of knowing the variations of AQI explained by the correlation structure of the series itself. To visually depict such a feature, an as-if one-step-ahead prediction interval instead of a confidence interval provides insight into the predictive power of the time series model.
+
+One also may be in the interest of knowing the variations of AQI explained by the correlation structure of the series itself. To visually depict such a feature, an as-if one-step-ahead prediction interval instead of a confidence interval provides insight into the predictive power of the time series model. As of now, the focus is shifted to the variance of time series; heteroscedasticity also needs to be captured by the model. As such, the \emph{GARCH} model can be enabled by the user with an option.
+
+\hypertarget{predictive-analysis}{%
+\subsection{Predictive analysis}\label{predictive-analysis}}
+
+From the preliminary findings in Section \ref{sec:trend-viz}, an autoregressive adjusted trend model possesses poor predictive power to AQI, and as per the link established between the concentration of ambient air pollutants and meteorological factors in \textcite{wind}, a predictive model is fitted in the attempt to verify the correlation between the AQI in Auckland with a set of meteorological variables.
+
+As of the inconsistent data quality and the range of data availability across different locations outlined in Chapter \ref{ch:data}, the analysis is broken down into separate and independent models by each location, and only data from the locations with less than 20\% missing rate are kept and deemed to be adequate for time series models (Appendix \ref{ch:model-output}).
+
+The AQI data from selected locations are wangled prior to analysis. To ensure the temporal continuity of the data for time series modelling, the time gaps in the series are filled with the locational mean as the interpolated values. The hourly observations are aggregated into daily to reduce unwanted noises. In particular, wind data are vectors that cannot be aggregated with numerical averaging. With such a feature in consideration, the hourly wind directions and speeds are aggregated into daily observations by the vector means, with wind speed being the vector modulus and direction being the argument. In addition, the numeric wind direction (in degrees) is converted into a categorical factor (with 12 levels), as gradients of AQI to wind direction is meaningless due to its directional nature.
+
+The best-fit model is selected from an exhaustive search from the sub-models ranked by \emph{AICc}, which fits the response from all the covariates, the interaction effect of all factors and the up to three lagged responses suggested by the autocorrelation plots in Appendix \ref{ch:model-output}. The predictive evaluation of the final best-fit models returns a \emph{root mean squared error of prediction} below 10 for all locations except for Henderson. Considering the normal interval width of the AQI category is 50 as per Table \ref{tab:aqi-cat}, data models with meteorological variables provide moderate predictive power to AQI, along with the ANOVA tables, the weather likely has a significant influence on AQI.
 
 \hypertarget{ch:linking}{%
 \chapter{Shiny linking and reactivity}\label{ch:linking}}

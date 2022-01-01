@@ -108,7 +108,8 @@ aqi_cat_pal <- data.frame(
 xTab(
   format(aqi_cat_pal, nsmall = 1, digits = 1),
   caption.bottom = "The United States definition of AQI categories and colours (\\cite{usaqrs}). Note that AQI is always rounded to the nearest integer.",
-  booktabs = TRUE
+  booktabs = TRUE,
+  label = "tab:aqi-cat"
 )
 ```
 
