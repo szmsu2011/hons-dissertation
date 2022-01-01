@@ -7,7 +7,7 @@ library(patchwork)
 library(feasts)
 ```
 
-# Background and related works {#ch:litreview}
+# Research and related works {#ch:litreview}
 
 Modern information design has been continuously fostering effective tools of organising and displaying information since @tufte proposed the landmarking principles of graphical displays in *The Visual Display of Quantitative Information*. Following the disruptive advancement of information and computing technology, infographics designers are faced with unprecedented methods of data display, including interactive and animated graphics.
 
