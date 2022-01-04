@@ -34,7 +34,9 @@
 \chapter*{Abstract}\label{abstract}}
 \addcontentsline{toc}{chapter}{Abstract}
 
-The abstract should outline the main approach and findings of the thesis and must not be more than 500 words.
+This work is motivated by the need for a visual presentation of the air quality data in Auckland from a temporal perspective. The project focuses on researching for appropriate visualisation and statistical toolboxes then assembling them into an integrated web application, which will serve as a module of the project for visual analysis of Auckland air quality by Auckland Council.
+
+The final deliverable of this project is an interactive dashboard as a web application developed using the \textbf{R shiny} package. The dissertation begins with a brief literature review on works and existing open-source libraries available for implementation (Chapter \ref{ch:lit-review}) and introduces the time series data set on Auckland air quality, along with the data-wrangling works performed prior to the visualisation (Chapter \ref{ch:data}). Chapter \ref{ch:design} and \ref{ch:linking} are original contributions outlining the design philosophy and purposes of each module in the dashboard and the implementation of the modules into the application with reactive programming using \textbf{R} codes as well as the programming techniques used.
 
 \newpage
 
@@ -42,11 +44,11 @@ The abstract should outline the main approach and findings of the thesis and mus
 \chapter*{Acknowledgements}\label{acknowledgements}}
 \addcontentsline{toc}{chapter}{Acknowledgements}
 
-I would like to express my sincere gratitude to my supervisor, Dr.~Earo Wang, for generously giving her time, knowledge and patient advice to guide my research. She is an outstanding supervisor and always supportive in sharing her rich experience in data visualisation and R programming, without which I could have never completed my first academic research and application development smoothly. I also appreciate my co-supervisor, Prof.~Chris Wild, for offering invaluable advice on data visualisation from a different aspect, inspiring creative ideas to improve my visualisation and web application.
+I would like to express my sincere gratitude to my supervisor, Dr.~Earo Wang, for generously giving her time, knowledge and patient advice to guide my research. She is an outstanding supervisor and always supportive in sharing her rich experience in data visualisation and \textbf{R} programming, without which I could have never completed my first academic research and application development smoothly. I also appreciate my co-supervisor, Prof.~Chris Wild, for offering invaluable advice on data visualisation from a different aspect, inspiring creative ideas to improve my visualisation and web application.
 
 I would also like to thank the scholarship office of the \emph{University of Auckland} for offering me the full postgraduate honours scholarship, which greatly relieved my financial hardship, allowing me to focus on my papers and research worry-free from essential costs from living, stationery and textbooks.
 
-I would also like to thank all the developers and contributors of the \textbf{R} packages on the \emph{GitHub} community for responding to my queries, and most importantly, continually developing the packages.
+I would also like to thank all the developers and contributors of the \textbf{R} packages on the \emph{GitHub} community for kindly helping me by responding to my queries, and most importantly, continually developing the packages.
 
 Last but not least, I would like to thank my family for their unconditional love.
 
@@ -69,91 +71,31 @@ This dissertation is an original work of my research and contains no material wh
 \clearpage\pagenumbering{arabic}\setcounter{page}{0}
 
 \hypertarget{ch:intro}{%
-\chapter{Introduction (Template Demo)}\label{ch:intro}}
+\chapter{Introduction}\label{ch:intro}}
 
-This is where you introduce the main ideas of your thesis, and an overview of the context and background.
+The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. The web application from the project aims to deliver a visual dashboard of interactive graphics from a storytelling approach to highlight the key statistical features of Auckland air quality.
 
-In a PhD, Chapter 2 would normally contain a literature review. Typically, Chapters 3--5 would contain your own contributions. Think of each of these as potential papers to be submitted to journals. Finally, Chapter 6 provides some concluding remarks, discussion, ideas for future research, and so on. Appendixes can contain additional material that don't fit into any chapters, but that you want to put on record. For example, additional tables, output, etc.
+\hypertarget{the-data}{%
+\section{The data}\label{the-data}}
 
-\hypertarget{rmarkdown}{%
-\section{Rmarkdown}\label{rmarkdown}}
+The visual explorations of the Auckland air quality data will focus on the air quality index (AQI), a metric derived from a standard set of monitored ambient air pollutants, and the covariation with other variables, such as the weather. However, the raw data set is retrieved from a static database which involves manual inputs and calibrations and is not in a clean and visualisation-ready format. Chapter \ref{ch:data} thus also discusses the data wrangling work attempted to handle the inconsistent entries and erroneous inputs.
 
-In this template, the rest of the chapter shows how to use Rmarkdown. The big advantage of using Rmarkdown is that it allows you to include your R code directly into your thesis, to ensure there are no errors in copying and pasting, and that everything is reproducible. It also helps you stay better organized.
+\hypertarget{design-layout-and-philosophy}{%
+\section{Design layout and philosophy}\label{design-layout-and-philosophy}}
 
-For details on using \emph{R Markdown} see \url{http://rmarkdown.rstudio.com}.
+The dashboard facilitates top-down visualisation of information with an interactive drill-down capability, each tab/module revealing additional details as the user interacts with the graphics. The application is broken down into modular groups of interactive graphics, which consists of spatial and temporal overviews of AQI, supplementary graphics for exploring the relationships between AQI and meteorological variables and time series plots to explore the trend. Chapter \ref{ch:design} outlines the design of the dashboard along with the graphical methods used for achieving the aforementioned objectives of visualisation. The chapter also discusses some analyses performed for verification purposes.
 
-\hypertarget{data}{%
-\section{Data}\label{data}}
+\hypertarget{shiny-linking-and-reactivity}{%
+\section{Shiny linking and reactivity}\label{shiny-linking-and-reactivity}}
 
-Included in this template is a file called \texttt{sales.csv}. This contains quarterly data on Sales and Advertising budget for a small company over the period 1981--2005. It also contains the GDP (gross domestic product) over the same period. All series have been adjusted for inflation. We can load in this data set using the following command:
+Modular separation of functional graphics inside the application requires a special mechanism for reacting to user inputs and facilitating inter-modular communication, which motivates the utilisation of reactive programming. Chapter \ref{ch:linking} describes the structural design of application modules and the implementation of \textbf{shiny} reactive for linking the modules in the context of \textbf{R} programming for application development.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{sales <-}\StringTok{ }\KeywordTok{ts}\NormalTok{(}\KeywordTok{read.csv}\NormalTok{(}\StringTok{"data/sales.csv"}\NormalTok{)[, }\DecValTok{-1}\NormalTok{], }\DataTypeTok{start =} \DecValTok{1981}\NormalTok{, }\DataTypeTok{frequency =} \DecValTok{4}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Any data you use in your thesis can go into the data directory. The data should be in exactly the format you obtained it. Do no editing or manipulation of the data outside of R. Any data munging should be scripted in R and form part of your thesis files (possibly hidden in the output).
-
-\hypertarget{figures}{%
-\section{Figures}\label{figures}}
-
-Figure \ref{fig:deaths} shows time plots of the data we just loaded. Notice how figure captions and references work. Chunk names can be used as figure labels with \texttt{fig:} prefixed. Never manually type figure numbers, as they can change when you add or delete figures. This way, the figure numbering is always correct.
-
-\begin{figure}
-\centering
-\includegraphics{thesis_files/figure-latex/deaths-1.pdf}
-\caption{\label{fig:deaths}Quarterly sales, advertising and GDP data.}
-\end{figure}
-
-\hypertarget{results-from-analyses}{%
-\section{Results from analyses}\label{results-from-analyses}}
-
-We can fit a dynamic regression model to the sales data.
-
-If \(y_t\) denotes the sales in quarter \(t\), \(x_t\) denotes the corresponding advertising budget and \(z_t\) denotes the GDP, then the resulting model is:
-\begin{equation}
-  y_t - y_{t-4} = \beta (x_t-x_{t-4}) + \gamma (z_t-z_{t-4}) + \theta_1 \varepsilon_{t-1} + \Theta_1 \varepsilon_{t-4} + \varepsilon_t
-\end{equation}
-where
-\(\beta = 2.28\),
-\(\gamma = 0.97\),
-\(\theta_1 = NA\),
-and
-\(\Theta_1 = -0.90\).
-
-\hypertarget{tables}{%
-\section{Tables}\label{tables}}
-
-Let's assume future advertising spend and GDP are at the current levels. Then forecasts for the next year are given in Table \ref{tab:salesforecasts}.
-
-\begin{table}[ht]
-\begin{center}
-\begin{tabular}{lllll}
-\toprule
-Point Forecast & Lo 80 & Hi 80 & Lo 95 & Hi 95 \\
-\midrule
-1000.2 &  947.7 & 1052.7 & 919.9 & 1080.5 \\
-1013.1 &  959.3 & 1066.8 & 930.9 & 1095.3 \\
-1076.7 & 1022.9 & 1130.6 & 994.4 & 1159.0 \\
-1003.5 &  949.7 & 1057.4 & 921.2 & 1085.8 \\
-\bottomrule
-\end{tabular}
-\caption{Forecasts for the next year assuming Advertising budget and GDP are unchanged.}
-\label{tab:salesforecasts}
-\end{center}
-\end{table}
-
-Again, notice the use of labels and references to automatically generate Table numbers. In this case, we need to generate the label ourselves.
-
-The \texttt{knitLatex} package is useful for generating tables from R output. Other packages can do similar things including the \texttt{kable} function in \texttt{knitr} which is somewhat simpler but you have less control over the result. If you use \texttt{knitLatex} to generate tables, don't forget to include \texttt{results="asis"} in the chunk settings.
-
-\hypertarget{ch:litreview}{%
-\chapter{Research and related works}\label{ch:litreview}}
+\hypertarget{ch:lit-review}{%
+\chapter{Research and related works}\label{ch:lit-review}}
 
 Modern information design has been continuously fostering effective tools of organising and displaying information since \textcite{tufte} proposed the landmarking principles of graphical displays in \emph{The Visual Display of Quantitative Information}. Following the disruptive advancement of information and computing technology, infographics designers are faced with unprecedented methods of data display, including interactive and animated graphics.
 
-As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this section will briefly outline the available toolboxes for time series data wrangling and visualisation using \textbf{R} \autocite{R2021}.
+As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this chapter will briefly outline the available toolboxes for time series data wrangling and visualisation using \textbf{R} \autocite{R2021}.
 
 \hypertarget{tidy-time-series-data-wrangling-toolbox}{%
 \section{Tidy time series data-wrangling toolbox}\label{tidy-time-series-data-wrangling-toolbox}}
@@ -213,7 +155,7 @@ The \textbf{shiny} package \autocite{shiny} provides a framework for developing 
 
 Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind \textbf{shiny} \autocite{mshiny}, significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. Reactivity is cached such that the reactive values keep the previously evaluated result for each call, as callbacks to them upon event observations update the reactive once and globally, thus consistent for being shared across different functionalities. The cached feature of reactivity allows users in defining abstract workflows without conceiving low-level data and programming logic by restricting the evaluation to merely reactions to events, including user actions and internal value change. Reactivity is also lazy, for no expressions are evaluated until being called, which avoids repeated evaluations of expressions leading to wastage in computational resources.
 
-The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
+The user interface of \textbf{shiny} applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of \textbf{R} objects or as sophisticated as HTML interactive graphics.
 
 \hypertarget{sec:int-graphics}{%
 \subsection{Interactive graphics}\label{sec:int-graphics}}
@@ -394,7 +336,7 @@ The ambient air quality data possesses spatial and temporal properties, whose va
 \section{Overviewing AQI}\label{overviewing-aqi}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/aqi-tab} \caption{The Air Quality tab provides an overview of the air quality status in Queen Street for 2019. The left calendar heatmap shows two days of extremely high AQI level in the fourth week of October 2019 (which was caused by the fire in New Zealand International Convention Centre). In addition, the right calendar heatmap shows the daily primary constituent of ambient air pollutants from the calculation of AQI.}\label{fig:unnamed-chunk-2}
+\includegraphics[width=1\linewidth]{figures/aqi-tab} \caption{The Air Quality tab provides an overview of the air quality status in Queen Street for 2019. The left calendar heatmap shows two days of extremely high AQI level in the fourth week of October 2019 (which was caused by the fire in New Zealand International Convention Centre). In addition, the right calendar heatmap shows the daily primary constituent of ambient air pollutants from the calculation of AQI.}\label{fig:unnamed-chunk-1}
 \end{figure}
 
 
@@ -412,32 +354,32 @@ Calendar heatmaps offer a daily-aggregated visualisation of AQI data for both an
 The layout orientation of the calendar heatmaps is set as vertical to conform to the browsing habit of most users. Most users of digital devices nowadays are heavily influenced by the increasing usage time of smartphones, such that they are getting used to viewing information displayed from top-to-bottom, from the act of scrolling down for more information. Coincidentally, the orientation of the distribution of the monitor stations of ambient air pollutants in Auckland is north-southern. As such, both the maps and calendar heatmaps are laid out in a vertical, top-down orientation.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/cal-drill-down} \caption{The drill-down hourly time series plot for Queen Street AQI on October 23, 2019, along with the AQI thresholds and hourly quantiles. AQI levels on the day were consistently higher than normal and are in the Very Unhealthy category. Note that the fire in New Zealand International Convention Centre actually broke out on October 22, 2019. The delay in rising AQI was caused by some of the constituent pollutants of AQI being reported at a 24-hour moving average \autocite{aqitarget}.}\label{fig:unnamed-chunk-3}
+\includegraphics[width=1\linewidth]{figures/cal-drill-down} \caption{The drill-down hourly time series plot for Queen Street AQI on October 23, 2019, along with the AQI thresholds and hourly quantiles. AQI levels on the day were consistently higher than normal and are in the Very Unhealthy category. Note that the fire in New Zealand International Convention Centre actually broke out on October 22, 2019. The delay in rising AQI was caused by some of the constituent pollutants of AQI being reported at a 24-hour moving average \autocite{aqitarget}.}\label{fig:unnamed-chunk-2}
 \end{figure}
 
 
 
 Users may wish to explore the variation of the AQI level of the anomalous days in more granular details to investigate if the extreme AQI values are consistent for hours or arise from instrumental errors. The drill-down methodology allows users to click on the day-representing calendar blocks to request more information, from which a popup time series plot serves as a supplementary visualisation of the hourly AQI variation on the day of interest, as well as the plot for the daily primary AQI constituent.
 
-\hypertarget{data-enrichment-1}{%
-\section{Data enrichment}\label{data-enrichment-1}}
+\hypertarget{supplementary-graphics}{%
+\section{Supplementary graphics}\label{supplementary-graphics}}
 
-\hypertarget{meteorological-analysis-of-air-quality}{%
-\subsection{Meteorological analysis of air quality}\label{meteorological-analysis-of-air-quality}}
+\hypertarget{sec:met-table}{%
+\subsection{Meteorological analysis of air quality}\label{sec:met-table}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/met-tab} \caption{The interactive HTML table produced with \textbf{reactable} \autocite{reactable} for the air quality and meteorological data from Queen Street in October 2019. The spiked AQI from the fire in New Zealand International Convention Centre is clearly visible.}\label{fig:unnamed-chunk-4}
+\includegraphics[width=1\linewidth]{figures/met-tab} \caption{The interactive HTML table produced with \textbf{reactable} \autocite{reactable} for the air quality and meteorological data from Queen Street in October 2019. The spiked AQI from the fire in New Zealand International Convention Centre is clearly visible.}\label{fig:unnamed-chunk-3}
 \end{figure}
 
 
 
 One may be in the interest of concurrently visualising air quality and meteorological data to explore if they correlate in the form of multiple time series. For consistency, the visualisation is structured via a calendar layout (similar to the \emph{Air Quality} tab). The resulting form from the combination of multiple time series plots and the calendar layouts is an interactive HTML table with sparkline bars \autocite{sparkline}, such that the hourly bars from each week of a selected month are in grouped rows with the day of the week grouped in columns, enabling visualisation by day, week and month.
 
-\hypertarget{exploring-the-effect-of-air-current-on-aqi}{%
-\subsection{Exploring the effect of air current on AQI}\label{exploring-the-effect-of-air-current-on-aqi}}
+\hypertarget{sec:wind-plot}{%
+\subsection{Exploring the effect of air current on AQI}\label{sec:wind-plot}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/wind-tab} \caption{The monthly wind (pollution) roses depict the proportion of time wind comes from a particular direction grouped by AQI category, suggesting that most of the time in 2019 the wind direction in Queen Street is northbound. Moreover, it is shown that the wind directions are approximately perpendicular to the closest coastline.}\label{fig:unnamed-chunk-5}
+\includegraphics[width=1\linewidth]{figures/wind-tab} \caption{The monthly wind (pollution) roses depict the proportion of time wind comes from a particular direction grouped by AQI category, suggesting that most of the time in 2019 the wind direction in Queen Street is northbound. Moreover, it is shown that the wind directions are approximately perpendicular to the closest coastline.}\label{fig:unnamed-chunk-4}
 \end{figure}
 
 
@@ -453,7 +395,7 @@ The layout of the \emph{Wind} tab is made consistent with the spatial-temporal v
 \subsection{Visual trend analysis}\label{sec:trend-viz}}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/ts-tab} \caption{The time series plot suggested no evidence of a change in AQI value from 2019 to 2020 in Queen Street, after correcting for autocorrelation with AR(2) model, which is given from the ACF and PACF plots of the observed AQI series. The trend is estimated arithmetically (in absolute value), and can also be switched to geometric.}\label{fig:unnamed-chunk-6}
+\includegraphics[width=1\linewidth]{figures/ts-tab} \caption{The time series plot suggested no evidence of a change in AQI value from 2019 to 2020 in Queen Street, after correcting for autocorrelation with AR(2) model, which is given from the ACF and PACF plots of the observed AQI series. The trend is estimated arithmetically (in absolute value), and can also be switched to geometric.}\label{fig:unnamed-chunk-5}
 \end{figure}
 
 
@@ -485,15 +427,15 @@ The best-fit model is selected from an exhaustive search from the sub-models ran
 \hypertarget{introduction-2}{%
 \section{Introduction}\label{introduction-2}}
 
-The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The section outlines the utilisation of reactivity for the linking in the modularised application.
+The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The chapter outlines the utilisation of reactivity for the linking in the modularised application.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/app-structure} \caption{The structure of the modularised shiny application.}\label{fig:unnamed-chunk-7}
+\includegraphics[width=1\linewidth]{figures/app-structure} \caption{The structure of the modularised shiny application.}\label{fig:unnamed-chunk-6}
 \end{figure}
 
 
 
-This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
+This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
 
 \hypertarget{modularisation-of-shiny-application}{%
 \section{Modularisation of shiny application}\label{modularisation-of-shiny-application}}
@@ -552,7 +494,7 @@ Once defined, the modules are called in the application UI and server.
 \hypertarget{sec:shiny-event}{%
 \subsection{Event observation and handling}\label{sec:shiny-event}}
 
-The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the \textbf{shiny} \texttt{observeEvent()} function.
+The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the shiny \texttt{observeEvent()} function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -573,7 +515,7 @@ Contextually, the interactive-map module monitors user clicks on the map items d
 \hypertarget{module-communication}{%
 \subsection{Module communication}\label{module-communication}}
 
-The communication between the namespace-isolated modules is facilitated with a \textbf{shiny} reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the \emph{one version of truth} at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a \texttt{list} object (Section \ref{sec:shiny-event}).
+The communication between the namespace-isolated modules is facilitated with a shiny reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the \emph{one version of truth} at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a \texttt{list} object (Section \ref{sec:shiny-event}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -655,7 +597,7 @@ To prevent the graphics from rendering before the required data is loaded, an av
 \hypertarget{graphics-caching}{%
 \subsection{Graphics caching}\label{graphics-caching}}
 
-Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the \textbf{shiny} \texttt{bindCache()} function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
+Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the shiny \texttt{bindCache()} function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -674,28 +616,32 @@ Interactive graphics, notwithstanding already optimised for web applications, ma
 \hypertarget{client-side-interactive-linking}{%
 \subsection{Client-side interactive linking}\label{client-side-interactive-linking}}
 
-In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with \textbf{echarts4r} \autocite{echarts4r}. Client-side interactive linking calls the query with internal function \texttt{e\_connect()}, which links a set of \texttt{echarts4r} objects mutually rendered in the same \textbf{shiny} application. The linking is established with the mutual keys (i.e., \texttt{x} argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
+In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with \textbf{echarts4r} \autocite{echarts4r}. Client-side interactive linking calls the query with internal function \texttt{e\_connect()}, which links a set of \texttt{echarts4r} objects mutually rendered in the same shiny application. The linking is established with the mutual keys (i.e., \texttt{x} argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
 
 \hypertarget{ch:conclusion}{%
 \chapter{Conclusion and future works}\label{ch:conclusion}}
 
-\hypertarget{future-work}{%
-\section{Future work}\label{future-work}}
+The source files for reproducing this dissertation, data sets and history of all drafts, are available at the \emph{GitHub} repository \href{https://github.com/szmsu2011/hons-dissertation}{szmsu2011/hons-dissertation}. The final deliverable of this Honours project, an \textbf{R shiny} web application, is hosted on \href{https://www.shinyapps.io}{shinyapps.io} which can be accessed with the URL \url{https://szmsu2011.shinyapps.io/akl-air-quality}, whose source codes can be found at the \emph{GitHub} repository \href{https://github.com/szmsu2011/akl-air-quality}{szmsu2011/akl-air-quality}.
+
+This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
+
+\hypertarget{future-works}{%
+\section{Future works}\label{future-works}}
 
 \hypertarget{statistical-modelling}{%
 \subsection{Statistical modelling}\label{statistical-modelling}}
 
+The time series model implemented for trend analysis (Section \ref{sec:trend-viz}) is limited due to the time constraints of the project. Additional time series models, including the general autoregressive integrated moving average (ARIMA), exponential smoothing and general loess, will be considered in the future implementation plans for the time series visualisation.
+
 \hypertarget{aspect-ratio-adaptation}{%
 \subsection{Aspect ratio adaptation}\label{aspect-ratio-adaptation}}
 
-\hypertarget{connection-to-dynamic-database}{%
-\subsection{Connection to dynamic database}\label{connection-to-dynamic-database}}
+The web application adapts poorly above full zoom on a desktop browser and all browsers on mobile devices, with the HTML table (Section \ref{sec:met-table}) becomes truncated upon zoom ratio above 100\%, and the dashboard layout messed up upon display on mobile devices. Future development of this application will aim to improve its layout versatility.
 
 \hypertarget{graphics-performance}{%
 \subsection{Graphics performance}\label{graphics-performance}}
 
-\hypertarget{final-words}{%
-\section{Final words}\label{final-words}}
+The rendering speed of interactive graphics is another major constraint for development. The wind roses (Section \ref{sec:wind-plot}) and HTML table (Section \ref{sec:met-table}) are the two most resource-consuming graphics, each taking approximately 1-2 seconds to render unless already being cached. The performance constraint decreases the displayable time span. Future developments will therefore involve researching for more performant \textbf{R} packages.
 
 \appendix
 
@@ -807,20 +753,20 @@ Variable Code & Variable Description \\
 \hypertarget{correlation-structure-of-the-data}{%
 \section{Correlation structure of the data}\label{correlation-structure-of-the-data}}
 
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-10-1}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-10-2}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-10-3}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-10-4}
+\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-10-5}
+
+\hypertarget{model-diagnostics-for-residual-correlation}{%
+\section{Model diagnostics for residual correlation}\label{model-diagnostics-for-residual-correlation}}
+
 \includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-1}
 \includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-2}
 \includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-3}
 \includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-4}
 \includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-11-5}
-
-\hypertarget{model-diagnostics-for-residual-correlation}{%
-\section{Model diagnostics for residual correlation}\label{model-diagnostics-for-residual-correlation}}
-
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-1}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-2}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-3}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-4}
-\includegraphics[width=1\linewidth]{thesis_files/figure-latex/unnamed-chunk-12-5}
 \newpage
 
 \hypertarget{root-mean-squared-error-of-prediction-of-the-models}{%

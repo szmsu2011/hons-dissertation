@@ -37,7 +37,7 @@ Users may wish to explore the variation of the AQI level of the anomalous days i
 
 ## Supplementary graphics
 
-### Meteorological analysis of air quality
+### Meteorological analysis of air quality {#sec:met-table}
 
 ```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:met-tab)"}
 include_graphics("figures/met-tab.png")
@@ -47,7 +47,7 @@ include_graphics("figures/met-tab.png")
 
 One may be in the interest of concurrently visualising air quality and meteorological data to explore if they correlate in the form of multiple time series. For consistency, the visualisation is structured via a calendar layout (similar to the *Air Quality* tab). The resulting form from the combination of multiple time series plots and the calendar layouts is an interactive HTML table with sparkline bars [@sparkline], such that the hourly bars from each week of a selected month are in grouped rows with the day of the week grouped in columns, enabling visualisation by day, week and month.
 
-### Exploring the effect of air current on AQI
+### Exploring the effect of air current on AQI {#sec:wind-plot}
 
 ```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:wind-tab)"}
 include_graphics("figures/wind-tab.png")

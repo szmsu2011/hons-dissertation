@@ -1,5 +1,7 @@
 # Abstract {-}
 
-The abstract should outline the main approach and findings of the thesis and must not be more than 500 words.
+This work is motivated by the need for a visual presentation of the air quality data in Auckland from a temporal perspective. The project focuses on researching for appropriate visualisation and statistical toolboxes then assembling them into an integrated web application, which will serve as a module of the project for visual analysis of Auckland air quality by Auckland Council.
+
+The final deliverable of this project is an interactive dashboard as a web application developed using the **R shiny** package. The dissertation begins with a brief literature review on works and existing open-source libraries available for implementation (Chapter \@ref(ch:lit-review)) and introduces the time series data set on Auckland air quality, along with the data-wrangling works performed prior to the visualisation (Chapter \@ref(ch:data)). Chapter \@ref(ch:design) and \@ref(ch:linking) are original contributions outlining the design philosophy and purposes of each module in the dashboard and the implementation of the modules into the application with reactive programming using **R** codes as well as the programming techniques used.
 
 \newpage

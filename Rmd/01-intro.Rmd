@@ -1,78 +1,15 @@
-```{r setup-intro, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, cache = TRUE)
-# Load any R packages you need here
-library(forecast)
-library(ggplot2)
-```
+# Introduction {#ch:intro}
 
-# Introduction (Template Demo) {#ch:intro}
+The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. The web application from the project aims to deliver a visual dashboard of interactive graphics from a storytelling approach to highlight the key statistical features of Auckland air quality.
 
-This is where you introduce the main ideas of your thesis, and an overview of the context and background.
+## The data
 
-In a PhD, Chapter 2 would normally contain a literature review. Typically, Chapters 3--5 would contain your own contributions. Think of each of these as potential papers to be submitted to journals. Finally, Chapter 6 provides some concluding remarks, discussion, ideas for future research, and so on. Appendixes can contain additional material that don't fit into any chapters, but that you want to put on record. For example, additional tables, output, etc.
+The visual explorations of the Auckland air quality data will focus on the air quality index (AQI), a metric derived from a standard set of monitored ambient air pollutants, and the covariation with other variables, such as the weather. However, the raw data set is retrieved from a static database which involves manual inputs and calibrations and is not in a clean and visualisation-ready format. Chapter \@ref(ch:data) thus also discusses the data wrangling work attempted to handle the inconsistent entries and erroneous inputs.
 
-## Rmarkdown
+## Design layout and philosophy
 
-In this template, the rest of the chapter shows how to use Rmarkdown. The big advantage of using Rmarkdown is that it allows you to include your R code directly into your thesis, to ensure there are no errors in copying and pasting, and that everything is reproducible. It also helps you stay better organized.
+The dashboard facilitates top-down visualisation of information with an interactive drill-down capability, each tab/module revealing additional details as the user interacts with the graphics. The application is broken down into modular groups of interactive graphics, which consists of spatial and temporal overviews of AQI, supplementary graphics for exploring the relationships between AQI and meteorological variables and time series plots to explore the trend. Chapter \@ref(ch:design) outlines the design of the dashboard along with the graphical methods used for achieving the aforementioned objectives of visualisation. The chapter also discusses some analyses performed for verification purposes.
 
-For details on using _R Markdown_ see <http://rmarkdown.rstudio.com>.  
+## Shiny linking and reactivity
 
-## Data
-
-Included in this template is a file called `sales.csv`.  This contains quarterly data on Sales and Advertising budget for a small company over the period 1981--2005. It also contains the GDP (gross domestic product) over the same period. All series have been adjusted for inflation.  We can load in this data set using the following command:
-
-```{r loaddata, echo=TRUE}
-sales <- ts(read.csv("data/sales.csv")[, -1], start = 1981, frequency = 4)
-```
-
-Any data you use in your thesis can go into the data directory. The data should be in exactly the format you obtained it. Do no editing or manipulation of the data outside of R. Any data munging should be scripted in R and form part of your thesis files (possibly hidden in the output).
-
-## Figures
-
-Figure \ref{fig:deaths} shows time plots of the data we just loaded. Notice how figure captions and references work. Chunk names can be used as figure labels with `fig:` prefixed. Never manually type figure numbers, as they can change when you add or delete figures. This way, the figure numbering is always correct.
-
-```{r deaths, message=FALSE, fig.cap="Quarterly sales, advertising and GDP data."}
-autoplot(sales, facets = TRUE, ylab = "", xlab = "Year")
-```
-
-## Results from analyses
-
-We can fit a dynamic regression model to the sales data.
-
-```{r, echo=FALSE}
-fit <- auto.arima(sales[, "Sales"], xreg = sales[, 2:3], D = 1)
-if (!identical(fit$arma, c(1L, 0L, 0L, 1L, 4L, 0L, 1L))) {
-  stop("Model not ARIMA(1,0,0)(0,1,1)[4]")
-}
-# This is an example of how to put checks into your R code to warn you if something has gone wrong.
-```
-
-If $y_t$ denotes the sales in quarter $t$, $x_t$ denotes the corresponding advertising budget and $z_t$ denotes the GDP, then the resulting model is:
-\begin{equation}
-  y_t - y_{t-4} = \beta (x_t-x_{t-4}) + \gamma (z_t-z_{t-4}) + \theta_1 \varepsilon_{t-1} + \Theta_1 \varepsilon_{t-4} + \varepsilon_t
-\end{equation}
-where
-$\beta = `r format(fit[['coef']]['AdBudget'], digits=2, nsmall=2)`$, 
-$\gamma = `r format(fit[['coef']]['GDP'], digits=2, nsmall=2)`$, 
-$\theta_1 = `r format(fit[['coef']]['ma1'], digits=2, nsmall=2)`$, 
-and
-$\Theta_1 = `r format(fit[['coef']]['sma1'], digits=2, nsmall=2)`$.
-
-## Tables
-
-Let's assume future advertising spend and GDP are at the current levels. Then forecasts for the next year are given in Table \ref{tab:salesforecasts}.
-
-```{r forecasts, results="asis"}
-currentad <- rep(tail(sales[, "AdBudget"], 1), 4)
-currentgdp <- rep(tail(sales[, "GDP"], 1), 4)
-fc <- forecast(fit, xreg = cbind(AdBudget = currentad, GDP = currentgdp))
-knitLatex::xTab(format(as.data.frame(fc), nsmall = 1, digits = 1),
-  caption.bottom = "Forecasts for the next year assuming Advertising budget and GDP are unchanged.",
-  booktabs = TRUE,
-  label = "tab:salesforecasts"
-)
-```
-
-Again, notice the use of labels and references to automatically generate Table numbers. In this case, we need to generate the label ourselves. 
-
-The `knitLatex` package is useful for generating tables from R output. Other packages can do similar things including the `kable` function in `knitr` which is somewhat simpler but you have less control over the result. If you use `knitLatex` to generate tables, don't forget to include `results="asis"` in the chunk settings.
+Modular separation of functional graphics inside the application requires a special mechanism for reacting to user inputs and facilitating inter-modular communication, which motivates the utilisation of reactive programming. Chapter \@ref(ch:linking) describes the structural design of application modules and the implementation of **shiny** reactive for linking the modules in the context of **R** programming for application development.

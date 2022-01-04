@@ -1,13 +1,19 @@
 # Conclusion and future works {#ch:conclusion}
 
-## Future work
+The source files for reproducing this dissertation, data sets and history of all drafts, are available at the *GitHub* repository [szmsu2011/hons-dissertation](https://github.com/szmsu2011/hons-dissertation). The final deliverable of this Honours project, an **R shiny** web application, is hosted on [shinyapps.io](https://www.shinyapps.io) which can be accessed with the URL [https://szmsu2011.shinyapps.io/akl-air-quality](https://szmsu2011.shinyapps.io/akl-air-quality), whose source codes can be found at the *GitHub* repository [szmsu2011/akl-air-quality](https://github.com/szmsu2011/akl-air-quality).
+
+This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
+
+## Future works
 
 ### Statistical modelling
 
+The time series model implemented for trend analysis (Section \@ref(sec:trend-viz)) is limited due to the time constraints of the project. Additional time series models, including the general autoregressive integrated moving average (ARIMA), exponential smoothing and general loess, will be considered in the future implementation plans for the time series visualisation.
+
 ### Aspect ratio adaptation
 
-### Connection to dynamic database
+The web application adapts poorly above full zoom on a desktop browser and all browsers on mobile devices, with the HTML table (Section \@ref(sec:met-table)) becomes truncated upon zoom ratio above 100%, and the dashboard layout messed up upon display on mobile devices. Future development of this application will aim to improve its layout versatility.
 
 ### Graphics performance
 
-## Final words
+The rendering speed of interactive graphics is another major constraint for development. The wind roses (Section \@ref(sec:wind-plot)) and HTML table (Section \@ref(sec:met-table)) are the two most resource-consuming graphics, each taking approximately 1-2 seconds to render unless already being cached. The performance constraint decreases the displayable time span. Future developments will therefore involve researching for more performant **R** packages.
