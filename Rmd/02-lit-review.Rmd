@@ -7,11 +7,11 @@ library(patchwork)
 library(feasts)
 ```
 
-# Research and related works {#ch:litreview}
+# Research and related works {#ch:lit-review}
 
 Modern information design has been continuously fostering effective tools of organising and displaying information since @tufte proposed the landmarking principles of graphical displays in *The Visual Display of Quantitative Information*. Following the disruptive advancement of information and computing technology, infographics designers are faced with unprecedented methods of data display, including interactive and animated graphics.
 
-As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this section will briefly outline the available toolboxes for time series data wrangling and visualisation using **R** [@R2021].
+As such, the prerequisites of a successful design of a storytelling dashboard for visualising the air quality data are the appropriate implementations of suitable data and graphical toolboxes. As the main features of interest in air quality data are temporal, this chapter will briefly outline the available toolboxes for time series data wrangling and visualisation using **R** [@R2021].
 
 ## Tidy time series data-wrangling toolbox
 
@@ -84,7 +84,7 @@ The **shiny** package [@shiny] provides a framework for developing web applicati
 
 Reactive programming focuses only on the evaluation of the changes of values over time, which is the core computation logic behind **shiny** [@mshiny], significantly simplifying the workflow design. Each change in reactive values is observed as an event by pre-defined callback functions, and workflows are executed as responses to events observed. Reactivity is cached such that the reactive values keep the previously evaluated result for each call, as callbacks to them upon event observations update the reactive once and globally, thus consistent for being shared across different functionalities. The cached feature of reactivity allows users in defining abstract workflows without conceiving low-level data and programming logic by restricting the evaluation to merely reactions to events, including user actions and internal value change. Reactivity is also lazy, for no expressions are evaluated until being called, which avoids repeated evaluations of expressions leading to wastage in computational resources.
 
-The user interface of **shiny** applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of R objects or as sophisticated as HTML interactive graphics.
+The user interface of **shiny** applications provides the front-end inputs and output display from the back end server logic. The collection of user input is the primary source of change of reactive values, events that trigger the evaluation of expressions in the back end server logic. The results of the evaluated expressions are rendered as the outputs, which may be as simple as prints of **R** objects or as sophisticated as HTML interactive graphics.
 
 ### Interactive graphics {#sec:int-graphics}
 

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The section outlines the utilisation of reactivity for the linking in the modularised application.
+The application consists of several functional components for a set of independent visualisation tasks, motivating a modularised approach in structuring the application. To facilitate the linking between the graphical user interfaces and each of the visualisation components, reactive caching is responsible for the communication between the modules and the recording and updating of user inputs and graphical outputs. The chapter outlines the utilisation of reactivity for the linking in the modularised application.
 
 ```{r fig.width = 7, out.width = "100%", fig.cap = "(ref:app-structure)"}
 include_graphics("figures/app-structure.pdf")
@@ -10,7 +10,7 @@ include_graphics("figures/app-structure.pdf")
 
 (ref:app-structure) The structure of the modularised shiny application.
 
-This section, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
+This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
 
 ## Modularisation of shiny application
 
@@ -62,7 +62,7 @@ app_ui <- dashboardPage(
 
 ### Event observation and handling {#sec:shiny-event}
 
-The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the **shiny** `observeEvent()` function.
+The observation of events initiates evaluations in reactive programming, enabling the implementation of user-input monitoring in shiny applications, achieved via the shiny `observeEvent()` function.
 
 ```r
 map_aqi_mod <- function(id, state) {
@@ -80,7 +80,7 @@ Contextually, the interactive-map module monitors user clicks on the map items d
 
 ### Module communication
 
-The communication between the namespace-isolated modules is facilitated with a **shiny** reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the *one version of truth* at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a `list` object (Section \@ref(sec:shiny-event)).
+The communication between the namespace-isolated modules is facilitated with a shiny reactive object which collectively stores the current states of the application. The reactive object is shared and updated simultaneously by all modules and holds the *one version of truth* at any given point in time. The reactive object is also subsettable such that the update of values is achievable with the assignment operator in the same way that objects are updated in a `list` object (Section \@ref(sec:shiny-event)).
 
 ```r
 aqi_heatmap_mod <- function(id, state = app_state) {
@@ -152,7 +152,7 @@ aqi_heatmap_mod <- function(id, state = app_state) {
 
 ### Graphics caching
 
-Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the **shiny** `bindCache()` function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
+Interactive graphics, notwithstanding already optimised for web applications, may take a considerable amount of time to load. As such, the caching of rendered graphics in the current session improves the performance of reloading the same graphics by calls to the shiny `bindCache()` function, with the keys being the arguments. The keys are variables from which a collectively unique graphic is rendered.
 
 ```r
 aqi_heatmap_mod <- function(id, state = app_state) {
@@ -168,4 +168,4 @@ aqi_heatmap_mod <- function(id, state = app_state) {
 
 ### Client-side interactive linking
 
-In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with **echarts4r** [@echarts4r]. Client-side interactive linking calls the query with internal function `e_connect()`, which links a set of `echarts4r` objects mutually rendered in the same **shiny** application. The linking is established with the mutual keys (i.e., `x` argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.
+In some scenarios, graphical database queries can be used to bypass the server to facilitate client-side interactive linking with **echarts4r** [@echarts4r]. Client-side interactive linking calls the query with internal function `e_connect()`, which links a set of `echarts4r` objects mutually rendered in the same shiny application. The linking is established with the mutual keys (i.e., `x` argument) of the objects upon initialising the interactive plots. In particular, client-side linking simplifies the implementation of mutual tooltips and selection control of the interactive calendar heatmaps and wind roses.

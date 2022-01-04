@@ -35,7 +35,7 @@ include_graphics("figures/cal-drill-down.png")
 
 Users may wish to explore the variation of the AQI level of the anomalous days in more granular details to investigate if the extreme AQI values are consistent for hours or arise from instrumental errors. The drill-down methodology allows users to click on the day-representing calendar blocks to request more information, from which a popup time series plot serves as a supplementary visualisation of the hourly AQI variation on the day of interest, as well as the plot for the daily primary AQI constituent.
 
-## Data enrichment
+## Supplementary graphics
 
 ### Meteorological analysis of air quality
 
