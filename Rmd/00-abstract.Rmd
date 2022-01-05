@@ -1,7 +1,9 @@
 # Abstract {-}
 
-This work is motivated by the need for a visual presentation of the air quality data in Auckland from a temporal perspective. The project focuses on researching for appropriate visualisation and statistical toolboxes then assembling them into an integrated web application, which will serve as a module of the project for visual analysis of Auckland air quality by Auckland Council.
+This work is motivated by the need for exploring and mining information from the air quality data in Auckland, (TODO: in order to better understand XXX). The project focuses on researching for appropriate visualisation and statistical toolboxes then assembling them into an integrated web application, which may serve as a module of the project for visual analysis of Auckland air quality by Auckland Council.
 
-The final deliverable of this project is an interactive dashboard as a web application developed using the **R shiny** package. The dissertation begins with a brief literature review on works and existing open-source libraries available for implementation (Chapter \@ref(ch:lit-review)) and introduces the time series data set on Auckland air quality, along with the data-wrangling works performed prior to the visualisation (Chapter \@ref(ch:data)). Chapter \@ref(ch:design) and \@ref(ch:linking) are original contributions outlining the design philosophy and purposes of each module in the dashboard and the implementation of the modules into the application with reactive programming using **R** codes as well as the programming techniques used.
+The final deliverable of this project is an **R shiny** interactive dashboard, (TODO: available at XXX). (TODO: what have you done and what have you learnt from this data?)
+
+This dissertation begins with a brief literature review on related works and existing open-source libraries (Chapter \@ref(ch:lit-review)). Chapter \@ref(ch:data) introduces the Auckland air quality data and documents the data-wrangling process performed prior to the visualisation. Chapter \@ref(ch:design) explains the design philosophy of the dashboard and the choice of visual representations for the data. Chapter \@ref(ch:liking) breaks the dashboard into modules for extensibility and easy maintenance, and discusses the implementation of each module and the linking between.
 
 \newpage

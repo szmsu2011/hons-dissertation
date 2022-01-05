@@ -14,11 +14,11 @@ This chapter, as a typical example, outlines the application of linking and reac
 
 ## Modularisation of shiny application
 
-The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. The modules are black boxes that are isolated and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
+The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. These modules are encapsulated boxes that are isolated, and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
 
 ### Module environment
 
-Each of the shiny modules consists of its independent UI and server, much similar to a miniature "shiny environment", called within the application UI and server.
+Each of shiny modules consists of its independent UI and server, much similar to a miniature "shiny environment", called within the application UI and server. (TODO: The following code snippet presents a brief example of the auckland map module with key elements:)
 
 ```r
 map_aqi_ui <- function(id) {
@@ -35,7 +35,7 @@ map_aqi_mod <- function(id, state) {
 }
 ```
 
-The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and called by a caller-defined `id` for both the module UI and server, which allows for the reuse of modules under different `id`. The namespace is called by a module-specific function, defined by the `NS(id)`, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output `id` of `"map_aqi"` is called dependently via the module-specific namespace function `ns()`.
+The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and shared by a user-defined `id` for both the module UI and server, which allows for the reuse of modules under different `id`. The namespace is called by a module-specific function, defined by the `NS(id)`, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output `id` of `"map_aqi"` is called dependently via the module-specific namespace function `ns()`.
 
 Once defined, the modules are called in the application UI and server.
 

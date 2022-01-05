@@ -1,15 +1,11 @@
 # Introduction {#ch:intro}
 
-The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. The web application from the project aims to deliver a visual dashboard of interactive graphics from a storytelling approach to highlight the key statistical features of Auckland air quality.
-
-## The data
+The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. This project aims to deliver an interactive dashboard of linked graphics using a storytelling approach to highlight the key statistical features of Auckland air quality.
 
 The visual explorations of the Auckland air quality data will focus on the air quality index (AQI), a metric derived from a standard set of monitored ambient air pollutants, and the covariation with other variables, such as the weather. However, the raw data set is retrieved from a static database which involves manual inputs and calibrations and is not in a clean and visualisation-ready format. Chapter \@ref(ch:data) thus also discusses the data wrangling work attempted to handle the inconsistent entries and erroneous inputs.
 
-## Design layout and philosophy
-
 The dashboard facilitates top-down visualisation of information with an interactive drill-down capability, each tab/module revealing additional details as the user interacts with the graphics. The application is broken down into modular groups of interactive graphics, which consists of spatial and temporal overviews of AQI, supplementary graphics for exploring the relationships between AQI and meteorological variables and time series plots to explore the trend. Chapter \@ref(ch:design) outlines the design of the dashboard along with the graphical methods used for achieving the aforementioned objectives of visualisation. The chapter also discusses some analyses performed for verification purposes.
 
-## Shiny linking and reactivity
-
 Modular separation of functional graphics inside the application requires a special mechanism for reacting to user inputs and facilitating inter-modular communication, which motivates the utilisation of reactive programming. Chapter \@ref(ch:linking) describes the structural design of application modules and the implementation of **shiny** reactive for linking the modules in the context of **R** programming for application development.
+
+(TODO: Chapter 6 concludes and discusses ...)
