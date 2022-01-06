@@ -8,4 +8,4 @@ The dashboard facilitates top-down visualisation of information with an interact
 
 Modular separation of functional graphics inside the application requires a special mechanism for reacting to user inputs and facilitating inter-modular communication, which motivates the utilisation of reactive programming. Chapter \@ref(ch:linking) describes the structural design of application modules and the implementation of **shiny** reactive for linking the modules in the context of **R** programming for application development.
 
-(TODO: Chapter 6 concludes and discusses ...)
+Chapter \@ref(ch:conclusion) concludes this dissertation with a summarised discussion of the works accomplished in the project, then briefly outlines the plan of future works for improving the functionality, device compatibility and performance of the application.

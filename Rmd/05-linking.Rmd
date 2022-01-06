@@ -10,7 +10,7 @@ include_graphics("figures/app-structure.pdf")
 
 (ref:app-structure) The structure of the modularised shiny application.
 
-This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
+This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application along with demonstration using snippets of **R** code.
 
 ## Modularisation of shiny application
 
@@ -18,7 +18,7 @@ The modular division of the shiny application allows the development and deploym
 
 ### Module environment
 
-Each of shiny modules consists of its independent UI and server, much similar to a miniature "shiny environment", called within the application UI and server. (TODO: The following code snippet presents a brief example of the auckland map module with key elements:)
+Each of shiny modules consists of its independent UI and server, much similar to a miniature "shiny environment", called within the application UI and server. The following code snippet presents a brief example of the UI and server functions for the Auckland regional map module with the `NS()` and `moduleServer()` function calls being the key.
 
 ```r
 map_aqi_ui <- function(id) {

@@ -2,7 +2,7 @@
 
 I would like to express my sincere gratitude to my supervisor, Dr. Earo Wang, for generously giving her time, knowledge and patient advice to guide my research. She is an outstanding supervisor and always supportive in sharing her rich experience in data visualisation and **R** programming, without which I could have never completed my first academic research and application development smoothly. I also appreciate my co-supervisor, Prof. Chris Wild, for offering invaluable advice on data visualisation from a different aspect, inspiring creative ideas to improve my visualisation and web application.
 
-I would also like to thank the scholarship office of the *University of Auckland* for offering me the full postgraduate honours scholarship, which greatly relieved my financial hardship, allowing me to focus on my papers and research worry-free from essential costs from living, stationery and textbooks.
+I would also like to thank the scholarship office of the *University of Auckland* for offering me the full postgraduate honours scholarship, which greatly relieved my financial hardship, allowing me to focus on my courses and research worry-free from essential costs from living, stationery and textbooks.
 
 I would also like to thank all the developers and contributors of the **R** packages on the *GitHub* community for kindly helping me by responding to my queries, and most importantly, continually developing the packages.
 

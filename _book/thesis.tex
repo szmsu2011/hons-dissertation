@@ -34,9 +34,7 @@
 \chapter*{Abstract}\label{abstract}}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This work is motivated by the need for a visual presentation of the air quality data in Auckland from a temporal perspective. The project focuses on researching for appropriate visualisation and statistical toolboxes then assembling them into an integrated web application, which will serve as a module of the project for visual analysis of Auckland air quality by Auckland Council.
-
-The final deliverable of this project is an interactive dashboard as a web application developed using the \textbf{R shiny} package. The dissertation begins with a brief literature review on works and existing open-source libraries available for implementation (Chapter \ref{ch:lit-review}) and introduces the time series data set on Auckland air quality, along with the data-wrangling works performed prior to the visualisation (Chapter \ref{ch:data}). Chapter \ref{ch:design} and \ref{ch:linking} are original contributions outlining the design philosophy and purposes of each module in the dashboard and the implementation of the modules into the application with reactive programming using \textbf{R} codes as well as the programming techniques used.
+The project is motivated by the need for exploring and mining information from the air quality data in Auckland by the Auckland Council in order to understand the variation of air pollutants over time and their correlation with meteorological factors. Therefore, this project delivers a storytelling dashboard with interactive graphics as a web application developed using the \textbf{R shiny} package, available at \url{https://szmsu2011.shinyapps.io/akl-air-quality}. The works focus on researching appropriate methods of data visualisation and statistical toolboxes for temporal air quality data from existing open-source libraries then assembling them into a modularised application with interactive linkings. Each module corresponds to a tab set of interactive graphics for a specific purpose, altogether providing a coarse-to-granular exploration for the statistical features of air quality in Auckland. The modularisation allows easy maintenance and offers extensibility for new functional needs, achieved by reactive programming and event handling functions of the \textbf{R shiny} package.
 
 \newpage
 
@@ -46,7 +44,7 @@ The final deliverable of this project is an interactive dashboard as a web appli
 
 I would like to express my sincere gratitude to my supervisor, Dr.~Earo Wang, for generously giving her time, knowledge and patient advice to guide my research. She is an outstanding supervisor and always supportive in sharing her rich experience in data visualisation and \textbf{R} programming, without which I could have never completed my first academic research and application development smoothly. I also appreciate my co-supervisor, Prof.~Chris Wild, for offering invaluable advice on data visualisation from a different aspect, inspiring creative ideas to improve my visualisation and web application.
 
-I would also like to thank the scholarship office of the \emph{University of Auckland} for offering me the full postgraduate honours scholarship, which greatly relieved my financial hardship, allowing me to focus on my papers and research worry-free from essential costs from living, stationery and textbooks.
+I would also like to thank the scholarship office of the \emph{University of Auckland} for offering me the full postgraduate honours scholarship, which greatly relieved my financial hardship, allowing me to focus on my courses and research worry-free from essential costs from living, stationery and textbooks.
 
 I would also like to thank all the developers and contributors of the \textbf{R} packages on the \emph{GitHub} community for kindly helping me by responding to my queries, and most importantly, continually developing the packages.
 
@@ -73,22 +71,15 @@ This dissertation is an original work of my research and contains no material wh
 \hypertarget{ch:intro}{%
 \chapter{Introduction}\label{ch:intro}}
 
-The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. The web application from the project aims to deliver a visual dashboard of interactive graphics from a storytelling approach to highlight the key statistical features of Auckland air quality.
-
-\hypertarget{the-data}{%
-\section{The data}\label{the-data}}
+The air-clean reputation of New Zealand relies on the air quality management and monitoring policies set by the councils, which is to be continually reviewed to evaluate their effectiveness, creating a need in understanding the change in critical ambient air pollutants in Auckland and exploring their correlations with a range of other factors over time as well as the detection of anomalous or extreme observations of air pollutant data. Prior to employing formal statistical methods, data visualisation provides preliminary insights for the direction of further analyses. This project aims to deliver an interactive dashboard of linked graphics using a storytelling approach to highlight the key statistical features of Auckland air quality.
 
 The visual explorations of the Auckland air quality data will focus on the air quality index (AQI), a metric derived from a standard set of monitored ambient air pollutants, and the covariation with other variables, such as the weather. However, the raw data set is retrieved from a static database which involves manual inputs and calibrations and is not in a clean and visualisation-ready format. Chapter \ref{ch:data} thus also discusses the data wrangling work attempted to handle the inconsistent entries and erroneous inputs.
 
-\hypertarget{design-layout-and-philosophy}{%
-\section{Design layout and philosophy}\label{design-layout-and-philosophy}}
-
 The dashboard facilitates top-down visualisation of information with an interactive drill-down capability, each tab/module revealing additional details as the user interacts with the graphics. The application is broken down into modular groups of interactive graphics, which consists of spatial and temporal overviews of AQI, supplementary graphics for exploring the relationships between AQI and meteorological variables and time series plots to explore the trend. Chapter \ref{ch:design} outlines the design of the dashboard along with the graphical methods used for achieving the aforementioned objectives of visualisation. The chapter also discusses some analyses performed for verification purposes.
 
-\hypertarget{shiny-linking-and-reactivity}{%
-\section{Shiny linking and reactivity}\label{shiny-linking-and-reactivity}}
-
 Modular separation of functional graphics inside the application requires a special mechanism for reacting to user inputs and facilitating inter-modular communication, which motivates the utilisation of reactive programming. Chapter \ref{ch:linking} describes the structural design of application modules and the implementation of \textbf{shiny} reactive for linking the modules in the context of \textbf{R} programming for application development.
+
+Chapter \ref{ch:conclusion} concludes this dissertation with a summarised discussion of the works accomplished in the project, then briefly outlines the plan of future works for improving the functionality, device compatibility and performance of the application.
 
 \hypertarget{ch:lit-review}{%
 \chapter{Research and related works}\label{ch:lit-review}}
@@ -435,17 +426,17 @@ The application consists of several functional components for a set of independe
 
 
 
-This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application.
+This chapter, as a typical example, outlines the application of linking and reactivity on the user selection of monitor stations with interactive maps in the modularised application along with demonstration using snippets of \textbf{R} code.
 
 \hypertarget{modularisation-of-shiny-application}{%
 \section{Modularisation of shiny application}\label{modularisation-of-shiny-application}}
 
-The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. The modules are black boxes that are isolated and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
+The modular division of the shiny application allows the development and deployment of components to be independent of one another, enabling flexible addition and modification of functions. Each shiny module represents a dedicated functional component of the application. These modules are encapsulated boxes that are isolated, and only communicate with other modules via a defined global reactive. The isolation of modules avoids unwanted interference among modules, simplifying the workflow control.
 
 \hypertarget{module-environment}{%
 \subsection{Module environment}\label{module-environment}}
 
-Each of the shiny modules consists of its independent UI and server, much similar to a miniature ``shiny environment'', called within the application UI and server.
+Each of shiny modules consists of its independent UI and server, much similar to a miniature ``shiny environment'', called within the application UI and server. The following code snippet presents a brief example of the UI and server functions for the Auckland regional map module with the \texttt{NS()} and \texttt{moduleServer()} function calls being the key.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -464,7 +455,7 @@ Each of the shiny modules consists of its independent UI and server, much simila
 \end{Highlighting}
 \end{Shaded}
 
-The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and called by a caller-defined \texttt{id} for both the module UI and server, which allows for the reuse of modules under different \texttt{id}. The namespace is called by a module-specific function, defined by the \texttt{NS(id)}, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output \texttt{id} of \texttt{"map\_aqi"} is called dependently via the module-specific namespace function \texttt{ns()}.
+The shiny modules are separated via namespacing, which is achieved by the definition of the functions of module servers. The namespace of each module is uniquely identified and shared by a user-defined \texttt{id} for both the module UI and server, which allows for the reuse of modules under different \texttt{id}. The namespace is called by a module-specific function, defined by the \texttt{NS(id)}, in the module UI and stored in the shiny session, which is the basis of referral of graphics outputs in the module UI rendered in the module server. In the context of the interactive-map module, the interactive map with the output \texttt{id} of \texttt{"map\_aqi"} is called dependently via the module-specific namespace function \texttt{ns()}.
 
 Once defined, the modules are called in the application UI and server.
 
@@ -621,12 +612,14 @@ In some scenarios, graphical database queries can be used to bypass the server t
 \hypertarget{ch:conclusion}{%
 \chapter{Conclusion and future works}\label{ch:conclusion}}
 
-The source files for reproducing this dissertation, data sets and history of all drafts, are available at the \emph{GitHub} repository \href{https://github.com/szmsu2011/hons-dissertation}{szmsu2011/hons-dissertation}. The final deliverable of this Honours project, an \textbf{R shiny} web application, is hosted on \href{https://www.shinyapps.io}{shinyapps.io} which can be accessed with the URL \url{https://szmsu2011.shinyapps.io/akl-air-quality}, whose source codes can be found at the \emph{GitHub} repository \href{https://github.com/szmsu2011/akl-air-quality}{szmsu2011/akl-air-quality}.
+This project delivers a web application that integrates numerous interactive data visualisation methods and statistical toolboxes into a storytelling dashboard. The interconnection between the graphics enables mutual comparison of air quality and other related metrics both spatially and temporally, including anomaly detection, mutual visual analysis of air quality and weather information, concurrent wind-AQI visualisation, trend analysis and comparing across different sites with air quality monitoring stations simultaneously.
 
-This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
+The dissertation discusses the research on related works and existing open-source libraries in a brief literature review, then introduces the Auckland air quality data, documenting the data-wrangling process performed prior to the visualisation. The original contributions of the paper focus on the design of the dashboard, choosing the appropriate visualisation methods for the data with justification and discussions about application implementation.
 
 \hypertarget{future-works}{%
 \section{Future works}\label{future-works}}
+
+This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
 
 \hypertarget{statistical-modelling}{%
 \subsection{Statistical modelling}\label{statistical-modelling}}
@@ -642,6 +635,11 @@ The web application adapts poorly above full zoom on a desktop browser and all b
 \subsection{Graphics performance}\label{graphics-performance}}
 
 The rendering speed of interactive graphics is another major constraint for development. The wind roses (Section \ref{sec:wind-plot}) and HTML table (Section \ref{sec:met-table}) are the two most resource-consuming graphics, each taking approximately 1-2 seconds to render unless already being cached. The performance constraint decreases the displayable time span. Future developments will therefore involve researching for more performant \textbf{R} packages.
+
+\hypertarget{reproducible-research}{%
+\section{Reproducible research}\label{reproducible-research}}
+
+The source files for reproducing this dissertation, data sets and history of all drafts, are available at the \emph{GitHub} repository \href{https://github.com/szmsu2011/hons-dissertation}{szmsu2011/hons-dissertation}. The final deliverable of this Honours project, an \textbf{R shiny} web application, is hosted on \href{https://www.shinyapps.io}{shinyapps.io} which can be accessed with the URL \url{https://szmsu2011.shinyapps.io/akl-air-quality}, whose source codes can be found at the \emph{GitHub} repository \href{https://github.com/szmsu2011/akl-air-quality}{szmsu2011/akl-air-quality}.
 
 \appendix
 

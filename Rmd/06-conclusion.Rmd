@@ -1,10 +1,12 @@
 # Conclusion and future works {#ch:conclusion}
 
-The source files for reproducing this dissertation, data sets and history of all drafts, are available at the *GitHub* repository [szmsu2011/hons-dissertation](https://github.com/szmsu2011/hons-dissertation). The final deliverable of this Honours project, an **R shiny** web application, is hosted on [shinyapps.io](https://www.shinyapps.io) which can be accessed with the URL [https://szmsu2011.shinyapps.io/akl-air-quality](https://szmsu2011.shinyapps.io/akl-air-quality), whose source codes can be found at the *GitHub* repository [szmsu2011/akl-air-quality](https://github.com/szmsu2011/akl-air-quality).
+This project delivers a web application that integrates numerous interactive data visualisation methods and statistical toolboxes into a storytelling dashboard. The interconnection between the graphics enables mutual comparison of air quality and other related metrics both spatially and temporally, including anomaly detection, mutual visual analysis of air quality and weather information, concurrent wind-AQI visualisation, trend analysis and comparing across different sites with air quality monitoring stations simultaneously.
 
-This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
+The dissertation discusses the research on related works and existing open-source libraries in a brief literature review, then introduces the Auckland air quality data, documenting the data-wrangling process performed prior to the visualisation. The original contributions of the paper focus on the design of the dashboard, choosing the appropriate visualisation methods for the data with justification and discussions about application implementation.
 
 ## Future works
+
+This dissertation serves as the design outline for the development work of the web application, while the manual is left undocumented as the application is designed to be friendly to use for first-time users. Nevertheless, there are works left for future improvements.
 
 ### Statistical modelling
 
@@ -17,3 +19,7 @@ The web application adapts poorly above full zoom on a desktop browser and all b
 ### Graphics performance
 
 The rendering speed of interactive graphics is another major constraint for development. The wind roses (Section \@ref(sec:wind-plot)) and HTML table (Section \@ref(sec:met-table)) are the two most resource-consuming graphics, each taking approximately 1-2 seconds to render unless already being cached. The performance constraint decreases the displayable time span. Future developments will therefore involve researching for more performant **R** packages.
+
+## Reproducible research
+
+The source files for reproducing this dissertation, data sets and history of all drafts, are available at the *GitHub* repository [szmsu2011/hons-dissertation](https://github.com/szmsu2011/hons-dissertation). The final deliverable of this Honours project, an **R shiny** web application, is hosted on [shinyapps.io](https://www.shinyapps.io) which can be accessed with the URL [https://szmsu2011.shinyapps.io/akl-air-quality](https://szmsu2011.shinyapps.io/akl-air-quality), whose source codes can be found at the *GitHub* repository [szmsu2011/akl-air-quality](https://github.com/szmsu2011/akl-air-quality).
