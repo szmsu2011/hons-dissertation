@@ -1,0 +1,407 @@
+---
+title: "STATS 781 Honours Project in Statistics"
+subtitle: "Data Storytelling Dashboard for Exploring Auckland Air Quality"
+author: "Stephen Su"
+date: "January 2022"
+output:
+  xaringan::moon_reader:
+    nature:
+      highlightLines: true
+    css: xaringan-themer.css
+---
+
+```{r setup, echo = FALSE, cache = FALSE, results = 'hide'}
+library(knitr)
+options(
+  htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE,
+  tibble.width = 60, tibble.print_min = 6
+)
+opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE, comment = "#>", fig.retina = 3,
+  fig.align = "center", fig.show = "hold", cache.path = "cache/", cache = TRUE,
+  dpi = 110, dev.args = list(png = list(type = "cairo"))
+)
+```
+
+```{r xaringan-themer, include = FALSE, warning = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#035AA6",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google = google_font("Montserrat", "400", "400i"),
+  code_font_google = google_font("Fira Mono")
+)
+```
+
+## Background
+
+### Auckland air quality
+
+* New Zealand is well-known for the clean air.
+
+* Maintaining the reputation needs continuous monitoring.
+
+  * Auckland Council's air quality management plan
+
+* Main metric: air quality index (AQI)
+
+```{r aqi-cat, out.width = "95%", fig.align = "center"}
+include_graphics("../figures/aqi-cat.png")
+```
+
+---
+
+## A static visualisation
+
+```{r static-plot, fig.align = "center", fig.height = 4.3}
+library(dplyr)
+library(ggplot2)
+"../data/slide-data.csv" %>%
+  readr::read_csv(col_types = "Td") %>%
+  ggplot(aes(datetime, aqi)) +
+  geom_ribbon(aes(ymin = 0, ymax = 50.5), fill = "#00E400", alpha = .5) +
+  geom_ribbon(aes(ymin = 50.5, ymax = 100.5), fill = "#FFFF00", alpha = .5) +
+  geom_ribbon(aes(ymin = 100.5, ymax = 150.5), fill = "#FF7E00", alpha = .5) +
+  geom_ribbon(aes(ymin = 150.5, ymax = 200.5), fill = "#FF0000", alpha = .5) +
+  geom_ribbon(aes(ymin = 200.5, ymax = 300.5), fill = "#8F3F97", alpha = .5) +
+  geom_line() +
+  theme_bw() +
+  labs(title = "AQI observed in Queen Street since 2016", x = "", y = "AQI")
+```
+
+---
+
+## The solution
+
+* An interactive dashboard
+
+* Based on an **R shiny** web application
+
+<br>
+
+```{r r-shiny, out.width = "65%", fig.align = "center"}
+include_graphics("../figures/r-shiny.png")
+```
+
+<br>
+
+* [Let's get started](https://szmsu2011.shinyapps.io/akl-air-quality)
+
+---
+
+## Shiny modules: the motivation
+
+* The dashboard consists of a collection of interactive graphics...
+
+<br>
+
+* Each of a different type or for a different purpose.
+
+<br>
+
+* Development in a single "module" can lead to confusion or conflict.
+
+```r
+e <- e_charts(data, ...) # Data for which chart?
+e_chart_1 <- echarts(data_for_chart_1, ...)
+e_chart_2 <- echarts(data_for_chart_2, ...)
+```
+
+<br>
+
+* Easy maintenance and extensibility
+
+---
+
+## A modularised shiny application
+
+<br>
+
+```{r app-structure, out.width = "95%", fig.align = "center"}
+include_graphics("../figures/app-structure.png")
+```
+
+---
+
+## Inside a shiny module
+
+.pull-left[
+#### Each module...
+
+* Represents an encapsulated **R** environment;
+
+<br>
+
+* Consists of its own UI and server;
+
+<br>
+
+* Has dedicated and isolated namespace;
+
+<br>
+
+* Does not interfere with other modules.
+]
+
+.pull-right[
+<br>
+
+```r
+map_aqi_ui <- function(id) {
+  # Unique namespace
+  ns <- NS(id)
+  # Call for graphics output
+  leafletOutput(ns("map_aqi"))
+}
+
+map_aqi_mod <-
+  function(id, state) {
+    module <-
+      function(...) {
+        ## Render graphics output
+      }
+    # Run with unique namespace
+    moduleServer(id, module)
+  }
+```
+]
+
+---
+
+## Assembling the modules
+
+#### Application server
+
+```{r eval = FALSE, echo = TRUE}
+app_server <- function(input, output, session) {
+  ## Other shiny module servers
+  map_aqi_mod("map_aqi", app_state) #<<
+  ## Other server codes
+}
+```
+
+#### Application UI
+
+```{r eval = FALSE, echo = TRUE}
+app_ui <- dashboardPage(
+  header, sidebar,
+  body = dashboardBody(
+    tabItem(tabName,
+      fluidRow(column(map_aqi_ui("map_aqi"))), #<<
+      ## Other modular UI
+    ),
+    ## Other tabs
+  )
+)
+```
+
+* If the modules are isolated, how do they communicate?
+
+---
+
+## Introduction to shiny reactives
+
+#### A shiny reactive
+
+* Is a special **R** object;
+
+<br>
+
+* Has only one (collection of) value(s) at any time;
+
+<br>
+
+* Is evaluated only when its value is updated;
+
+<br>
+
+* Is cached;
+
+<br>
+
+* Can be updated by "reacting" to an event.
+
+---
+
+## Event-driven module communication
+
+* A shiny reactive `app_state` stores the snapshot of the current session.
+
+```r
+app_state <- reactiveValues(data, user_clicks, cached_graphics, ...)
+```
+
+<br>
+
+* The shiny application "reacts" to events;
+
+  * e.g., when a user clicks on a station on the interactive map:
+
+```{r eval = FALSE, echo = TRUE}
+map_aqi_mod <- function(id, state) {
+  module <- function(input, output, session) {
+    ## Shiny output
+    observeEvent(input[["map_aqi_marker_click"]], { #<<
+      state[["map_onclick"]] <- input[["map_aqi_marker_click"]][["id"]] #<<
+    }) #<<
+  }
+  moduleServer(id, module)
+}
+```
+
+---
+
+## Application performance
+
+.pull-left[
+<br>
+
+#### Application launch
+
+* The entire data set used has more than 1 million observations.
+
+<br>
+
+* Time consuming to exhaustively load all of them.
+
+<br>
+
+* Solution: Data caching
+]
+
+.pull-right[
+<br>
+
+#### Graphics rendering
+
+* Some interactive graphics (i.e., the wind roses and tables) are slow to render.
+
+<br>
+
+* Frequently switching and revisiting become laggy.
+
+<br>
+
+* Solution: Graphics caching
+]
+
+---
+
+## Data caching
+
+.pull-left[
+* Loads data on demand
+
+<br>
+
+* Uses reactives
+
+<br>
+
+* Detects user clicks as events
+
+<br>
+
+* Checks if data for the clicked-location is loaded
+
+<br>
+
+* Load data if not already loaded
+]
+
+.pull-right[
+```r
+append_data <-
+  function(data, loc) {
+    ## Load new data for loc,
+    ## then return new data set
+    ## by binding new data
+    ## to the old data
+  }
+
+app_server <- function(...) {
+  ## Shiny module servers
+  ## Other server codes
+  observeEvent(map_click, {
+    if (!data_is_loaded) {
+      app_state[["data"]] <-
+        append_data(...)
+    }
+  })
+}
+```
+]
+
+---
+
+## Graphics caching
+
+* Temporarily saving rendered graphics for the session in the memory
+
+<br>
+
+* Saves rendering time
+
+<br>
+
+* Uses internal shiny function instead of reactives
+
+```{r eval = FALSE, echo = TRUE}
+aqi_heatmap_mod <- function(id, state = app_state) {
+  module <- function(input, output, session) {
+    ## Reactivity and event handling
+    ## Data processing
+    output[["aqi_heatmap"]] <- renderEcharts4r(expr) %>%
+      bindCache(...) #<<
+  }
+  moduleServer(id, module)
+}
+```
+
+---
+
+## Wrapping up
+
+.pull-left[
+<br>
+
+#### The project
+
+* Motivated by the need of visualising air quality data
+
+<br>
+
+* Solution: An **R shiny** application
+
+<br>
+
+* Linking interactive graphics with shiny reactives and using shiny modules to assemble the graphics into a dashboard
+]
+
+.pull-right[
+<br>
+
+#### Future works
+
+* More statistical models for visual time series analysis
+
+<br>
+
+* Aspect ratio adaptation
+
+<br>
+
+* Rendering performance
+]
+
+---
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<font size="+5"; color="#035AA6">
+  <center>
+    <b>
+      Thank you for watching.
+    </b>
+  </center>
+</font>
