@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>STATS 781 Honours Project in Statistics</title>
+    <title>Data Storytelling Dashboard for Exploring   Auckland Air Quality</title>
     <meta charset="utf-8" />
     <meta name="author" content="Stephen Su" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
@@ -10,10 +10,9 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# STATS 781 Honours Project in Statistics
-## Data Storytelling Dashboard for Exploring Auckland Air Quality
+# Data Storytelling Dashboard for Exploring <br> Auckland Air Quality
 ### Stephen Su
-### January 2022
+### STATS 781
 
 ---
 
@@ -22,9 +21,7 @@ class: center, middle, inverse, title-slide
 
 
 
-## Background
-
-### Auckland air quality
+## Auckland air quality
 
 * New Zealand is well-known for the clean air.
 
@@ -36,6 +33,8 @@ class: center, middle, inverse, title-slide
 
 &lt;img src="../figures/aqi-cat.png" width="95%" style="display: block; margin: auto;" /&gt;
 
+* Data source: Auckland Regional Council
+
 ---
 
 ## A static visualisation
@@ -44,43 +43,43 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## The solution
+class: center middle
+background-image: url(../figures/aqi-tab.png)
+background-size: 100%
 
-* An interactive dashboard
-
-* Based on an **R shiny** web application
-
-&lt;br&gt;
-
-&lt;img src="../figures/r-shiny.png" width="65%" style="display: block; margin: auto;" /&gt;
-
-&lt;br&gt;
-
-* [Let's get started](https://szmsu2011.shinyapps.io/akl-air-quality)
+# Live demo: [bit.ly/akl-aqi](https://bit.ly/akl-aqi)
 
 ---
 
-## Shiny modules: the motivation
+class: center
 
-* The dashboard consists of a collection of interactive graphics...
+## Interactive graphics implemented
 
+--
+
+.pull-left[
+[**echarts4r**](https://github.com/JohnCoene/echarts4r)
+
+&lt;img src="../figures/cal-mod.png" width="95%" style="display: block; margin: auto;" /&gt;
 &lt;br&gt;
-
-* Each of a different type or for a different purpose.
-
+&lt;img src="../figures/wind-mod.png" width="95%" style="display: block; margin: auto;" /&gt;
 &lt;br&gt;
+&lt;img src="../figures/ts-mod.png" width="95%" style="display: block; margin: auto;" /&gt;
+]
 
-* Development in a single "module" can lead to confusion or conflict.
+--
 
-```r
-e &lt;- e_charts(data, ...) # Data for which chart?
-e_chart_1 &lt;- echarts(data_for_chart_1, ...)
-e_chart_2 &lt;- echarts(data_for_chart_2, ...)
-```
+.pull-left[
+[**reactable**](https://github.com/glin/reactable)
+&lt;img src="../figures/met-mod.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
 
-&lt;br&gt;
+--
 
-* Easy maintenance and extensibility
+.pull-left[
+[**leaflet**](https://github.com/rstudio/leaflet)
+&lt;img src="../figures/map-mod.png" width="55%" style="display: block; margin: auto;" /&gt;
+]
 
 ---
 
@@ -92,24 +91,32 @@ e_chart_2 &lt;- echarts(data_for_chart_2, ...)
 
 ---
 
-## Inside a shiny module
+## Shiny modules
+
+If the application is developed as a whole, the codebase would become chunky and unmanageable.
+
+```r
+e &lt;- e_charts(data, ...) # Data for which chart?
+e_chart_1 &lt;- echarts(data_for_chart_1, ...)
+e_chart_2 &lt;- echarts(data_for_chart_2, ...)
+```
+&lt;hr&gt;
+### Modularisation comes to rescue
+
+* Each interactive graphic is encapsulated as a module.
+
+* The dashboard consists of a collection of interactive graphics.
+
+* Modularisation facilitates easy maintenance and extensibility
+
+---
+
+## Shiny module example: the map
 
 .pull-left[
-#### Each module...
-
-* Represents an encapsulated **R** environment;
-
 &lt;br&gt;
 
-* Consists of its own UI and server;
-
-&lt;br&gt;
-
-* Has dedicated and isolated namespace;
-
-&lt;br&gt;
-
-* Does not interfere with other modules.
+&lt;img src="../figures/map-mod.png" width="85%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -137,7 +144,48 @@ map_aqi_mod &lt;-
 
 ---
 
-## Assembling the modules
+## A shiny module &lt;i class="fas fa-cube"&gt;&lt;/i&gt;
+
+.pull-left[
+&lt;br&gt;
+
+* Consists of its own UI and server
+
+&lt;br&gt;
+
+* Represents an encapsulated **R** environment
+
+  * Has dedicated and isolated namespace
+
+  * Does not interfere with other modules
+]
+
+.pull-right[
+&lt;br&gt;
+
+```r
+map_aqi_ui &lt;- function(id) {
+  # Unique namespace
+  ns &lt;- NS(id)
+  # Call for graphics output
+  leafletOutput(ns("map_aqi"))
+}
+
+map_aqi_mod &lt;-
+  function(id, state) {
+    module &lt;-
+      function(...) {
+        ## Render graphics output
+      }
+    # Run with unique namespace
+    moduleServer(id, module)
+  }
+```
+]
+
+---
+
+## Assembling modules &lt;i class="fas fa-cubes"&gt;&lt;/i&gt;
 
 #### Application server
 
@@ -166,31 +214,11 @@ app_ui &lt;- dashboardPage(
 )
 ```
 
-* If the modules are isolated, how do they communicate?
-
 ---
 
-## Introduction to shiny reactives
+class: middle center inverse
 
-#### A shiny reactive
-
-* Is a special **R** object;
-
-&lt;br&gt;
-
-* Has only one (collection of) value(s) at any time;
-
-&lt;br&gt;
-
-* Is evaluated only when its value is updated;
-
-&lt;br&gt;
-
-* Is cached;
-
-&lt;br&gt;
-
-* Can be updated by "reacting" to an event.
+# If the modules are isolated, how do they communicate?
 
 ---
 
@@ -223,39 +251,37 @@ map_aqi_mod &lt;- function(id, state) {
 
 ---
 
-## Application performance
+class: middle
 
-.pull-left[
-&lt;br&gt;
+&lt;img src="../figures/app-structure.png" width="95%" style="display: block; margin: auto;" /&gt;
 
-#### Application launch
+---
 
-* The entire data set used has more than 1 million observations.
+## Shiny reactive &lt;i class="far fa-hand-pointer"&gt;&lt;/i&gt;
 
-&lt;br&gt;
+```r
+app_state &lt;- reactiveValues(data, user_clicks, cached_graphics, ...)
+```
 
-* Time consuming to exhaustively load all of them.
-
-&lt;br&gt;
-
-* Solution: Data caching
-]
-
-.pull-right[
-&lt;br&gt;
-
-#### Graphics rendering
-
-* Some interactive graphics (i.e., the wind roses and tables) are slow to render.
+* Has only one collection of values at any time;
 
 &lt;br&gt;
 
-* Frequently switching and revisiting become laggy.
+* Is evaluated only when its value is updated;
 
 &lt;br&gt;
 
-* Solution: Graphics caching
-]
+* Is cached;
+
+&lt;br&gt;
+
+* Can be updated by "reacting" to an event.
+
+---
+
+class: middle center inverse
+
+# BTS: How can we keep the app performant with &gt; 1M observations of data?
 
 ---
 
@@ -308,15 +334,15 @@ app_server &lt;- function(...) {
 
 ## Graphics caching
 
-* Temporarily saving rendered graphics for the session in the memory
-
-&lt;br&gt;
-
 * Saves rendering time
 
 &lt;br&gt;
 
-* Uses internal shiny function instead of reactives
+* Temporarily saving rendered graphics for the session in the memory
+
+&lt;br&gt;
+
+* Uses shiny function `bindCache()`
 
 
 ```r
@@ -333,51 +359,32 @@ aqi_heatmap_mod &lt;- function(id, state = app_state) {
 
 ---
 
-## Wrapping up
+## Project contribution
 
-.pull-left[
-&lt;br&gt;
+* This project delivers an insightful storytelling dashboard.
 
-#### The project
+* It is accessible to the public via [bit.ly/akl-aqi](https://bit.ly/akl-aqi).
 
-* Motivated by the need of visualising air quality data
+* Approaches exploration of Auckland air quality in multiple aspects.
 
-&lt;br&gt;
+* Various interactive graphics are integrated into one web application.
 
-* Solution: An **R shiny** application
+* The graphics are modularised but linked with user interaction.
 
-&lt;br&gt;
+&lt;hr&gt;&lt;br&gt;
 
-* Linking interactive graphics with shiny reactives and using shiny modules to assemble the graphics into a dashboard
-]
+#### Open and reproducible research
 
-.pull-right[
-&lt;br&gt;
+* Dissertation: https://github.com/szmsu2011/hons-dissertation
 
-#### Future works
-
-* More statistical models for visual time series analysis
-
-&lt;br&gt;
-
-* Aspect ratio adaptation
-
-&lt;br&gt;
-
-* Rendering performance
-]
+* Application source code: https://github.com/szmsu2011/akl-air-quality
 
 ---
 
-&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+class: middle center
 
-&lt;font size="+5"; color="#035AA6"&gt;
-  &lt;center&gt;
-    &lt;b&gt;
-      Thank you for watching.
-    &lt;/b&gt;
-  &lt;/center&gt;
-&lt;/font&gt;
+# Explore on your own
+### [bit.ly/akl-aqi](https://bit.ly/akl-aqi)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

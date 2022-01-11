@@ -21,6 +21,7 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,400i&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Fira+Mono&display=swap);
+@import url("https://use.fontawesome.com/releases/v5.2.0/css/all.css");
 
 
 :root {
@@ -124,7 +125,7 @@ a, a > code {
 .inverse {
   background-color: var(--inverse-background-color);
   color: var(--inverse-text-color);
-  
+
 }
 .inverse h1, .inverse h2, .inverse h3 {
   color: var(--inverse-header-color);
